@@ -131,10 +131,10 @@ export default [
     //         ],
     //     },
     // },
-    {
-        title: "Control Panel",
-        url: "/dashboard",
-    },
+    // {
+    //     title: "Control Panel",
+    //     url: "/dashboard",
+    // },
     // {
     //     title: 'Buy Theme',
     //     url: 'https://themeforest.net/item/stroyka-tools-store-react-ecommerce-template/23909258',
