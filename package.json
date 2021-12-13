@@ -11,7 +11,7 @@
     "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "debug": "ndb server.js",
-    "heroku":"npm install --prefix frontend && npm run build --prefix frontend "
+    "heroku":"NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend "
   },
   "author": "\"Mohamed Elshafey, Shrouk Ahmed, Samaa Ehab\"",
   "license": "ISC",
