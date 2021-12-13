@@ -5,13 +5,13 @@
   "description": "\"APIs for graduation project\"",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon backEnd/server.js",
+    "start": "node backEnd/server.js",
     "start:prod": "set NODE_ENV=production && nodemon server.js",
     "server": "nodemon backEnd/server",
     "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "debug": "ndb server.js",
-    "heroku":"set NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend "
+    "heroku":"set NPM_CONFIG_PRODUCTION=false && npm install --prefix frontend && npm run build --prefix frontend "
   },
   "author": "\"Mohamed Elshafey, Shrouk Ahmed, Samaa Ehab\"",
   "license": "ISC",
