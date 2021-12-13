@@ -14,9 +14,8 @@
     "server": "nodemon backEnd/server",
     "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "debug": "ndb server.js",
-    "heroku-postbuild": "set NPM_CONFIG_PRODUCTION=false && npm install --prefix frontend && npm run build --prefix frontend"
-  },
+    "debug": "ndb server.js"
+    },
   "author": "\"Mohamed Elshafey, Shrouk Ahmed, Samaa Ehab\"",
   "license": "ISC",
   "dependencies": {
