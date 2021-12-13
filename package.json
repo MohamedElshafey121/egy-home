@@ -1,5 +1,5 @@
 {
-  "name": "social-media-monitoring-back-end",
+  "name": "egy-home",
   "proxy": "http://127.0.0.1:5000",
   "version": "1.0.0",
   "description": "\"APIs for graduation project\"",
@@ -11,7 +11,7 @@
     "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "debug": "ndb server.js",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
+    "heroku-postbuild": "set NPM_CONFIG_PRODUCTION=false && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "author": "\"Mohamed Elshafey, Shrouk Ahmed, Samaa Ehab\"",
   "license": "ISC",
