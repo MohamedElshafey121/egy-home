@@ -74,7 +74,7 @@ if (process.env.NODE_ENV === "production") {
     )
   );
 
-  app.get("/dashboard", (req, res) =>
+  app.get(/^\/dashboard/, (req, res) =>
     res.sendFile(
       path.resolve(__dirname, "dashboard-production", "build", "index.html")
     )
