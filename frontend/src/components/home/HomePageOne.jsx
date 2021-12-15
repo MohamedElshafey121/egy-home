@@ -76,42 +76,10 @@ function HomePageOne () {
     }
 
 
-    /**
-     * Bestsellers.
-     */
-    // const bestsellers = useDeferredData(() => (
-    //     shopApi.getPopularProducts({ limit: 7 })
-    // ), []);
-
-
-    /**
-     * Product columns.
-     */
-    // const columns = useProductColumns(
-    //     useMemo(() => [
-    //         {
-    //             title: 'Top Rated Products',
-    //             source: () => shopApi.getTopRatedProducts({ limit: 3 }),
-    //         },
-    //         {
-    //             title: 'Special Offers',
-    //             source: () => shopApi.getDiscountedProducts({ limit: 3 }),
-    //         },
-    //         {
-    //             title: 'Bestsellers',
-    //             source: () => shopApi.getPopularProducts({ limit: 3 }),
-    //         },
-    //     ], []),
-    // );
-
-    // if ( loading ) {
-    //     return <BlockLoader/>
-    // }
-
     return (
         <React.Fragment>
             <Helmet>
-                <title>{`Home Page One — ${ theme.name }`}</title>
+                <title>{ theme.name }</title>
             </Helmet>
 
             {useMemo( () => <BlockSlideShow withDepartments />, [] )}

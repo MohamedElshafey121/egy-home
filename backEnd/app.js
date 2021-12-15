@@ -68,6 +68,12 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/build")));
   app.use(express.static(path.join(__dirname, "/dashboard-production/build")));
 
+  app.get(/^\/auth/, (req, res) =>
+    res.sendFile(
+      path.resolve(__dirname, "dashboard-production", "build", "index.html")
+    )
+  );
+
   app.get("/dashboard", (req, res) =>
     res.sendFile(
       path.resolve(__dirname, "dashboard-production", "build", "index.html")

@@ -34,7 +34,7 @@ function SideBar ( props ) {
         <div className="sa-app__sidebar">
                 <div className="sa-sidebar">
                     <div className="sa-sidebar__header">
-                        <Link to='/' className="sa-sidebar__logo">
+                        <Link to='/?redirect=dash' className="sa-sidebar__logo">
                             {/* <!-- logo --> */}
                             <div className="sa-sidebar-logo">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="120px" height="20px">

@@ -1,5 +1,5 @@
 // react
-import React from 'react';
+import React,{useEffect} from 'react';
 
 // third-party
 import { Helmet } from 'react-helmet-async';
@@ -8,7 +8,10 @@ import { Link } from 'react-router-dom';
 // data stubs
 import theme from '../../data/theme';
 
-function SitePageNotFound() {
+function SitePageNotFound () {
+    // useEffect( () => {
+    //     window.location.reload();
+    // },[])
     return (
         <div className="block">
             <Helmet>

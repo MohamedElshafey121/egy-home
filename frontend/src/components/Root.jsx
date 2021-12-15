@@ -30,21 +30,12 @@ class Root extends Component {
             site: true,
         }
     }
-    // state = {
-    //     siteFiles:this.props.style.site
-    // }
-
+  
     setFileSite = ( valu ) => {
         this.setState( { siteFiles: valu } )
-        // this.forceUpdate()
     }
 
     componentDidMount () {
-        // alert('Render Again')
-        // const { siteFiles } = this.state;
-        // if(true) require('./../css/bootstrap/css/bootstrap.ltr.css');
-
-        
         // preloader
         setTimeout( () => {
             const preloader = document.querySelector( '.site-preloader' );
@@ -67,39 +58,7 @@ class Root extends Component {
             changeLocale( direction === 'rtl' ? 'ar' : 'en' );
         }
 
-        // if ( this.state.site ) {
-        //     require('./../scss/style.scss')
-        // } else {
-        //     alert('re render')
-        //     require('./../css/bootstrap/css/bootstrap.ltr.css')
-        //     require('../css/style.ltr.css')
-        // }
-
-        // setTimeout( () => {
-        //     this.setState({site:false})
-        // }, 5000 )
-        
-        // setTimeout( () => {
-        //     this.setState({site:true})
-        // },15000)
     }
-
-    // componentDidUpdate () {
-    //     if ( this.state.site ) {
-    //         alert("Site")
-    //         // delete require.cache[require.resolve('./../css/bootstrap/css/bootstrap.ltr.css')]
-    //         // delete require.cache[require.resolve('./../css/style.ltr.css')]
-           
-    //         require( './../scss/style.scss' )
-    //         // this.forceUpdate()
-    //     } else {
-    //         alert( 'Dashboard' )
-    //         // delete require.cache[require.resolve('./../scss/style.scss')]
-    //         require('./../css/bootstrap/css/bootstrap.ltr.css')
-    //         require('../css/style.ltr.css')
-            
-    //     }
-    // }
 
     shouldUpdateScroll = ( prevRouterProps, { location } ) => (
         prevRouterProps && location.pathname !== prevRouterProps.location.pathname

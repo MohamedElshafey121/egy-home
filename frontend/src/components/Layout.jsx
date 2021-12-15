@@ -7,7 +7,7 @@ import React,{useEffect,useState} from 'react';
 // third-party
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet-async';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch,useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 
@@ -46,8 +46,15 @@ import SitePageTypography from './site/SitePageTypography';
 // data stubs
 import theme from '../data/theme';
 
+function useQuery() {
+  // return new URLSearchParams(location.search)
+  return new URLSearchParams(useLocation().search);
+}
+
 function Layout ( props ) {
-    const { match, style: { site },setFileSite } = props;
+    const query = useQuery();
+
+    const { match, style: { site },setFileSite,history } = props;
 
     // const dispatch=useDispatch()
     // useEffect( () => {
@@ -57,6 +64,12 @@ function Layout ( props ) {
     //     }
         
     // },[])
+     useEffect( () => {
+        if ( query.get( 'redirect' ) ) {
+            history.push('/dashboard')
+            window.location.reload(); 
+        }
+    }, [] );
 
     return (
         <React.Fragment>
