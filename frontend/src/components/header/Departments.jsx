@@ -132,7 +132,8 @@ class Departments extends Component {
 
                 <button type="button" className="departments__button" onClick={this.handleButtonClick}>
                     <Menu18x14Svg className="departments__button-icon" />
-                    Shop By Category
+                    {/* Shop By Category */}
+                    تسوق حسب القسم
                     <ArrowRoundedDown9x6Svg className="departments__button-arrow" />
                 </button>
             </div>

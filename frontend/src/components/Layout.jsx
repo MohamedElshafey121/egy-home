@@ -1,5 +1,5 @@
 //style
-import  './../scss/style.scss'
+import  './../scss/style.rtl.scss'
 
 // react
 import React,{useEffect,useState} from 'react';
@@ -141,7 +141,7 @@ function Layout ( props ) {
 
                         <Route exact path="/shop/cart" component={PageCart} />
                         <Route exact path="/shop/checkout" component={PageCheckout} />
-                        <Route exact path="/shop/checkout/success" component={ShopPageOrderSuccess} />
+                        <Route exact path="/shop/checkout/success/:id" component={ShopPageOrderSuccess} />
                         <Route exact path="/shop/wishlist" component={PageWishlist} />
                         <Route exact path="/shop/compare" component={PageCompare} />
                         <Route exact path="/shop/track-order" component={ShopPageTrackOrder} />

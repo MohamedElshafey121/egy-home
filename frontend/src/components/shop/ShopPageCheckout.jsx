@@ -2,9 +2,11 @@
 import React, { useEffect,useState } from 'react';
 
 // third-party
-import { connect } from 'react-redux';
+import { connect,useDispatch,useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet-async';
 import { Link, Redirect } from 'react-router-dom';
+import { toast } from "react-toastify";
+
 
 // application
 import Collapse from '../shared/Collapse';
@@ -15,37 +17,173 @@ import { Check9x7Svg } from '../../svg';
 // data stubs
 import payments from '../../data/shopPayments';
 import theme from '../../data/theme';
+import order from '../../data/accountOrderDetails';
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
 
-function ShopPageCheckout (props) {
-    // const payments =payments &&( payments);
+import {
+    saveShippingAddress,
+    saveUserShippingAddress,
+    removeFromCart,
+    emptyUserCart
+} from '../../store/cart'
+
+import {
+    getUserDetails,
+    addNewUserAddress,
+    getAddressDetails,
+    addUserAddressReset
+} from '../../store/user'
+import{createOrder} from '../../store/order'
+
+import classNames from 'classnames';
+
+
+
+function ShopPageCheckout ( props ) {
+
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+    
+    
+    const { cart,userInfo,addAddress,addressDetails,history } =props;
+    const { cartItems } = cart;
+    const userDetails=useSelector(state=>state.userDetails)
+    const {user} = userDetails;
+    const { success: addAddressSuccess, error: addAddressError } = addAddress;
+    const { address: addressDetail } = addressDetails;
+
+    const orderCreate = useSelector((state) => state.orderCreate);
+    const { error, success, order } = orderCreate;
+    
+    // const payments =payments
     const breadcrumb = [
-            { title: 'Home', url: '' },
-            { title: 'Shopping Cart', url: '/shop/cart' },
-            { title: 'Checkout', url: '' },
+            { title: `${messages.home}`, url: '' },
+            { title: `${messages.shoppingCart}`, url: '/shop/cart' },
+            { title: `${messages.proceedToCheckout}`, url: '' },
         ];
         
     const [payment, setPayment] = useState( 'bank' );
 
-    const { cart,userInfo } =props;
-    const { cartItems } = cart;
+    //ADDRESS STATES
+    const [firstName, setFirstName] = useState( (userInfo&& userInfo.name)?userInfo.name:'' )
+    const [lastName, setLastName] = useState( '')
+    const [governate, setGovernate] = useState('' )
+    const [city, setCity] = useState(  '')
+    const [area, setArea] = useState(  '')
+    const [address, setAddress] = useState( '' )//العنوان بالتفصيل او الشارع
+    const [type, setAddressType] = useState(  '')
+    const [phone, setPhone] = useState(  '')
+    const [orderNotes, setOrderNotes] = useState( '' )
+    const [email,setEmail]=useState(userInfo ?userInfo.email:'')
+    const [addNewAddress, setAddNewAddress] = useState(false)
+    const [selectedAddress, setSelectedAddress] = useState( null )
+    const[checkTerms,setCheckTerms]=useState(false)
 
     //calculate prices
     cart.itemPrices = cartItems ? ( cartItems.reduce( ( acc, item ) => acc + item.price * item.qty, 0 ) ):0;
     cart.shippingPrice = cart.itemPrices > 100 ? ( 21 * cartItems.length ) : 0;
     cart.totalPrice = Number( cart.itemPrices ) + Number( cart.shippingPrice );
 
+    const dispatch = useDispatch();
     useEffect( () => {
         if ( !userInfo ) {
-            return <Redirect to="cart"/>
+            return <Redirect to="/shop/cart"/>
+        } else {
+            if ( !user || !user.name ) {
+                dispatch( getUserDetails( 'profile' ) );
+            } 
         }
         if (cartItems.length < 1) {
-            return <Redirect to="cart" />;
+            return <Redirect to="/shop/cart" />;
         }
-    },[])
+       
+    }, [user, userInfo, dispatch,checkTerms] )
+    
+    //Add Address actions
+    useEffect( () => {
+        if ( addAddressSuccess ) {
+            toast.success( 'تم اضافة العنوان بنجاح', { theme: 'colored' } );
+            dispatch( getUserDetails( "profile" ) );
+            dispatch( addUserAddressReset() );
+        }
+    }, [addAddressSuccess, dispatch] );
+    
+    //get address details to save to DB
+    useEffect( () => {
+        if (addressDetail && addressDetail.firstName) {
+      dispatch(saveUserShippingAddress(addressDetail));
+    }
+    }, [selectedAddress, addressDetail] )
+    
+    //CREATE ORDER SUCCESS
+    useEffect( () => {
+        if ( success ) {
+            history.push(`/shop/checkout/success/${order._id}`)
+        }
+
+        if ( error ) {
+            toast.error(' خطأ أثناء إنشاء طلبك يرجى المحاوله مرة آخرى لاحقاً ',{theme:'colored'})
+        }
+    },[success])
 
     const handlePaymentChange = (event) => {
         if (event.target.checked) {
             setPayment({ payment: event.target.value });
+        }
+    };
+
+    //HANDLERS
+    const AddNewAddressHandler = (e) => {
+    e.preventDefault();
+    dispatch(
+      addNewUserAddress({
+        firstName,
+        lastName,
+        governate,
+        city,
+        area,
+        address,
+        type,
+        email,
+        phoneNumber: phone,
+        orderNotes,
+      })
+    );
+    };
+
+    //select address =>get dtailed data
+    const handleSelectAddress = (e) => {
+        setSelectedAddress( e.target.value );
+        dispatch(getAddressDetails(e.target.value));
+    }
+
+    //handle Toggle term check
+    const checkTermToggle = () => {
+        setCheckTerms(!checkTerms)
+    }
+
+    //CREATE ORDER HANDLER
+    const createOrderHandler = ( e ) => {
+        e.preventDefault();
+        if ( !selectedAddress || !addressDetail || !addressDetail.firstName ) {
+            toast.error( 'قم بتحديد عنوان او أضف عنوان جديد', { theme: 'colored' } )
+        } else {
+            dispatch(
+                createOrder( {
+                    orderItems: cartItems,
+                    shippingAddress: cart.shippingAddress,
+                    phone: cart.shippingAddress.phoneNumber,
+                    // paymentMethod: cart.paymentMethod.method,
+                    itemsPrice: cart.itemPrices,
+                    shippingPrice: cart.shippingPrice,
+                    totalPrice: cart.totalPrice,
+                } )
+            );
         }
     };
 
@@ -54,11 +192,11 @@ function ShopPageCheckout (props) {
             <React.Fragment>
                 <tbody className="checkout__totals-subtotals">
                     <tr>
-                        <th>Subtotal</th>
+                        <th>{ messages.subtotal}</th>
                         <td><Currency value={cart.itemPrices} /></td>
                     </tr>
                      <tr>
-                        <th>Subtotal</th>
+                        <th>{ messages.shipping}</th>
                         <td><Currency value={cart.shippingPrice} /></td>
                     </tr>
                 </tbody>
@@ -78,8 +216,8 @@ function ShopPageCheckout (props) {
             <table className="checkout__totals">
                 <thead className="checkout__totals-header">
                     <tr>
-                        <th>Product</th>
-                        <th>Total</th>
+                        <th>{ messages.product}</th>
+                        <th>{ messages.total}</th>
                     </tr>
                 </thead>
                 <tbody className="checkout__totals-products">
@@ -88,7 +226,7 @@ function ShopPageCheckout (props) {
                 {renderTotals()}
                 <tfoot className="checkout__totals-footer">
                     <tr>
-                        <th>Total</th>
+                        <th>{ messages.total}</th>
                         <td><Currency value={cart.totalPrice} /></td>
                     </tr>
                 </tfoot>
@@ -96,254 +234,333 @@ function ShopPageCheckout (props) {
         );
     }
 
-    // const renderPaymentsList=()=> {
-    //     const { payment: currentPayment } = payment
+    let paymentsMethods;
+    const renderPaymentsList=()=> {
+        const { payment: currentPayment } = payment
 
-    //     payments =payments&& payments.map((payment) => {
-    //         const renderPayment = ({ setItemRef, setContentRef }) => (
-    //             <li className="payment-methods__item" ref={setItemRef}>
-    //                 <label className="payment-methods__item-header">
-    //                     <span className="payment-methods__item-radio input-radio">
-    //                         <span className="input-radio__body">
-    //                             <input
-    //                                 type="radio"
-    //                                 className="input-radio__input"
-    //                                 name="checkout_payment_method"
-    //                                 value={payment.key}
-    //                                 checked={currentPayment === payment.key}
-    //                                 onChange={handlePaymentChange}
-    //                             />
-    //                             <span className="input-radio__circle" />
-    //                         </span>
-    //                     </span>
-    //                     <span className="payment-methods__item-title">{payment.title}</span>
-    //                 </label>
-    //                 <div className="payment-methods__item-container" ref={setContentRef}>
-    //                     <div className="payment-methods__item-description text-muted">{payment.description}</div>
-    //                 </div>
-    //             </li>
-    //         );
+        paymentsMethods =payments&& payments.map((payment) => {
+            const renderPayment = ({ setItemRef, setContentRef }) => (
+                <li className="payment-methods__item" ref={setItemRef}>
+                    <label className="payment-methods__item-header">
+                        <span className="payment-methods__item-radio input-radio">
+                            <span className="input-radio__body">
+                                <input
+                                    type="radio"
+                                    className="input-radio__input"
+                                    name="checkout_payment_method"
+                                    value={payment.key}
+                                    checked={currentPayment === payment.key}
+                                    onChange={handlePaymentChange}
+                                />
+                                <span className="input-radio__circle" />
+                            </span>
+                        </span>
+                        <span className="payment-methods__item-title">{payment.title}</span>
+                    </label>
+                    <div className="payment-methods__item-container" ref={setContentRef}>
+                        <div className="payment-methods__item-description text-muted">{payment.description}</div>
+                    </div>
+                </li>
+            );
 
-    //         return (
-    //             <Collapse
-    //                 key={payment.key}
-    //                 open={currentPayment === payment.key}
-    //                 toggleClass="payment-methods__item--active"
-    //                 render={renderPayment}
-    //             />
-    //         );
-    //     });
+            return (
+                <Collapse
+                    key={payment.key}
+                    open={currentPayment === payment.key}
+                    toggleClass="payment-methods__item--active"
+                    render={renderPayment}
+                />
+            );
+        });
 
-    //     return (
-    //         <div className="payment-methods">
-    //             <ul className="payment-methods__list">
-    //                 {payments}
-    //             </ul>
-    //         </div>
-    //     );
-    // }  
         return (
-            <React.Fragment>
-                <Helmet>
-                    <title>{`Checkout — ${theme.name}`}</title>
-                </Helmet>
+            <div className="payment-methods">
+                <ul className="payment-methods__list">
+                    {/* {paymentsMethods} */}
+                </ul>
+            </div>
+        );
+    }
 
-                <PageHeader header="Checkout" breadcrumb={breadcrumb} />
-
-                <div className="checkout block">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-12 mb-3">
-                                <div className="alert alert-primary alert-lg">
-                                    Returning customer?
-                                    {' '}
-                                    <Link to="/account/login">Click here to login</Link>
-                                </div>
-                            </div>
-
-                            <div className="col-12 col-lg-6 col-xl-7">
-                                <div className="card mb-lg-0">
-                                    <div className="card-body">
-                                        <h3 className="card-title">Billing details</h3>
-                                        <div className="form-row">
-                                            <div className="form-group col-md-6">
-                                                <label htmlFor="checkout-first-name">First Name</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    id="checkout-first-name"
-                                                    placeholder="First Name"
-                                                />
-                                            </div>
-                                            <div className="form-group col-md-6">
-                                                <label htmlFor="checkout-last-name">Last Name</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    id="checkout-last-name"
-                                                    placeholder="Last Name"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label htmlFor="checkout-company-name">
-                                                Company Name
-                                                {' '}
-                                                <span className="text-muted">(Optional)</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="checkout-company-name"
-                                                placeholder="Company Name"
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="checkout-country">Country</label>
-                                            <select id="checkout-country" className="form-control">
-                                                <option>Select a country...</option>
-                                                <option>United States</option>
-                                                <option>Russia</option>
-                                                <option>Italy</option>
-                                                <option>France</option>
-                                                <option>Ukraine</option>
-                                                <option>Germany</option>
-                                                <option>Australia</option>
-                                            </select>
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="checkout-street-address">Street Address</label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="checkout-street-address"
-                                                placeholder="Street Address"
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="checkout-address">
-                                                Apartment, suite, unit etc.
-                                                {' '}
-                                                <span className="text-muted">(Optional)</span>
-                                            </label>
-                                            <input type="text" className="form-control" id="checkout-address" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="checkout-city">Town / City</label>
-                                            <input type="text" className="form-control" id="checkout-city" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="checkout-state">State / County</label>
-                                            <input type="text" className="form-control" id="checkout-state" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="checkout-postcode">Postcode / ZIP</label>
-                                            <input type="text" className="form-control" id="checkout-postcode" />
-                                        </div>
-
-                                        <div className="form-row">
-                                            <div className="form-group col-md-6">
-                                                <label htmlFor="checkout-email">Email address</label>
-                                                <input
-                                                    type="email"
-                                                    className="form-control"
-                                                    id="checkout-email"
-                                                    placeholder="Email address"
-                                                />
-                                            </div>
-                                            <div className="form-group col-md-6">
-                                                <label htmlFor="checkout-phone">Phone</label>
-                                                <input type="text" className="form-control" id="checkout-phone" placeholder="Phone" />
-                                            </div>
-                                        </div>
-
-                                        <div className="form-group">
-                                            <div className="form-check">
-                                                <span className="form-check-input input-check">
-                                                    <span className="input-check__body">
-                                                        <input className="input-check__input" type="checkbox" id="checkout-create-account" />
-                                                        <span className="input-check__box" />
-                                                        <Check9x7Svg className="input-check__icon" />
-                                                    </span>
-                                                </span>
-                                                <label className="form-check-label" htmlFor="checkout-create-account">
-                                                    Create an account?
-                                                </label>
-                                            </div>
-                                        </div>
+    
+    const addressList = () => {
+        let addressMenu;
+        ( user.address && user.address.length > 0 ) && (
+            addressMenu = user.address.map( ( item,idx ) => {
+                return (
+                    <div className="col-sm-12 col-md-6 col-lg-6 col-12 px-2 mb-3">
+                                        
+                        <input id={`address_${ item._id }`}
+                            type="radio" name="shippingAddress"
+                            onChange={e=>handleSelectAddress(e)}
+                            value={item._id}
+                            style={{ marginLeft: '10px', maxWidth: '10%', display: 'block', float: 'right' }}
+                        ></input>
+                        <label htmlFor={`address_${item._id}`} style={{ width: '90%' }}>
+                            <div className="card address-card">
+                                <div className="address-card__body">
+                                    {item.default && (
+                                        <div className="address-card__badge address-card__badge--muted">
+                                        {messages.defaultAddress}
                                     </div>
-                                    <div className="card-divider" />
-                                    <div className="card-body">
-                                        <h3 className="card-title">Shipping Details</h3>
-
-                                        <div className="form-group">
-                                            <div className="form-check">
-                                                <span className="form-check-input input-check">
-                                                    <span className="input-check__body">
-                                                        <input className="input-check__input" type="checkbox" id="checkout-different-address" />
-                                                        <span className="input-check__box" />
-                                                        <Check9x7Svg className="input-check__icon" />
-                                                    </span>
-                                                </span>
-                                                <label className="form-check-label" htmlFor="checkout-different-address">
-                                                    Ship to a different address?
-                                                </label>
-                                            </div>
-                                        </div>
-
-                                        <div className="form-group">
-                                            <label htmlFor="checkout-comment">
-                                                Order notes
-                                                {' '}
-                                                <span className="text-muted">(Optional)</span>
-                                            </label>
-                                            <textarea id="checkout-comment" className="form-control" rows="4" />
-                                        </div>
+                                    )}
+                                    
+                                    <div className="address-card__name">
+                                        {`${ item.firstName } ${ item.lastName }`}
+                                    </div>
+                                    <div className="address-card__row">
+                                        {item.governate}
+                        <br />
+                        {item.city}
+                        <br />
+                        {item.area}
+                        ,
+                        {item.address}
+                                    </div>
+                                    <div className="address-card__row">
+                                        <div className="address-card__row-title">{ messages.addressType}</div>
+                                        <div className="address-card__row-content">{item.type}</div>
+                                    </div>
+                                    <div className="address-card__row">
+                                        <div className="address-card__row-title">{ messages.phoneNumber}</div>
+                                        <div className="address-card__row-content">{item.phoneNumber}</div>
+                                    </div>
+                                    <div className="address-card__row">
+                                        <div className="address-card__row-title">{ messages.emailAddress}</div>
+                                        <div className="address-card__row-content">{user.email}</div>
                                     </div>
                                 </div>
                             </div>
+                        
+                        </label>
+                    </div>
+     
+                )
+            } )
+        );
+        return addressMenu ? addressMenu : ''
+    };
 
-                            <div className="col-12 col-lg-6 col-xl-5 mt-4 mt-lg-0">
-                                <div className="card mb-0">
-                                    <div className="card-body">
-                                        <h3 className="card-title">Your Order</h3>
-                                        {renderCart()}
-                                        {/* {renderPaymentsList()} */}
-                                        <div className="checkout__agree form-group">
-                                            <div className="form-check">
-                                                <span className="form-check-input input-check">
-                                                    <span className="input-check__body">
-                                                        <input className="input-check__input" type="checkbox" id="checkout-terms" />
-                                                        <span className="input-check__box" />
-                                                        <Check9x7Svg className="input-check__icon" />
-                                                    </span>
+    const messageBlock = ( message,label ) => (
+        <div className="col-12 mb-3">
+            <div className={`alert alert-lg alert-${label}`}>
+                {message}
+            </div>
+        </div>
+    );
+
+    const addAddressForm = (
+        <div className="col-12 col-lg-6 col-xl-7">
+            <div className="row mb-3 p-2 mt-0">
+                <div className="cart__actions mt-0">
+                    <button type="button" className="btn btn-primary cart__update-button" >
+                        {messages.addNewAddress}
+                    </button>
+                </div>
+            </div>
+                               
+            <div className="row mb-3 p-2">
+                {/*Exist Address Start  */}
+                { addressList()}
+                {/* Exist Address End */}
+            </div>
+            <div className="card mb-lg-0">
+                <div className="card-body">
+                    <h3 className="card-title">{ messages.addNewAddress}</h3>
+                    <div className="form-row">
+                        <div className="form-group col-md-6">
+                            <label htmlFor="checkout-first-name">{ messages.firstName}</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="checkout-first-name"
+                                placeholder={messages.firstName}
+                                value={firstName}
+                                onChange={( e ) => setFirstName( e.target.value )}
+                            />
+                        </div>
+                        <div className="form-group col-md-6">
+                            <label htmlFor="checkout-last-name">{ messages.lastName}</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="checkout-last-name"
+                                placeholder={messages.lastName}
+                                value={lastName}
+                                onChange={( e ) => setLastName( e.target.value )}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="checkout-company-name">
+                            {messages.governate}
+                                           
+                        </label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="checkout-company-name"
+                            placeholder={messages.governate}
+                            value={governate}
+                            onChange={( e ) => setGovernate( e.target.value )}
+                        />
+                    </div>
+
+                                    
+
+                    <div className="form-group">
+                        <label htmlFor="checkout-city">{ messages.city}</label>
+                        <input type="text" className="form-control" id="checkout-city"
+                            placeholder={messages.city}
+                            value={city}
+                            onChange={( e ) => setCity( e.target.value )}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="checkout-area">{ messages.area}</label>
+                        <input type="text"
+                            className="form-control"
+                            id="checkout-area"
+                            placeholder={messages.area}
+                            value={area}
+                            onChange={( e ) => setArea( e.target.value )}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="checkout-street-address">{ messages.streetAddress}</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="checkout-street-address"
+                            placeholder={messages.streetAddress}
+                            value={address}
+                            onChange={( e ) => setAddress( e.target.value )}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="checkout-addressType">{ messages.addressType}</label>
+                        <select id="checkout-addressType" className="form-control"
+                            value={type}
+                            onChange={( e ) => setAddressType( e.target.value )}
+                        >
+                            <option>{messages.addressType} ...</option>
+                            <option value="home">{ messages.homeAddress}</option>
+                            <option value="work">{ messages.workAddress}</option>
+                        </select>
+                    </div>
+
+                    <div className="form-row">
+                        <div className='col-md-6 col-sm-12'>
+                            <label htmlFor="checkout-phone">{ messages.phoneNumber}</label>
+                            <input type="text" className="form-control" id="checkout-phone" placeholder={messages.phoneNumber}
+                                value={phone}
+                                onChange={( e ) => setPhone( e.target.value )}
+                            />
+
+                                            
+                        </div>
+                        <div className='col-md-6 col-sm-12'>
+                            <label htmlFor="checkout-email">{ messages.emailAddress}</label>
+                            <input type="text" className="form-control" id="checkout-email" placeholder={messages.emailAddress}
+                                value={email}
+                                onChange={( e ) => setEmail( e.target.value )}
+                            />
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="checkout-comment">
+                            {messages.orderNotes}
+                            {' '}
+                            <span className="text-muted">(إختيارى)</span>
+                        </label>
+                        <textarea id="checkout-comment" className="form-control" rows="4"
+                            placeholder={messages.orderNotesPlaceholder}
+                            value={orderNotes}
+                            onChange={( e ) => setOrderNotes( e.target.value )}
+                        />
+                    </div>
+
+                                    
+                    <div className="form-group mt-3 mb-0">
+                        <button className="btn btn-primary" type="button" onClick={e => AddNewAddressHandler( e )}>
+                            {messages.save}
+                        </button>
+                        <button className="btn btn-defaul mr-3" type="button">
+                            {messages.cancel}
+                        </button>
+                    </div>
+                </div>
+                                
+            </div>
+        </div>
+    );
+
+
+    return (
+        <React.Fragment>
+            <Helmet>
+                <title>{` ${ messages.proceedToCheckout}`}</title>
+            </Helmet>
+
+            <PageHeader header={messages.proceedToCheckout} breadcrumb={breadcrumb} />
+
+            <div className="checkout block">
+                <div className="container">
+                    <div className="row">
+
+                        {/* Add New Address Form Start */}
+                        { addAddressForm}
+                        
+                        <div className="col-12 col-lg-6 col-xl-5 mt-4 mt-lg-0">
+                            <div className="card mb-0">
+                                <div className="card-body">
+                                    <h3 className="card-title">{ messages.yourOrder}</h3>
+                                    {renderCart()}
+                                    {renderPaymentsList()}
+                                    <div className="checkout__agree form-group">
+                                        <div className="form-check">
+                                            <span className="form-check-input input-check">
+                                                <span className="input-check__body">
+                                                    <input className="input-check__input" type="checkbox" id="checkout-terms" checked={checkTerms?true:false} onClick={checkTermToggle} />
+                                                    <span className="input-check__box" />
+                                                    <Check9x7Svg className="input-check__icon" />
                                                 </span>
-                                                <label className="form-check-label" htmlFor="checkout-terms">
-                                                    I have read and agree to the website
-                                                    <Link to="site/terms">terms and conditions</Link>
-                                                    *
-                                                </label>
-                                            </div>
+                                            </span>
+                                            <label className="form-check-label" htmlFor="checkout-terms">
+                                                {messages.termsRead}
+                                                {" "}
+                                                <Link to="site/terms">{ messages.termsAndCondition}</Link>
+                                                *
+                                            </label>
                                         </div>
-
-                                        <button type="submit" className="btn btn-primary btn-xl btn-block">Place Order</button>
                                     </div>
+
+                                    <button
+                                        type="submit"
+                                        className="btn btn-primary btn-xl btn-block "
+                                        disabled={checkTerms?false:true}
+                                        onClick={e=>createOrderHandler(e)}
+                                    >{ messages.placeOrder}</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </React.Fragment>
-        );
-    };
+            </div>
+        </React.Fragment>
+    );
+};
 
 const mapStateToProps = ( state ) => {
     const userLogin = state.userLogin;
     const { userInfo } = userLogin;
     return {
         cart: userInfo ? state.userCart : state.cart,
-        userInfo
+        userInfo,
+        userDetail: state.userDetails,
+        addAddress: state.addAddress,
+        addressDetails:state.addressDetails
     }
 };
 

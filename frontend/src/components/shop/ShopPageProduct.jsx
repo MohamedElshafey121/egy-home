@@ -29,10 +29,11 @@ import {
     handleGetOneProduct,
     getRelatedProducts
 } from '../../store/product'
+import { Redirect } from 'react-router-dom';
 
 
 function ShopPageProduct ( props ) {
-    const { productId, layout, sidebarPosition } = props;
+    const { productId, layout, sidebarPosition,history } = props;
     
     const productDeatils = useSelector( (state) => state.productDeatils );
     const { loading: isLoading, product, error } = productDeatils;
@@ -47,13 +48,21 @@ function ShopPageProduct ( props ) {
 
     //Load Product
     useEffect( () => {
+        // alert(productId)
         dispatch( handleGetOneProduct( productId ) );
     }, [dispatch, productId] )
     
     //Load Related Products
     useEffect( () => {
         dispatch(getRelatedProducts(productId))
-    },[dispatch,productId])
+    }, [dispatch, productId] )
+    
+    useEffect( () => {
+        if ( error ) {
+            alert(error)
+            history.push('/')
+        }
+    },[error])
    
     if (isLoading) {
         return <BlockLoader />;
@@ -63,7 +72,7 @@ function ShopPageProduct ( props ) {
         { title: 'Home', url: url.home() },
         { title: 'Shop', url: url.catalog() },
         // { title: product.name, url: url.product(product) },
-        { title: product.name},
+        { title: '' },
     ];
 
     let content;

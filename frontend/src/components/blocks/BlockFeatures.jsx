@@ -24,8 +24,10 @@ export default function BlockFeatures(props) {
                             <FiFreeDelivery48Svg />
                         </div>
                         <div className="block-features__content">
-                            <div className="block-features__title">Free Shipping</div>
-                            <div className="block-features__subtitle">For orders from $50</div>
+                            {/* <div className="block-features__title">Free Shipping</div>
+                            <div className="block-features__subtitle">For orders from $50</div> */}
+                            <div className="block-features__title">شحن سريع</div>
+                            <div className="block-features__subtitle">توصيل الطلبات بسرعه عاليه</div>
                         </div>
                     </div>
                     <div className="block-features__divider" />
@@ -34,8 +36,10 @@ export default function BlockFeatures(props) {
                             <Fi24Hours48Svg />
                         </div>
                         <div className="block-features__content">
-                            <div className="block-features__title">Support 24/7</div>
-                            <div className="block-features__subtitle">Call us anytime</div>
+                            {/* <div className="block-features__title">Support 24/7</div>
+                            <div className="block-features__subtitle">Call us anytime</div> */}
+                            <div className="block-features__title">دعم 24/7</div>
+                            <div className="block-features__subtitle">أتصل بنا أى وقت</div>
                         </div>
                     </div>
                     <div className="block-features__divider" />
@@ -44,8 +48,10 @@ export default function BlockFeatures(props) {
                             <FiPaymentSecurity48Svg />
                         </div>
                         <div className="block-features__content">
-                            <div className="block-features__title">100% Safety</div>
-                            <div className="block-features__subtitle">Only secure payments</div>
+                            {/* <div className="block-features__title">100% Safety</div>
+                            <div className="block-features__subtitle">Only secure payments</div> */}
+                            <div className="block-features__title">100% آمن</div>
+                            <div className="block-features__subtitle">عمليه دفع آمنه</div>
                         </div>
                     </div>
                     <div className="block-features__divider" />
@@ -54,8 +60,10 @@ export default function BlockFeatures(props) {
                             <FiTag48Svg />
                         </div>
                         <div className="block-features__content">
-                            <div className="block-features__title">Hot Offers</div>
-                            <div className="block-features__subtitle">Discounts up to 90%</div>
+                            {/* <div className="block-features__title">Hot Offers</div>
+                            <div className="block-features__subtitle">Discounts up to 90%</div> */}
+                             <div className="block-features__title">عروض مستمرة</div>
+                            <div className="block-features__subtitle">خصومات على مدار العام</div>
                         </div>
                     </div>
                 </div>

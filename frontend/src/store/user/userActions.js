@@ -141,6 +141,10 @@ function addNewUserAddress(address) {
     };
 }
 
+function addUserAddressReset() {
+    return { type: ADD_USER_ADDRESS_RESET };
+}
+
 function getAddressDetails(addressId) {
     return async (dispatch, getState) => {
         try {
@@ -296,4 +300,5 @@ export {
     updateUserAddress,
     deleteUserAddress,
     getAllUsers,
+    addUserAddressReset,
 };

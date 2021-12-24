@@ -16,18 +16,21 @@ function Header ( props ) {
 
     const bannerSection = (
         <div className="site-header__middle container">
-            <div className="site-header__logo">
-                <Link to="/"><LogoSvg /></Link>
+            <div className="site-header__logo" >
+                {/* <Link to="/"><LogoSvg /></Link> */}
+                <Link to="/">
+                    <img src='/uploads/imgs/site/logo2_ar.png' style={{maxWidth:'150px'}} />
+                </Link>
             </div>
             <div className="site-header__search">
                 <Search context="header" />
             </div>
             <div className="site-header__phone">
                 <div className="site-header__phone-title">
-                    <FormattedMessage id="header.phoneLabel" defaultMessage="Customer Service" />
+                    <FormattedMessage id="header.phoneLabel_ar" defaultMessage="خدمة العملاء" />
                 </div>
                 <div className="site-header__phone-number">
-                    <FormattedMessage id="header.phone" defaultMessage="(800) 060-0730" />
+                    <FormattedMessage id="header.phone_ar" defaultMessage=" 0111-144-4013" />
                 </div>
             </div>
         </div>

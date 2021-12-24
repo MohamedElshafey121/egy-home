@@ -14,7 +14,67 @@ import Menu from './Menu';
 import { ArrowRoundedDown9x6Svg } from '../../svg';
 
 // data stubs
-import navLinks from '../../data/headerNavigation';
+// import navLinks from '../../data/headerNavigation';
+
+const navLinks= [
+    {
+        title: "Home",
+        url: "/",
+    },
+    {
+        title: "Shop",
+        url: "/shop/catalog",
+        submenu: {
+            type: "menu",
+            menu: [
+                {
+                    title: "Shop ",
+                    url: "/shop/catalog",
+                },
+                { title: "Checkout", url: "/shop/checkout" },
+                { title: "Order Success", url: "/shop/checkout/success" },
+                { title: "Wishlist", url: "/shop/wishlist" },
+                { title: "Compare", url: "/shop/compare" },
+                { title: "Track Order", url: "/shop/track-order" },
+            ],
+        },
+    },
+    {
+        title: "New Offers",
+        url: "/shop/catalog",
+    },
+    {
+        title: "Contact Us",
+        url: "/site/contact-us",
+    },
+    {
+        title: "Control Panel",
+        url: "/dashboard?redirect=dash",
+    },
+]
+
+const navLinks_ar= [
+    {
+        title: "الصفحة الرئيسية",
+        url: "/",
+    },
+    {
+        title: "المتجر",
+        url: "/shop/catalog",
+    },
+    {
+        title: "العروض",
+        url: "/shop/catalog",
+    },
+    {
+        title: "تواصل معنا",
+        url: "/site/contact-us",
+    },
+    {
+        title: "لوحة التحكم",
+        url: "/dashboard?redirect=dash",
+    },
+]
 
 function NavLinks(props) {
     const handleMouseEnter = (event) => {
@@ -52,7 +112,7 @@ function NavLinks(props) {
         }
     };
 
-    const linksList = navLinks.map((item, index) => {
+    const linksList = navLinks_ar.map((item, index) => {
         let arrow;
         let submenu;
 

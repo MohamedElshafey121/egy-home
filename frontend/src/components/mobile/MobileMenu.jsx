@@ -3,7 +3,8 @@ import React from 'react';
 
 // third-party
 import classNames from 'classnames';
-import { connect } from 'react-redux';
+import { connect} from 'react-redux';
+import { Link } from 'react-router-dom';
 
 // application
 import MobileLinks from './MobileLinks';
@@ -14,15 +15,61 @@ import { mobileMenuClose } from '../../store/mobile-menu';
 
 // data stubs
 import currencies from '../../data/shopCurrencies';
-import mobileMenuLinks from '../../data/mobileMenu';
+// import mobileMenuLinks from '../../data/mobileMenu';
 
-function MobileMenu(props) {
+const shopLinks = {
+    type: "link",
+    label: "Shop",
+    url: "/shop/catalog"
+};
+
+const accounLogin = {
+    type: "link",
+    label: "Login",
+    url: "/auth/login"
+};
+    
+const accountlinks = {
+    type: "link",
+    label: "Account",
+    url: "/account/dashboard",
+    children: [
+        {
+            type: "link",
+            label: "Dashboard ",
+            url: "/account/dashboard",
+        },
+        { type: "link", label: "Edit Profile", url: "/account/profile" },
+        { type: "link", label: "Order History", url: "/account/orders" },
+        { type: "link", label: "Addresses", url: "/account/addresses" },
+    ],
+};
+
+const homeLink = {
+    type: "link",
+    label: "Home",
+    url: "/"
+};
+
+function MobileMenu ( props ) {
+    const mobileMenuLinks = [];
     const {
         mobileMenuState,
         closeMobileMenu,
         changeLocale,
         changeCurrency,
+        userLogin:{userInfo}
     } = props;
+
+    if ( userInfo ) {
+        mobileMenuLinks.push(homeLink)
+        mobileMenuLinks.push(accountlinks)
+        mobileMenuLinks.push(shopLinks)
+    } else {
+        mobileMenuLinks.push(homeLink)
+        mobileMenuLinks.push(shopLinks)
+        mobileMenuLinks.push(accounLogin)
+    };
 
     const classes = classNames('mobilemenu', {
         'mobilemenu--open': mobileMenuState.open,
@@ -55,13 +102,17 @@ function MobileMenu(props) {
             <div className="mobilemenu__backdrop" onClick={closeMobileMenu} />
             <div className="mobilemenu__body">
                 <div className="mobilemenu__header">
-                    <div className="mobilemenu__title">Menu</div>
+                    <div className="mobilemenu__title">
+                        <Link to='/' onClick={closeMobileMenu}>
+                            <img src='/uploads/imgs/site/logo2_ar.png' style={{maxWidth:'60px'}}/>
+                        </Link>
+                    </div>
                     <button type="button" className="mobilemenu__close" onClick={closeMobileMenu}>
                         <Cross20Svg />
                     </button>
                 </div>
                 <div className="mobilemenu__content">
-                    <MobileLinks links={mobileMenuLinks} onItemClick={handleItemClick} />
+                    <MobileLinks links={mobileMenuLinks} userInfo={userInfo} onItemClick={handleItemClick} />
                 </div>
             </div>
         </div>
@@ -70,6 +121,7 @@ function MobileMenu(props) {
 
 const mapStateToProps = (state) => ({
     mobileMenuState: state.mobileMenu,
+    userLogin:state.userLogin
 });
 
 const mapDispatchToProps = {

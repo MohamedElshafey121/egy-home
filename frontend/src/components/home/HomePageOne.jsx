@@ -88,7 +88,8 @@ function HomePageOne () {
 
             {useMemo( () => (
                 <BlockProductsCarousel
-                    title="Top Rated"
+                    // title="Top Rated"
+                    title="الأعلى تقييما"
                     layout="grid-4"
                     products={topRated?topRated:[]}
                     loading={ loadingTopRated}
@@ -102,7 +103,8 @@ function HomePageOne () {
             {/* new Arrivals */}
             {useMemo( () => (
                 <BlockProducts
-                    title="Featured products"
+                    // title="Featured products"
+                    title="العناصر المميزة"
                     layout="large-first"
                     featuredProduct={newArrivals?newArrivals[0]:[]}
                     products={newArrivals?newArrivals.slice( 1, 7 ):[]}
@@ -111,7 +113,8 @@ function HomePageOne () {
 
             {useMemo( () => (
                 <BlockCategories
-                    title="Popular Categories"
+                    // title="Popular Categories"
+                    title="الأقسام الاكثر مبيعا"
                     layout="classic"
                     categories={homecategories?homecategories:[]}
                 />
@@ -119,7 +122,8 @@ function HomePageOne () {
             
             {useMemo( () => (
                 <BlockProductsCarousel
-                    title="New Arrivals"
+                    // title="New Arrivals"
+                    title="المضاف حديثا"
                     layout="horizontal"
                     rows={2}
                     products={newArrivals?newArrivals:[]}

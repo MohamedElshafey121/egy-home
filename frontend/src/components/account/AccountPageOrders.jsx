@@ -4,6 +4,7 @@ import React, { useEffect,useState } from 'react';
 // third-party
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import {useSelector,useDispatch} from 'react-redux'
 
 // application
 import Pagination from '../shared/Pagination';
@@ -11,40 +12,43 @@ import Pagination from '../shared/Pagination';
 // data stubs
 import dataOrders from '../../data/accountOrders';
 import theme from '../../data/theme';
-import {useSelector,useDispatch} from 'react-redux'
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
 
 import {getMyOrders} from '../../store/order'
 
 
 export default function AccountPageOrders (){
-    // constructor(props) {
-    //     super(props);
-
-    //     this.state = {
-    //         orders: dataOrders,
-    //         page: 1,
-    //     };
-    // }
-    const page = 1;
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
 
     const myOrderList  = useSelector( state => state.myOrderList );
     const { orders, success, error } = myOrderList;
+
+    const [page, setPage] = useState( 1 );
+    const limit = 5;
+    const [orderList,setOrderList]=useState(orders&&orders.length?orders:[])
     
     const dispatch = useDispatch();
     useEffect( () => {
         if ( !orders || ( !success && !error ) ) {
             dispatch( getMyOrders() )
         }
-    }, [dispatch, orders, success, error] );
+    }, [dispatch, orders, success, error,page] );
+
 
 
     const handlePageChange = (page) => {
-        this.setState(() => ({ page }));
+        setPage(page);
     };
 
         // const { page, orders } = this.state;
 
-    const ordersList = orders && orders.map( ( order ) => (
+    const ordersList =  orders&&orders.slice((page-1)*limit, page*limit).map( ( order ) => (
         <tr key={order._id}>
             <td><Link to={`/account/orders/${order._id}`}>{`#${ order._id }`}</Link></td>
             <td>{new Date(order.createdAt).toDateString()}</td>
@@ -57,11 +61,11 @@ export default function AccountPageOrders (){
     return (
         <div className="card">
             <Helmet>
-                <title>{`Order History — ${ theme.name }`}</title>
+                <title>{`${ messages.orderHistory }`}</title>
             </Helmet>
 
             <div className="card-header">
-                <h5>Order History</h5>
+                <h5>{ messages.orderHistory}</h5>
             </div>
             <div className="card-divider" />
             <div className="card-table">
@@ -69,10 +73,10 @@ export default function AccountPageOrders (){
                     <table>
                         <thead>
                             <tr>
-                                <th>Order</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Total</th>
+                                <th>{ messages.orderNumber}</th>
+                                <th>{ messages.createdAt_order}</th>
+                                <th>{ messages.orderStatus}</th>
+                                <th>{ messages.total}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -83,7 +87,7 @@ export default function AccountPageOrders (){
             </div>
             <div className="card-divider" />
             <div className="card-footer">
-                <Pagination current={page} total={3} onPageChange={handlePageChange} />
+                {orders&&<Pagination current={page} total={Math.ceil(orders.length/limit)} onPageChange={handlePageChange} />}
             </div>
         </div>
     );

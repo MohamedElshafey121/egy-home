@@ -176,7 +176,7 @@ function Search ( props ) {
                             onFocus={close}
                             onChange={handleChangeCategory}
                         >
-                            <option value=''> All Categories </option>
+                            <option value=''> الأقسام </option>
                             {categoryOptions}
                         </select>
                     )}
@@ -188,7 +188,7 @@ function Search ( props ) {
                         value={query}
                         className="search__input"
                         name="search"
-                        placeholder="Search over 10,000 products"
+                        placeholder="اكتب أسم المنتج..."
                         aria-label="Site search"
                         type="text"
                         autoComplete="off"

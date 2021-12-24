@@ -103,7 +103,7 @@ export default function IndicatorAccount ( props ) {
                     </ul>
                     <div className="account-menu__divider" />
                     <ul className="account-menu__links">
-                        <li><Link to="/account/login" onClick={e => handleLogout( e )}>Logout</Link></li>
+                        <li><Link onClick={e => handleLogout( e )}>Logout</Link></li>
                     </ul>
                 </Fragment>
             )

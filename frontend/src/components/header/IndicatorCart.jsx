@@ -146,7 +146,7 @@ function IndicatorCart ( props ) {
         dropdown = (
             <div className="dropcart">
                 <div className="dropcart__empty">
-                    Your shopping cart is empty!
+                    عربة التسوق فارغة
                 </div>
             </div>
         );

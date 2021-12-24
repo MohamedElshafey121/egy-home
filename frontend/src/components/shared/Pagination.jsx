@@ -4,11 +4,14 @@ import React, { Component } from 'react';
 // third-party
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+
 
 // application
 import { ArrowRoundedLeft8x13Svg, ArrowRoundedRight8x13Svg } from '../../svg';
 
 class Pagination extends Component {
+    
     //i will replace 'onPageChange' With 'stepsHandler' that set the page
     setPage = (value) => {
         const { total, current, onPageChange } = this.props;
@@ -36,7 +39,7 @@ class Pagination extends Component {
     }
 
     render() {
-        const { current, total } = this.props;
+        const { current, total,locale } = this.props;
         const firstLinkClasses = classNames('page-item', {
             disabled: current <= 1,
         });
@@ -69,7 +72,7 @@ class Pagination extends Component {
                         aria-label="Previous"
                         onClick={() => this.setPage(Number(current) - 1)}
                     >
-                        previous
+                    {  locale==='ar'? 'السابق':'previous' }
                         {/* <ArrowRoundedLeft8x13Svg className="page-link__arrow page-link__arrow--left" aria-hidden="true" /> */}
                     </button>
                 </li>
@@ -82,7 +85,7 @@ class Pagination extends Component {
                         aria-label="Next"
                         onClick={() => this.setPage(Number(current) + 1)}
                     >
-                        next
+                        {  locale==='ar'? 'التالى':'next' }
                         {/* <ArrowRoundedRight8x13Svg className="page-link__arrow page-link__arrow--right" aria-hidden="true" /> */}
                     </button>
                 </li>
@@ -116,4 +119,8 @@ Pagination.defaultProps = {
     total: 1,
 };
 
-export default Pagination;
+const mapStaeToProps = (state) => {
+    return {locale:state.locale}
+}
+
+export default connect(mapStaeToProps)(Pagination);

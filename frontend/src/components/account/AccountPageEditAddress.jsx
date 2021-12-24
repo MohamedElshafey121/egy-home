@@ -8,12 +8,24 @@ import { toast } from "react-toastify";
 
 // data stubs
 import theme from '../../data/theme';
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
+
 import {
     getAddressDetails,
     updateUserAddress,
 } from '../../store/user';
 
-export default function AccountPageEditAddress ( { match,history } ) {
+export default function AccountPageEditAddress ( { match, history } ) {
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
+
     let addressId = match.params.addressId;
 
      const [firstName, setFirstName] = useState('')
@@ -91,11 +103,11 @@ export default function AccountPageEditAddress ( { match,history } ) {
     return (
         <div className="card">
             <Helmet>
-                <title>{`Edit Address — ${theme.name}`}</title>
+                <title>{`${messages.myAccount}`}</title>
             </Helmet>
 
             <div className="card-header">
-                <h5>Edit Address</h5>
+                <h5>{ messages.editAddress}</h5>
             </div>
             <div className="card-divider" />
             <div className="card-body">
@@ -103,23 +115,23 @@ export default function AccountPageEditAddress ( { match,history } ) {
                     <div className="col-12 col-lg-10 col-xl-8">
                         <div className="form-row">
                             <div className="form-group col-md-6">
-                                <label htmlFor="checkout-first-name">First Name</label>
+                                <label htmlFor="checkout-first-name">{ messages.firstName}</label>
                                 <input
                                     type="text"
                                     className="form-control"
                                     id="checkout-first-name"
-                                    placeholder="First Name"
+                                    placeholder={ messages.firstName}
                                     value={firstName}
                                     onChange={e=>setFirstName(e.target.value)}
                                 />
                             </div>
                             <div className="form-group col-md-6">
-                                <label htmlFor="checkout-last-name">Last Name</label>
+                                <label htmlFor="checkout-last-name">{messages.lastName}</label>
                                 <input
                                     type="text"
                                     className="form-control"
                                     id="checkout-last-name"
-                                    placeholder="Last Name"
+                                    placeholder={messages.lastName}
                                     value={lastName}
                                     onChange={e=>setLastName(e.target.value)}
                                 />
@@ -153,19 +165,19 @@ export default function AccountPageEditAddress ( { match,history } ) {
                             </select>
                         </div> */}
                         <div className="form-group">
-                            <label htmlFor="checkout-street-address">Governate</label>
+                            <label htmlFor="checkout-street-address">{messages.governate}</label>
                             <input
                                 type="text"
                                 className="form-control"
                                 id="checkout-street-address"
-                                placeholder="Street Address"
+                                placeholder={messages.governate}
                                 value={governate}
                                 onChange={e=>setGovernate(e.target.value)}
                             />
                         </div>
                         
                         <div className="form-group">
-                            <label htmlFor="checkout-city">Town / City</label>
+                            <label htmlFor="checkout-city">{messages.city}</label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -175,7 +187,7 @@ export default function AccountPageEditAddress ( { match,history } ) {
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="checkout-state">Area</label>
+                            <label htmlFor="checkout-state">{messages.area}</label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -185,7 +197,7 @@ export default function AccountPageEditAddress ( { match,history } ) {
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="checkout-state">Address / Street</label>
+                            <label htmlFor="checkout-state">{messages.streetAddress}</label>
                             <input
                                 type="text"
                                 className="form-control"
@@ -196,38 +208,36 @@ export default function AccountPageEditAddress ( { match,history } ) {
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="checkout-address-type">Address type</label>
+                            <label htmlFor="checkout-address-type">{messages.addressType}</label>
                             <select
                                 id="checkout-address-type"
                                 className="form-control form-control-select2"
                                 value={type}
                                 onChange={e=>setAddressType(e.target.value)}
                             >
-                                <option>Select address type...</option>
-                                <option value="home">Home</option>
-                                <option value="work">work</option>
+                                <option>{messages.selectAddressType} ...</option>
+                                <option value="home">{messages.homeAddress}</option>
+                                <option value="work">{messages.workAddress}</option>
                                
                             </select>
                         </div>
                        <div className="form-row">
                             <div className="form-group col-md-6">
-                                <label htmlFor="checkout-email">Email address</label>
+                                <label htmlFor="checkout-email">{messages.emailAddress}</label>
                                 <input
                                     type="email"
                                     className="form-control"
                                     id="checkout-email"
-                                    placeholder="Email address"
                                     value={email}
                                     onChange={e=>setEmail(e.target.value)}
                                 />
                             </div>
                             <div className="form-group col-md-6">
-                                <label htmlFor="checkout-phone">Phone</label>
+                                <label htmlFor="checkout-phone">{messages.phoneNumber}</label>
                                 <input
                                     type="text"
                                     className="form-control"
                                     id="checkout-phone"
-                                    placeholder="Phone"
                                     value={phoneNumber}
                                     onChange={e=>setPhone(e.target.value)}
                                 />
@@ -239,7 +249,7 @@ export default function AccountPageEditAddress ( { match,history } ) {
                                 className="btn btn-primary"
                                 type="button"
                                 onClick={e=>submitHandler(e)}
-                            >Save</button>
+                            >{messages.save}</button>
                         </div>
                     </div>
                 </div>

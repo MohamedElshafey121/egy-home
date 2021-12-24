@@ -1,5 +1,5 @@
 // react
-import React,{useEffect} from 'react';
+import React,{useEffect,useState} from 'react';
 
 // third-party
 import classNames from 'classnames';
@@ -11,7 +11,12 @@ import {
     Route,
 } from 'react-router-dom';
 
-import {useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
 
 // application
 import PageHeader from '../shared/PageHeader';
@@ -26,7 +31,13 @@ import AccountPageOrders from './AccountPageOrders';
 import AccountPagePassword from './AccountPagePassword';
 import AccountPageProfile from './AccountPageProfile';
 
-export default function AccountLayout(props) {
+export default function AccountLayout ( props ) {
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
     const { match, location, history } = props;
     const userLogin = useSelector( ( state ) => state.userLogin );
     const { userInfo } = userLogin;
@@ -39,19 +50,16 @@ export default function AccountLayout(props) {
     },[userInfo])
 
     const breadcrumb = [
-        { title: 'Home', url: '' },
-        { title: 'My Account', url: '' },
+        { title: `${messages.home}`, url: '' },
+        { title: `${messages.myAccount}`, url: '' },
     ];
 
     const links = [
-        { title: 'Dashboard', url: 'dashboard' },
-        // { title: 'Edit Profile', url: 'profile' },
-        { title: 'Order History', url: 'orders' },
-        // { title: 'Order Details', url: 'orders/5' },
-        { title: 'Addresses', url: 'addresses' },
-        // { title: 'Edit Address', url: 'addresses/:id' },
-        { title: 'Password', url: 'password' },
-        { title: 'Logout', url: 'login' },
+        { title: `${messages.dashboard}`, url: 'dashboard' },
+        { title: `${messages.orderHistory}`, url: 'orders' },
+        { title: `${messages.addresses}`, url: 'addresses' },
+        { title: `${messages.password}`, url: 'password' },
+        { title: `${messages.logout}`, url: 'login' },
     ].map((link) => {
         const url = `${match.url}/${link.url}`;
         const isActive = matchPath(location.pathname, { path: url, exact: true });
@@ -68,14 +76,14 @@ export default function AccountLayout(props) {
 
     return (
         <React.Fragment>
-            <PageHeader header="My Account" breadcrumb={breadcrumb} />
+            <PageHeader header={messages.myAccount} breadcrumb={breadcrumb} />
 
             <div className="block">
                 <div className="container">
                     <div className="row">
                         <div className="col-12 col-lg-3 d-flex">
                             <div className="account-nav flex-grow-1">
-                                <h4 className="account-nav__title">Navigation</h4>
+                                <h4 className="account-nav__title">{ messages.navigation}</h4>
                                 <ul>{links}</ul>
                             </div>
                         </div>

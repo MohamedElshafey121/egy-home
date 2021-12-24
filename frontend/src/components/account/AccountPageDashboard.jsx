@@ -12,6 +12,8 @@ import BlockLoader from '../blocks/BlockLoader';
 // data stubs
 import allOrders from '../../data/accountOrders';
 import theme from '../../data/theme';
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
 
 import {
     getUserDetails
@@ -20,7 +22,14 @@ import {getMyOrders} from '../../store/order'
 
 
 
-function AccountPageDashboard ({history}) {
+function AccountPageDashboard ( { history } ) {
+     const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
     const userLogin = useSelector( ( state ) => state.userLogin );
     const { userInfo } = userLogin;
 
@@ -82,25 +91,25 @@ function AccountPageDashboard ({history}) {
     return (
         <div className="dashboard">
             <Helmet>
-                <title>{`My Account — ${theme.name}`}</title>
+                <title>{`${messages.myAccount}`}</title>
             </Helmet>
 
             {user&& (<div className="dashboard__profile card profile-card">
                 <div className="card-body profile-card__body">
                     <div className="profile-card__avatar">
-                        <img src="images/avatars/avatar-3.jpg" alt="" />
+                        <img src="/uploads/imgs/users/user_avatar.png" alt="" />
                     </div>
                     <div className="profile-card__name">{ user.name}</div>
                     <div className="profile-card__email">{ user.email}</div>
                     <div className="profile-card__edit">
-                        <Link to="profile" className="btn btn-secondary btn-sm">Edit Profile</Link>
+                        <Link to="profile" className="btn btn-secondary btn-sm">{ messages.editProfile}</Link>
                     </div>
                 </div>
             </div> )}
             
             {address && (
                 <div className="dashboard__address card address-card address-card--featured">
-                {address.default && <div className="address-card__badge">Default Address</div>}
+                    {address.default && <div className="address-card__badge">{ messages.defaultAddress}</div>}
                 <div className="address-card__body">
                     <div className="address-card__name">{`${address.firstName} ${address.lastName}`}</div>
                     <div className="address-card__row">
@@ -113,15 +122,15 @@ function AccountPageDashboard ({history}) {
                         {address.address}
                     </div>
                     <div className="address-card__row">
-                        <div className="address-card__row-title">Phone Number</div>
+                            <div className="address-card__row-title">{ messages.phoneNumber}</div>
                         <div className="address-card__row-content">{address.phoneNumber}</div>
                     </div>
                     <div className="address-card__row">
-                        <div className="address-card__row-title">Email Address</div>
+                            <div className="address-card__row-title">{ messages.emailAddress}</div>
                         <div className="address-card__row-content">{user.email}</div>
                     </div>
                     <div className="address-card__footer">
-                        <Link to={`/account/addresses/${address._id}`}>Edit Address</Link>
+                            <Link to={`/account/addresses/${ address._id }`}>{ messages.edit}</Link>
                     </div>
                 </div>
             </div>
@@ -129,7 +138,7 @@ function AccountPageDashboard ({history}) {
             )}
             <div className="dashboard__orders card">
                 <div className="card-header">
-                    <h5>Recent Orders</h5>
+                    <h5>{ messages.recentOrders}</h5>
                 </div>
                 <div className="card-divider" />
                 <div className="card-table">
@@ -137,10 +146,10 @@ function AccountPageDashboard ({history}) {
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Order</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                    <th>Total</th>
+                                    <th>{messages.orderNumber}</th>
+                                    <th>{messages.createdAt_order}</th>
+                                    <th>{ messages.orderStatus}</th>
+                                    <th>{ messages.total}</th>
                                 </tr>
                             </thead>
                             <tbody>

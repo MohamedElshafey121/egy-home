@@ -34,7 +34,7 @@
     "slick-carousel": "1.8.1"
   },
   "scripts": {
-    "start": "set DISABLE_ESLINT_PLUGIN=true && react-scripts  --openssl-legacy-provider start",
+    "start": "set DISABLE_ESLINT_PLUGIN=true && set PORT=3003 && react-scripts  --openssl-legacy-provider start",
     "build": "react-scripts --openssl-legacy-provider build",
     "test": " set DISABLE_ESLINT_PLUGIN=true && react-scripts  --openssl-legacy-provider test",
     "eject": "set DISABLE_ESLINT_PLUGIN=true && react-scripts  --openssl-legacy-provider eject"

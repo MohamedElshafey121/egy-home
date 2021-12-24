@@ -57,7 +57,8 @@ function BlockHeader(props) {
 
         groupsList.unshift( <li key={'all'}>
             <button type="button" className={classes} onClick={() => { setCurrent( 'all' ); onGroupClick() }}>
-                All
+                {/* All */}
+                الكل
             </button>
         </li>
         );

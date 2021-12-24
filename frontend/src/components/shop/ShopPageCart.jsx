@@ -1,9 +1,9 @@
 // react
-import React, { Component, useState } from 'react';
+import React, { Component, useState,useEffect } from 'react';
 
 // third-party
 import classNames from 'classnames';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch,useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 
@@ -18,6 +18,8 @@ import { url } from '../../services/utils';
 
 // data stubs
 import theme from '../../data/theme';
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
 
 //MY WORK
 import {
@@ -36,15 +38,22 @@ import {
 function ShopPageCart ( props ) {
     let content;//content that will render
 
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
+
     const { cart, userInfo } = props;
     const { cartItems } = cart;
 
     const breadcrumb = [
-        { title: 'Home', url: '' },
-        { title: 'Shopping Cart', url: '' },
+        { title: `${messages.home}`, url: '/' },
+        { title: `${messages.shoppingCart}`, url: '' },
     ];
 
-    const [quantities, setQuantities] = useState( [] );
     const dispatch = useDispatch();
 
     //calculate prices
@@ -172,13 +181,13 @@ function ShopPageCart ( props ) {
             <React.Fragment>
                 <thead className="cart__totals-header">
                     <tr>
-                        <th>Subtotal</th>
+                        <th>{messages.subtotal}</th>
                         <td><Currency value={cart.itemPrices} /></td>
                     </tr>
                 </thead>
                 <tbody className="cart__totals-body">
                     <tr>
-                        <th>shipping</th>
+                        <th>{messages.shipping}</th>
                         <td>
                             <Currency value={cart.shippingPrice} />
                         </td>
@@ -199,7 +208,7 @@ function ShopPageCart ( props ) {
 
                     return (
                         <button type="button" onClick={run} className={classes} >
-                            Empty Cart
+                            {messages.emptyCart}
                         </button>
                     );
                 }
@@ -213,11 +222,11 @@ function ShopPageCart ( props ) {
                     <table className="cart__table cart-table">
                         <thead className="cart-table__head">
                             <tr className="cart-table__row">
-                                <th className="cart-table__column cart-table__column--image">Image</th>
-                                <th className="cart-table__column cart-table__column--product">Product</th>
-                                <th className="cart-table__column cart-table__column--price">Price</th>
-                                <th className="cart-table__column cart-table__column--quantity">Quantity</th>
-                                <th className="cart-table__column cart-table__column--total">Total</th>
+                                <th className="cart-table__column cart-table__column--image">{ messages.imageProduct}</th>
+                                <th className="cart-table__column cart-table__column--product"> {messages.product} </th>
+                                <th className="cart-table__column cart-table__column--price"> {messages.price} </th>
+                                <th className="cart-table__column cart-table__column--quantity"> {messages.quantity} </th>
+                                <th className="cart-table__column cart-table__column--total"> {messages.total} </th>
                                 <th className="cart-table__column cart-table__column--remove" aria-label="Remove" />
                             </tr>
                         </thead>
@@ -226,13 +235,8 @@ function ShopPageCart ( props ) {
                         </tbody>
                     </table>
                     <div className="cart__actions">
-                        <form className="cart__coupon-form">
-                            <label htmlFor="input-coupon-code" className="sr-only">Password</label>
-                            <input type="text" className="form-control" id="input-coupon-code" placeholder="Coupon Code" />
-                            <button type="submit" className="btn btn-primary">Apply Coupon</button>
-                        </form>
                         <div className="cart__buttons">
-                            <Link to="/shop/catalog" className="btn btn-light">Continue Shopping</Link>
+                            <Link to="/shop/catalog" className="btn btn-light"> {messages.continueShopping} </Link>
                             {emptyCartButton}
                         </div>
                     </div>
@@ -241,18 +245,18 @@ function ShopPageCart ( props ) {
                         <div className="col-12 col-md-7 col-lg-6 col-xl-5">
                             <div className="card">
                                 <div className="card-body">
-                                    <h3 className="card-title">Cart Totals</h3>
+                                    <h3 className="card-title">{messages.cartTotals} </h3>
                                     <table className="cart__totals">
                                         {renderTotals()}
                                         <tfoot className="cart__totals-footer">
                                             <tr>
-                                                <th>Total</th>
+                                                <th> {messages.total} </th>
                                                 <td><Currency value={cart.totalPrice} /></td>
                                             </tr>
                                         </tfoot>
                                     </table>
                                     <Link to="/shop/checkout" className="btn btn-primary btn-xl btn-block cart__checkout-button">
-                                        Proceed to checkout
+                                        {messages.proceedToCheckout}
                                     </Link>
                                 </div>
                             </div>
@@ -271,9 +275,9 @@ function ShopPageCart ( props ) {
             <div className="block block-empty">
                 <div className="container">
                     <div className="block-empty__body">
-                        <div className="block-empty__message">Your shopping cart is empty!</div>
+                        <div className="block-empty__message">{ messages.cartEmpty}</div>
                         <div className="block-empty__actions">
-                            <Link to="/shop/catalog" className="btn btn-primary btn-sm">Continue</Link>
+                            <Link to="/shop/catalog" className="btn btn-primary btn-sm">{ messages.Continue}</Link>
                         </div>
                     </div>
                 </div>
@@ -284,10 +288,10 @@ function ShopPageCart ( props ) {
     return (
         <React.Fragment>
             <Helmet>
-                <title>{`Shopping Cart — ${ theme.name }`}</title>
+                <title>{`${messages.shoppingCart} `}</title>
             </Helmet>
 
-            <PageHeader header="Shopping Cart" breadcrumb={breadcrumb} />
+            <PageHeader header={messages.shoppingCart} breadcrumb={breadcrumb} />
 
             {content}
         </React.Fragment>

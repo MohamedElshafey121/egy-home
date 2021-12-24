@@ -9,6 +9,9 @@ import {useSelector,useDispatch } from 'react-redux';
 // data stubs
 import dataAddresses from '../../data/accountAddresses';
 import theme from '../../data/theme';
+
+
+//ACTIONS
 import {
   getUserDetails,
 } from "../../store/user";
@@ -22,6 +25,13 @@ import {
 
 
 export default function AccountPageAddresses () {
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+    
     const userDetails = useSelector( ( state ) => state.userDetails );
     const { loading, user, error } = userDetails;
 
@@ -66,7 +76,7 @@ export default function AccountPageAddresses () {
     const addresses = ( user && user.address && user.address.length > 0 ) && user.address.map( ( address ) => (
         <React.Fragment key={address._id}>
             <div className="addresses-list__item card address-card">
-                {address.default && <div className="address-card__badge">Default</div>}
+                {address.default && <div className="address-card__badge">{ messages.defaultAddress}</div>}
 
                 <div className="address-card__body">
                     <div className="address-card__name">{`${ address.firstName } ${ address.lastName }`}</div>
@@ -80,7 +90,7 @@ export default function AccountPageAddresses () {
                         {address.address}
                     </div>
                     <div className="address-card__row">
-                        <div className="address-card__row-title">Address Type</div>
+                        <div className="address-card__row-title">{ messages.addressType}</div>
                         <div className="address-card__row-content">{address.type}</div>
                     </div>
                     <div className="address-card__row">

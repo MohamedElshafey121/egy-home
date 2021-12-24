@@ -9,6 +9,9 @@ import {useSelector,useDispatch } from 'react-redux';
 // data stubs
 import dataAddresses from '../../data/accountAddresses';
 import theme from '../../data/theme';
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
 import {
   getUserDetails,
 } from "../../store/user";
@@ -22,11 +25,18 @@ import {
 
 
 export default function AccountPageAddresses () {
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
     const userDetails = useSelector( ( state ) => state.userDetails );
     const { loading, user, error } = userDetails;
 
-     const updateAddress = useSelector((state) => state.updateAddress);
-  const { success: updateAddressSuccess } = updateAddress;
+    const updateAddress = useSelector( ( state ) => state.updateAddress );
+    const { success: updateAddressSuccess } = updateAddress;
 
   const addAddress = useSelector((state) => state.addAddress);
     const { success: addAddressSuccess } = addAddress;
@@ -66,7 +76,7 @@ export default function AccountPageAddresses () {
     const addresses = ( user && user.address && user.address.length > 0 ) && user.address.map( ( address ) => (
         <React.Fragment key={address._id}>
             <div className="addresses-list__item card address-card">
-                {address.default && <div className="address-card__badge">Default</div>}
+                {address.default && <div className="address-card__badge">{ messages.defaultAddress}</div>}
 
                 <div className="address-card__body">
                     <div className="address-card__name">{`${ address.firstName } ${ address.lastName }`}</div>
@@ -80,21 +90,21 @@ export default function AccountPageAddresses () {
                         {address.address}
                     </div>
                     <div className="address-card__row">
-                        <div className="address-card__row-title">Address Type</div>
+                        <div className="address-card__row-title">{messages.addressType}</div>
                         <div className="address-card__row-content">{address.type}</div>
                     </div>
                     <div className="address-card__row">
-                        <div className="address-card__row-title">Phone Number</div>
+                        <div className="address-card__row-title">{ messages.phoneNumber}</div>
                         <div className="address-card__row-content">{address.phoneNumber}</div>
                     </div>
                     <div className="address-card__row">
-                        <div className="address-card__row-title">Email Address</div>
+                        <div className="address-card__row-title">{ messages.emailAddress}</div>
                         <div className="address-card__row-content">{user.email}</div>
                     </div>
                     <div className="address-card__footer">
-                        <Link to={`/account/addresses/${ address._id }`}>Edit</Link>
+                        <Link to={`/account/addresses/${ address._id }`}>{ messages.edit}</Link>
                         &nbsp;&nbsp;
-                        <Link to="/">Remove</Link>
+                        <Link to="/">{messages.remove}</Link>
                     </div>
                 </div>
             </div>
@@ -110,7 +120,7 @@ export default function AccountPageAddresses () {
 
             <Link to="/account/addAddress" className="addresses-list__item addresses-list__item--new">
                 <div className="addresses-list__plus" />
-                <div className="btn btn-secondary btn-sm">Add New</div>
+                <div className="btn btn-secondary btn-sm">{ messages.addNewAddress}</div>
             </Link>
             <div className="addresses-list__divider" />
             {addresses}

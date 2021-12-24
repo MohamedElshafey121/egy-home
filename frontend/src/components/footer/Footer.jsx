@@ -1,6 +1,10 @@
 // react
 import React from 'react';
 
+//third-party
+import {connect} from 'react-redux'
+
+
 // application
 import FooterContacts from './FooterContacts';
 import FooterLinks from './FooterLinks';
@@ -10,26 +14,55 @@ import ToTop from './ToTop';
 // data stubs
 import theme from '../../data/theme';
 
-export default function Footer() {
+
+function Footer ( props ) {
+    const { userLogin: { userInfo } } = props;
+    
     const informationLinks = [
-        { title: 'About Us', url: '' },
         { title: 'Delivery Information', url: '' },
         { title: 'Privacy Policy', url: '' },
-        { title: 'Brands', url: '' },
         { title: 'Contact Us', url: '' },
         { title: 'Returns', url: '' },
-        { title: 'Site Map', url: '' },
     ];
 
-    const accountLinks = [
-        { title: 'Store Location', url: '' },
-        { title: 'Order History', url: '' },
-        { title: 'Wish List', url: '' },
-        { title: 'Newsletter', url: '' },
-        { title: 'Specials', url: '' },
-        { title: 'Gift Certificates', url: '' },
-        { title: 'Affiliate', url: '' },
+    const informationLinks_ar = [
+        { title: 'الشحن', url: '' },
+        { title: 'سياسة الخصوصيه', url: '' },
+        { title: 'تواصل معنا', url: '' },
+        { title: 'المرتجعات', url: '' },
     ];
+
+    let accountLinks;
+    if ( userInfo ) {
+        accountLinks = [
+        { title: 'Dashboard', url: '/account/dashboard' },
+        { title: 'Edit Profile', url: '/account/profile' },
+        { title: 'Order History', url: '/account/orders' },
+        { title: 'Addresses', url: '/account/addresses' },
+        { title: 'Password', url: '/account/password' },
+    ];
+    } else {
+        accountLinks = [
+        { title: 'Login', url: '/auth/login' },
+        { title: 'Sign up', url: '/auth/signup' }
+    ];
+    }
+
+    let accountLinks_ar;
+    if ( userInfo ) {
+        accountLinks_ar = [
+        { title: ' الحساب ', url: '/account/dashboard' },
+        { title: 'تعديل البيانات', url: '/account/profile' },
+        { title: 'قائمة الطلبات', url: '/account/orders' },
+        { title: 'العناوين', url: '/account/addresses' },
+        // { title: 'كلمة السر', url: '/account/password' },
+    ];
+    } else {
+        accountLinks_ar = [
+        { title: 'تسجيل الدخول', url: '/auth/login' },
+        { title: 'التسجيل', url: '/auth/signup' }
+    ];
+    }
 
     return (
         <div className="site-footer">
@@ -40,10 +73,11 @@ export default function Footer() {
                             <FooterContacts />
                         </div>
                         <div className="col-6 col-md-3 col-lg-2">
-                            <FooterLinks title="Information" items={informationLinks} />
+                            {/* <FooterLinks title="Information" items={informationLinks} /> */}
+                            <FooterLinks title="حول الموقع" items={informationLinks_ar} />
                         </div>
                         <div className="col-6 col-md-3 col-lg-2">
-                            <FooterLinks title="My Account" items={accountLinks} />
+                            <FooterLinks title="حسابى" items={accountLinks_ar} />
                         </div>
                         <div className="col-12 col-md-12 col-lg-4">
                             <FooterNewsletter />
@@ -51,24 +85,15 @@ export default function Footer() {
                     </div>
                 </div>
 
-                <div className="site-footer__bottom">
-                    <div className="site-footer__copyright">
-                        Powered by
-                        {' '}
-                        <a href="https://reactjs.org/" rel="noopener noreferrer" target="_blank">React</a>
-                        {' '}
-                        — Design by
-                        {' '}
-                        <a href={theme.author.profile_url} target="_blank" rel="noopener noreferrer">
-                            {theme.author.name}
-                        </a>
-                    </div>
-                    <div className="site-footer__payments">
-                        <img src="images/payments.png" alt="" />
-                    </div>
-                </div>
+                
             </div>
             <ToTop />
         </div>
     );
 }
+
+const mapStateToProps = (state) => ({
+    userLogin:state.userLogin
+});
+
+export default  connect(mapStateToProps)(Footer)

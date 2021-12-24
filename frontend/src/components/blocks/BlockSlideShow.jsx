@@ -31,16 +31,16 @@ class BlockSlideShow extends Component {
             title: 'Big choice of<br>Plumbing products',
             text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Etiam pharetra laoreet dui quis molestie.',
             image_classic: {
-                ltr: 'images/slides/slide-1-ltr.jpg',
-                rtl: 'images/slides/slide-1-rtl.jpg',
+                ltr: '/uploads/imgs/site/slider0.jpeg',
+                rtl: '/uploads/imgs/site/slider0.jpeg',
             },
             image_full: {
-                ltr: 'images/slides/slide-1-full-ltr.jpg',
-                rtl: 'images/slides/slide-1-full-rtl.jpg',
+                ltr: '/uploads/imgs/site/slider0.jpeg',
+                rtl: '/uploads/imgs/site/slider0.jpeg',
             },
             image_mobile: {
-                ltr: 'images/slides/slide-1-mobile.jpg',
-                rtl: 'images/slides/slide-1-mobile.jpg',
+                ltr: '/uploads/imgs/site/slider0.jpeg',
+                rtl: '/uploads/imgs/site/slider0.jpeg',
             },
         },
         {
@@ -139,7 +139,8 @@ class BlockSlideShow extends Component {
                     <div
                         className="block-slideshow__slide-image block-slideshow__slide-image--desktop"
                         style={{
-                            backgroundImage: `url(${image})`,
+                            backgroundImage: `url(${ image })`,
+                            // maxHeight:'395px'
                         }}
                     />
                     <div
@@ -158,7 +159,7 @@ class BlockSlideShow extends Component {
                             dangerouslySetInnerHTML={{ __html: slide.text }}
                         />
                         <div className="block-slideshow__slide-button">
-                            <Link to="/" className="btn btn-primary btn-lg">Shop Now</Link>
+                            <Link to="/" className="btn btn-primary btn-lg">تسوق الآن</Link>
                         </div>
                     </div>
                 </div>

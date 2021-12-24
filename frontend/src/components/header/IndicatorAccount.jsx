@@ -44,20 +44,20 @@ export default function IndicatorAccount ( props ) {
             {!userInfo && (
                 <Fragment>
                     <form className="account-menu__form" onSubmit={e => handleSubmit( e )}>
-                        <div className="account-menu__form-title">Log In to Your Account</div>
+                        <div className="account-menu__form-title">تسجيل الدخول</div>
                         <div className="form-group">
-                            <label htmlFor="header-signin-email" className="sr-only">Email address</label>
+                            <label htmlFor="header-signin-email" className="sr-only">البريد الالكترونى</label>
                             <input
                                 id="header-signin-email"
                                 type="email"
                                 value={email}
                                 onChange={( e ) => setEmail( e.target.value )}
                                 className="form-control form-control-sm"
-                                placeholder="Email address"
+                                placeholder="البريد الالكترونى"
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="header-signin-password" className="sr-only">Password</label>
+                            <label htmlFor="header-signin-password" className="sr-only">كلمة السر</label>
                             <div className="account-menu__form-forgot">
                                 <input
                                     value={password}
@@ -65,16 +65,16 @@ export default function IndicatorAccount ( props ) {
                                     id="header-signin-password"
                                     type="password"
                                     className="form-control form-control-sm"
-                                    placeholder="Password"
+                                    placeholder="كلمة السر"
                                 />
-                                <Link to="/auth/password/forget" className="account-menu__form-forgot-link">Forgot?</Link>
+                                <Link to="/auth/password/forget" className="account-menu__form-forgot-link">نسيت كلمة السر؟</Link>
                             </div>
                         </div>
                         <div className="form-group account-menu__form-button">
                             <button type="submit" onClick={e => handleSubmit( e )} className="btn btn-primary btn-sm">Login</button>
                         </div>
                         <div className="account-menu__form-link">
-                            <Link to="/auth/signup">Create An Account</Link>
+                            <Link to="/auth/signup">إنشاء حساب</Link>
                         </div>
                     </form>
                     <div className="account-menu__divider" />
@@ -103,7 +103,7 @@ export default function IndicatorAccount ( props ) {
                     </ul>
                     <div className="account-menu__divider" />
                     <ul className="account-menu__links">
-                        <li><Link to="/account/login" onClick={e => handleLogout( e )}>Logout</Link></li>
+                        <li><Link  onClick={e => handleLogout( e )}>Logout</Link></li>
                     </ul>
                 </Fragment>
             )

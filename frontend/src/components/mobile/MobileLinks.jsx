@@ -3,20 +3,32 @@ import React from 'react';
 
 // third-party
 import PropTypes from 'prop-types';
+import{connect} from 'react-redux'
+
 
 // application
 import AppLink from '../shared/AppLink';
 import Collapse from '../shared/Collapse';
 import { ArrowRoundedDown12x7Svg } from '../../svg';
 
+import {
+    logout
+} from '../../store/authentication'
+
 function MobileLinks(props) {
-    const { links, level, onItemClick } = props;
+    const { links, level, onItemClick,logoutUser,userInfo } = props;
 
     const handleItemClick = (item) => {
         if (onItemClick) {
             onItemClick(item);
         }
     };
+
+    const handleLogout = () => {
+        logoutUser()
+        window.location.href = '/shop/catalog';
+        window.scrollTo(0)
+    }
 
     const linksList = links.map((link, index) => {
         let item;
@@ -90,8 +102,32 @@ function MobileLinks(props) {
     });
 
     return (
-        <ul className={`mobile-links mobile-links--level--${level}`}>
+        <ul className={`mobile-links mobile-links--level--${ level }`}>
             {linksList}
+
+            {/* inject logout */}
+            {userInfo && (
+                <li>
+                    <Collapse
+                        toggleClass="mobile-links__item--open"
+                        render={( { toggle, setItemRef, setContentRef } ) => {
+                            return (
+                                <div className="mobile-links__item" ref={setItemRef}>
+                                    <div className="mobile-links__item-title">
+                                        <button
+                                            type="button"
+                                            className="mobile-links__item-link"
+                                            onClick={handleLogout}
+                                        >
+                                            Logout
+                                        </button>
+                                    </div>
+                                </div>
+                            )
+                        }}
+                    />
+                </li>
+            )}
         </ul>
     );
 }
@@ -107,4 +143,10 @@ MobileLinks.defaultProps = {
     level: 0,
 };
 
-export default MobileLinks;
+const mapStateToProps = () => { };
+
+const mapDispatchToProps = {
+    logoutUser:logout
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(MobileLinks);
