@@ -66,40 +66,7 @@ class Root extends Component {
         if ( direction !== null ) {
             changeLocale( direction === 'rtl' ? 'ar' : 'en' );
         }
-
-        // if ( this.state.site ) {
-        //     require('./../scss/style.scss')
-        // } else {
-        //     alert('re render')
-        //     require('./../css/bootstrap/css/bootstrap.ltr.css')
-        //     require('../css/style.ltr.css')
-        // }
-
-        // setTimeout( () => {
-        //     this.setState({site:false})
-        // }, 5000 )
-        
-        // setTimeout( () => {
-        //     this.setState({site:true})
-        // },15000)
     }
-
-    // componentDidUpdate () {
-    //     if ( this.state.site ) {
-    //         alert("Site")
-    //         // delete require.cache[require.resolve('./../css/bootstrap/css/bootstrap.ltr.css')]
-    //         // delete require.cache[require.resolve('./../css/style.ltr.css')]
-           
-    //         require( './../scss/style.scss' )
-    //         // this.forceUpdate()
-    //     } else {
-    //         alert( 'Dashboard' )
-    //         // delete require.cache[require.resolve('./../scss/style.scss')]
-    //         require('./../css/bootstrap/css/bootstrap.ltr.css')
-    //         require('../css/style.ltr.css')
-            
-    //     }
-    // }
 
     shouldUpdateScroll = ( prevRouterProps, { location } ) => (
         prevRouterProps && location.pathname !== prevRouterProps.location.pathname
@@ -132,10 +99,16 @@ class Root extends Component {
                                 />
 
                                 
-                                <Route
+                                {/* <Route
                                     path="/"
                                     render={( props ) => (
                                         <DashboardLayout {...props} style={style} setFileSite={this.setFileSite}/>
+                                    )}
+                                /> */}
+                                <Route
+                                    path="/"
+                                    render={( props ) => (
+                                        <Redirect to='/dashboard'/>
                                     )}
                                 />
 
