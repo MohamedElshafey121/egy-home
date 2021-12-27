@@ -230,10 +230,10 @@ function ShopPageCategory ( props ) {
     }, [offcanvas]);
 
     const breadcrumb = [
-        { title: 'Home', url: url.home() },
-        { title: 'Shop', url: url.catalog() },
+        { title: 'الصفحة الرئيسية', url: url.home() },
+        { title: 'المتجر', url: url.catalog() },
     ];
-    let pageTitle = 'Shop';
+    let pageTitle = 'المتجر';
     let content;
 
     // if (state.category) {
@@ -276,7 +276,7 @@ function ShopPageCategory ( props ) {
             </CategorySidebarItem>
             {offcanvas !== 'always' && (
                 <CategorySidebarItem className="d-none d-lg-block">
-                    <WidgetProducts title="Latest Products" products={latestProducts} />
+                    <WidgetProducts title="أحدث المنتجات" products={latestProducts} />
                 </CategorySidebarItem>
             )}
         </CategorySidebar>
@@ -312,7 +312,7 @@ function ShopPageCategory ( props ) {
     return (
         <React.Fragment>
             <Helmet>
-                <title>{`Shop Category Page — ${theme.name}`}</title>
+                <title>{`المتجر`}</title>
             </Helmet>
 
             <PageHeader header={pageTitle} breadcrumb={breadcrumb} />

@@ -10,6 +10,14 @@ router
   .get(authController.protect, orderController.getOrdersList);
 
 router
+  .route("/recent")
+  .get(
+    authController.protect,
+    orderController.getRecentOrder,
+    orderController.getOrdersList
+  );
+
+router
   .route("/me")
   .get(
     authController.protect,

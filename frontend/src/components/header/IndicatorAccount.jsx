@@ -9,6 +9,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import Indicator from './Indicator';
 import { Person20Svg } from '../../svg';
 
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
+
 // Actions
 import {
     handleLogin,
@@ -17,6 +22,14 @@ import {
 
 export default function IndicatorAccount ( props ) {
     const { history, location } = props;
+
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
 
     const userLogin = useSelector( state => state.userLogin )
     const { loading, error, userInfo } = userLogin;
@@ -96,14 +109,14 @@ export default function IndicatorAccount ( props ) {
                     </Link>
                     <div className="account-menu__divider" />
                     <ul className="account-menu__links">
-                        <li><Link to="/account/profile">Edit Profile</Link></li>
-                        <li><Link to="/account/orders">Order History</Link></li>
-                        <li><Link to="/account/addresses">Addresses</Link></li>
-                        <li><Link to="/account/password">Password</Link></li>
+                        <li><Link to="/account/profile">{messages.editProfile}</Link></li>
+                        <li><Link to="/account/orders">{messages.orderHistory}</Link></li>
+                        <li><Link to="/account/addresses">{messages.addresses}</Link></li>
+                        <li><Link to="/account/password">{messages.password}</Link></li>
                     </ul>
                     <div className="account-menu__divider" />
                     <ul className="account-menu__links">
-                        <li><Link  onClick={e => handleLogout( e )}>Logout</Link></li>
+                        <li><Link  onClick={e => handleLogout( e )}>{messages.logout}</Link></li>
                     </ul>
                 </Fragment>
             )

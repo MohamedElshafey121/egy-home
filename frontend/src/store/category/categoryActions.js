@@ -106,12 +106,12 @@ export function handleCreateCategory(category) {
     };
 }
 
-export function getTopCategories() {
+export function getTopCategories(limit = 6) {
     return async (dispatch) => {
         try {
             dispatch({ type: GET_MAIN_CATEGORIES_REQUEST });
 
-            const { data } = await axios.get("/api/categories/main");
+            const { data } = await axios.get(`/api/categories/main/?limit=${limit}`);
             dispatch({
                 type: GET_MAIN_CATEGORIES_SUCCESS,
                 payload: data.data.categories,

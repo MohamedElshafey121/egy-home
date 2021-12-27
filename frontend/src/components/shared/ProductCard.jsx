@@ -1,11 +1,16 @@
 // react
-import React,{useEffect} from 'react';
+import React,{useEffect,useState} from 'react';
 
 // third-party
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { connect,useDispatch } from 'react-redux';
+import { connect,useDispatch,useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
 
 // application
 import AsyncAction from './AsyncAction';
@@ -33,6 +38,13 @@ function ProductCard ( props ) {
         userInfo
     } = props;
 
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
     const dispatch = useDispatch();
     //add to cart handler
     const addTocartHandler = ( product, shape = '', qty = 1 ) => {
@@ -59,13 +71,13 @@ function ProductCard ( props ) {
     let features;
 
     if ( product.badges&& product.badges.includes( 'sale' ) ) {
-        badges.push( <div key="sale" className="product-card__badge product-card__badge--sale">Sale</div> );
+        badges.push( <div key="sale" className="product-card__badge product-card__badge--sale">{messages.sale}</div> );
     }
     if ( product.badges&& product.badges.includes( 'hot' ) ) {
-        badges.push( <div key="hot" className="product-card__badge product-card__badge--hot">Hot</div> );
+        badges.push( <div key="hot" className="product-card__badge product-card__badge--hot">{messages.hot}</div> );
     }
     if ( product.badges&& product.badges.includes( 'new' ) ) {
-        badges.push( <div key="new" className="product-card__badge product-card__badge--new">New</div> );
+        badges.push( <div key="new" className="product-card__badge product-card__badge--new">{messages.hot}</div> );
     }
 
     badges = badges.length ? <div className="product-card__badges-list">{badges}</div> : null;
@@ -136,22 +148,27 @@ function ProductCard ( props ) {
                 </div>
                 <div className="product-card__rating">
                     <Rating value={product.rating} />
-                    <div className=" product-card__rating-legend">{`${ product.numReviews } Reviews`}</div>
+                    <div className=" product-card__rating-legend">{`( ${ product.numReviews } )`}</div>
                 </div>
                 {/* {features} */}
                 {/* Faetures Start */}
-                <ul className="product-card__features-list">
+                
+                {layout==='grid-with-features'&& <ul className="product-card__features-list">
                     <li > {`size , ${product.size} `}</li>
                     <li > {`color , ${product.color} `}</li>
-                </ul>
+                </ul>}
                 {/* Faetures End */}
+
+                {layout === 'list' && (
+                    <p> { product.shortDescription}</p>
+                )}
             </div>
 
             <div className="product-card__actions">
                 {/* START Availability Feature (hidden) */}
                 <div className="product-card__availability">
-                    Availability:
-                    <span className="text-success">In Stock</span>
+                    {messages.availability} :
+                    <span className="text-success">{messages.inStock}</span>
                 </div>
                 {/* END Availability Feature (hidden) */}
                 
@@ -169,7 +186,7 @@ function ProductCard ( props ) {
                                         'btn-loading': loading,
                                     } )}
                                 >
-                                    Add To Cart
+                                    {messages.addToCart}
                                 </button>
                                 <button
                                     type="button"
@@ -178,12 +195,13 @@ function ProductCard ( props ) {
                                         'btn-loading': loading,
                                     } )}
                                 >
-                                    Add To Cart
+                                    {messages.addToCart}
                                 </button>
                             </React.Fragment>
                         )}
                     />
-                    <AsyncAction
+                    {/* whishlist button */}
+                    {/* <AsyncAction
                         action={() => wishlistAddItem( product )}
                         render={( { run, loading } ) => (
                             <button
@@ -196,8 +214,9 @@ function ProductCard ( props ) {
                                 <Wishlist16Svg />
                             </button>
                         )}
-                    />
-                    <AsyncAction
+                    /> */}
+                    {/* compare button */}
+                    {/* <AsyncAction
                         action={() => compareAddItem( product )}
                         render={( { run, loading } ) => (
                             <button
@@ -210,7 +229,7 @@ function ProductCard ( props ) {
                                 <Compare16Svg />
                             </button>
                         )}
-                    />
+                    /> */}
                 {/* Start Prdouct Actions  */}
                 </div>
             </div>
@@ -227,7 +246,7 @@ ProductCard.propTypes = {
      * product card layout
      * one of ['grid-sm', 'grid-nl', 'grid-lg', 'list', 'horizontal']
      */
-    layout: PropTypes.oneOf( ['grid-sm', 'grid-nl', 'grid-lg', 'list', 'horizontal'] ),
+    layout: PropTypes.oneOf( ['grid-sm', 'grid-nl', 'grid-lg', 'list', 'horizontal','grid-with-features'] ),
 };
 
 const mapStateToProps = ( state ) => {

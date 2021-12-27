@@ -1,8 +1,8 @@
 //style
 // import '../css/style.rtl.css'
 // import './../css/style.ltr.css'
-import './../css/bootstrap/css/bootstrap.ltr.css'
-import '../css/style.ltr.css'
+// import './../css/bootstrap/css/bootstrap.ltr.css'
+// import '../css/style.css'
 
 // /bootstrap/js/bootstrap.bundle.min.js
 // import style from './../css/bootstrap/css/bootstrap.ltr.css'

@@ -6,7 +6,12 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { connect, useDispatch, useSelector } from 'react-redux';
 //my work
-import { useLocation,withRouter} from 'react-router-dom';
+import { useLocation, withRouter } from 'react-router-dom';
+
+
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
 
 
 // application
@@ -41,7 +46,14 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-function ProductsView(props) {
+function ProductsView ( props ) {
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
     const {
         // productsList,
         history,
@@ -155,7 +167,7 @@ function ProductsView(props) {
 
     const productsListItems = productsList && ( productsList.map( ( product ) => (
         <div key={product._id} className="products-list__item">
-            <ProductCard product={product} />
+            <ProductCard product={product} layout={layout} />
         </div>
     ) ) );
 
@@ -179,7 +191,7 @@ function ProductsView(props) {
                         <div className="view-options__filters-button">
                             <button type="button" className="filters-button" onClick={() => sidebarOpen()}>
                                 <Filters16Svg className="filters-button__icon" />
-                                <span className="filters-button__title">Filters</span>
+                                <span className="filters-button__title">{messages.filters}</span>
                                 {!!filtersCount && <span className="filters-button__counter">{filtersCount}</span>}
                             </button>
                         </div>
@@ -191,7 +203,7 @@ function ProductsView(props) {
                             </div>
                         </div>
                         <div className="view-options__legend">
-                            Showing
+                            {messages.showing}
                             {
                                 Number( currentPage ) === 1
                                     ? '1 - '
@@ -200,14 +212,14 @@ function ProductsView(props) {
                                         :'' 
                             }
                             {!isNaN( Number( currentPage ) * limit ) && Number( currentPage ) * limit}
-                                                                {allProducts.count &&(<> of <span>{allProducts.count}</span></>)}
+                                                                {allProducts.count &&(<> {messages.of} <span>{allProducts.count}</span></>)}
 
 
                             {/* {`Showing ${productsList.from}—${productsList.to} of ${count} products`} */}
                         </div>
                         <div className="view-options__divider" />
                         <div className="view-options__control">
-                            <label htmlFor="view-options-sort">Sort By</label>
+                            <label htmlFor="view-options-sort">{messages.sortBy}</label>
                             <div>
                                 <select
                                     id="view-options-sort"
@@ -215,14 +227,14 @@ function ProductsView(props) {
                                     value={sort}
                                     onChange={( e ) => sortHanler( e )}
                                 >
-                                    <option value="-createdAt">Default</option>
-                                    <option value="name">Name</option>
-                                    <option value="price">Price</option>
+                                    <option value="-createdAt">{messages.default}</option>
+                                    <option value="name">{messages.name}</option>
+                                    <option value="price">{messages.price}</option>
                                 </select>
                             </div>
                         </div>
                         <div className="view-options__control">
-                            <label htmlFor="view-options-limit">Show</label>
+                            <label htmlFor="view-options-limit">{messages.show}</label>
                             <div>
                                 <select
                                     id="view-options-limit"
@@ -265,14 +277,14 @@ function ProductsView(props) {
     } else {
         content = (
             <div className="products-view__empty">
-                <div className="products-view__empty-title">No matching items</div>
-                <div className="products-view__empty-subtitle">Try resetting the filters</div>
+                <div className="products-view__empty-title">{messages.noResult}</div>
+                <div className="products-view__empty-subtitle">{ messages.noResultMsg}</div>
                 <button
                     type="button"
                     className="btn btn-primary btn-sm"
                     onClick={handleResetFilters}
                 >
-                    Reset filters
+                    {messages.resetFilters}
                 </button>
             </div>
         );

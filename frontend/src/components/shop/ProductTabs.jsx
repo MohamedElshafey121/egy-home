@@ -31,9 +31,9 @@ class ProductTabs extends Component {
         });
 
         const tabs = [
-            { key: 'description', title: 'Description', content: <ProductTabDescription description={description} /> },
-            { key: 'specification', title: 'Specification', content: <ProductTabSpecification /> },
-            { key: 'reviews', title: 'Reviews', content: <ProductTabReviews productId={productId} /> },
+            { key: 'description', title: 'الوصف', content: <ProductTabDescription description={description} /> },
+            { key: 'reviews', title: 'التقييمات', content: <ProductTabReviews productId={productId} /> },
+            // { key: 'specification', title: 'Specification', content: <ProductTabSpecification /> },
         ];
 
         const tabsButtons = tabs.map((tab) => {

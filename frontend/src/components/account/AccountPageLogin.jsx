@@ -1,58 +1,93 @@
 // react
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 
 // third-party
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
+import {useSelector,useDispatch} from 'react-redux'
+
 
 // application
-import PageHeader from '../shared/PageHeader';
 import { Check9x7Svg } from '../../svg';
+import {
+    handleLogin
+} from '../../store/authentication'
+
 
 // data stubs
 import theme from '../../data/theme';
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
 
-export default function AccountPageLogin() {
-    const breadcrumb = [
-        { title: 'Home', url: '' },
-        { title: 'My Account', url: '' },
-    ];
+
+export default function AccountPageLogin(props) {
+    const { history } = props;
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
+    const userLogin = useSelector( state => state.userLogin )
+    const { loading, error, userInfo } = userLogin;
+
+    const [email, setEmail] = useState( '' );
+    const [password, setPassword] = useState( '' );
+
+
+    const dispatch = useDispatch()
+
+    const handleSubmit = ( e ) => {
+        e.preventDefault();
+        dispatch( handleLogin( { email, password } ) )
+    }
+
+    useEffect( () => {
+        if ( userInfo ) {
+            history.push('/')
+        }   
+    },[userInfo])
+
 
     return (
         <React.Fragment>
             <Helmet>
-                <title>{`Login — ${theme.name}`}</title>
+                <title>{`${messages.login}`}</title>
             </Helmet>
 
-            <PageHeader header="My Account" breadcrumb={breadcrumb} />
 
-            <div className="block">
+            <div className="block mt-6">
                 <div className="container">
                     <div className="row">
-                        <div className="col-md-6 d-flex">
+                        <div className="col-md-5 d-flex m-auto">
                             <div className="card flex-grow-1 mb-md-0">
                                 <div className="card-body">
-                                    <h3 className="card-title">Login</h3>
-                                    <form>
+                                    <h3 className="card-title text-center">{messages.login}</h3>
+                                    <form onSubmit={e=>handleSubmit(e)}>
                                         <div className="form-group">
-                                            <label htmlFor="login-email">Email address</label>
+                                            <label htmlFor="login-email">{ messages.emailAddress}</label>
                                             <input
                                                 id="login-email"
                                                 type="email"
+                                                onChange={e => setEmail( e.target.value )}
+                                                value={email}
                                                 className="form-control"
-                                                placeholder="Enter email"
+                                                placeholder={messages.emailAddress}
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <label htmlFor="login-password">Password</label>
+                                            <label htmlFor="login-password">{messages.password}</label>
                                             <input
                                                 id="login-password"
                                                 type="password"
                                                 className="form-control"
-                                                placeholder="Password"
+                                                placeholder={messages.password}
+                                                onChange={e => setPassword( e.target.value )}
+                                                value={password}
                                             />
                                             <small className="form-text text-muted">
-                                                <Link to="/">Forgotten Password</Link>
+                                                <Link to="/">{ messages.forgetPassword}</Link>
                                             </small>
                                         </div>
                                         <div className="form-group">
@@ -69,51 +104,14 @@ export default function AccountPageLogin() {
                                                     </span>
                                                 </span>
                                                 <label className="form-check-label" htmlFor="login-remember">
-                                                    Remember Me
+                                                    {messages.rememberMe}
                                                 </label>
                                             </div>
                                         </div>
-                                        <button type="submit" className="btn btn-primary mt-2 mt-md-3 mt-lg-4">
-                                            Login
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-6 d-flex mt-4 mt-md-0">
-                            <div className="card flex-grow-1 mb-0">
-                                <div className="card-body">
-                                    <h3 className="card-title">Register</h3>
-                                    <form>
-                                        <div className="form-group">
-                                            <label htmlFor="register-email">Email address</label>
-                                            <input
-                                                id="register-email"
-                                                type="email"
-                                                className="form-control"
-                                                placeholder="Enter email"
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="register-password">Password</label>
-                                            <input
-                                                id="register-password"
-                                                type="password"
-                                                className="form-control"
-                                                placeholder="Password"
-                                            />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="register-confirm">Repeat Password</label>
-                                            <input
-                                                id="register-confirm"
-                                                type="password"
-                                                className="form-control"
-                                                placeholder="Password"
-                                            />
-                                        </div>
-                                        <button type="submit" className="btn btn-primary mt-2 mt-md-3 mt-lg-4">
-                                            Register
+                                        <button type="submit" className="btn btn-primary mt-2 mt-md-3 mt-lg-4"
+                                             onClick={e=>handleSubmit(e)}
+                                        >
+                                            {messages.login}
                                         </button>
                                     </form>
                                 </div>

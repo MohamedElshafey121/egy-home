@@ -48,6 +48,11 @@ exports.addOrderItems = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getRecentOrder = (req, res, next) => {
+  req.query.limit = 6;
+  req.query.sort = "-createdAt";
+  next();
+};
 /**
  * @desc   GET ORDERS LIST
  * @route  get /api/orders

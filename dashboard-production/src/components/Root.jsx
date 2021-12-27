@@ -19,7 +19,7 @@ import languages from '../i18n';
 import { localeChange } from '../store/locale';
 
 // pages
-import Layout from './Layout';
+// import Layout from './Layout';
 import DashboardLayout from './DashboardLayout'
 import AuthLayout from './AuthLayout'
 
@@ -135,7 +135,7 @@ class Root extends Component {
                                 <Route
                                     path="/"
                                     render={( props ) => (
-                                        <Layout {...props} style={style} setFileSite={this.setFileSite}/>
+                                        <DashboardLayout {...props} style={style} setFileSite={this.setFileSite}/>
                                     )}
                                 />
 

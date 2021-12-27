@@ -13,7 +13,9 @@
     "start:prod": "set NODE_ENV=production && nodemon server.js",
     "server": "nodemon backEnd/server",
     "client": "npm start --prefix frontend",
+    "client:dash": "npm start --prefix dashboard-production",
     "dev": "concurrently \"npm run server\" \"npm run client\" ",
+    "dev:dash": "concurrently \"npm run server\" \"npm run client:dash\" ",
     "debug": "ndb server.js"
     },
   "author": "\"Mohamed Elshafey, Shrouk Ahmed, Samaa Ehab\"",

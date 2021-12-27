@@ -20,6 +20,9 @@ import {
     GET_USER_ORDERS_LIST_REQUEST,
     GET_USER_ORDERS_LIST_SUCCESS,
     GET_USER_ORDERS_LIST_FAIL,
+    GET_RECENT_ORDERS_REQUEST,
+    GET_RECENT_ORDERS_SUCCESS,
+    GET_RECENT_ORDERS_FAIL,
 } from "./orderActionsTypes";
 
 export function createOrder(order) {
@@ -114,6 +117,39 @@ export function getOrderslist() {
 
             dispatch({
                 type: ORDER_LIST_FAIL,
+                payload: message,
+            });
+        }
+    };
+}
+
+//get Recent orders list
+export function getRecentOrders() {
+    return async (dispatch, getState) => {
+        try {
+            dispatch({ type: GET_RECENT_ORDERS_REQUEST });
+
+            const {
+                userLogin: { userInfo },
+            } = getState();
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${userInfo.token}`,
+                },
+            };
+
+            const { data } = await axios.get("/api/orders/recent", config);
+            dispatch({
+                type: GET_RECENT_ORDERS_SUCCESS,
+                payload: data.data.orders,
+            });
+        } catch (error) {
+            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+
+            dispatch({
+                type: GET_RECENT_ORDERS_FAIL,
                 payload: message,
             });
         }

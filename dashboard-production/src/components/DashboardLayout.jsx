@@ -1,8 +1,8 @@
 //style
 import 'simplebar'; // or "import SimpleBar from 'simplebar';" if you want to use it manually.
 import 'simplebar/dist/simplebar.css';
-import './../css/bootstrap/css/bootstrap.ltr.css'
-import '../css/style.ltr.css'
+// import './../css/bootstrap/css/bootstrap.ltr.css'
+// import '../css/style.ltr.css'
 // import 'react-quill/dist/quill.snow.css';
 // import * as rtlBootstrap from './../css/bootstrap/css/bootstrap.ltr.css'
 
@@ -51,9 +51,6 @@ import OrderInvoice from '../dashboard/Order/OrderInvoice'
 import OrderList from '../dashboard/Order/OrderList'
 import RoleList from '../dashboard/ACL/RoleList'
 import PermissionList from '../dashboard/ACL/PermissionList'
-
-//application
-import {changeStyle} from '../store/style'
 
 
 function useQuery() {

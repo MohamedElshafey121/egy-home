@@ -70,10 +70,10 @@ const navLinks_ar= [
         title: "تواصل معنا",
         url: "/site/contact-us",
     },
-    {
-        title: "لوحة التحكم",
-        url: "/dashboard?redirect=dash",
-    },
+    // {
+    //     title: "لوحة التحكم",
+    //     url: "/dashboard?redirect=dash",
+    // },
 ]
 
 function NavLinks(props) {

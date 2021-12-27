@@ -7,6 +7,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+//data-stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
+
 // application
 import AsyncAction from './AsyncAction';
 import Currency from './Currency';
@@ -29,7 +34,12 @@ class Product extends Component {
 
         this.state = {
             quantity: 1,
+            messages:message_ar
         };
+    }
+
+    componentDidMount () {
+        this.setState({messages: this.props.locale === 'ar' ? message_ar : message_en || message_ar })
     }
 
     images = [];
@@ -78,7 +88,7 @@ class Product extends Component {
             compareAddItem,
             cartAddItem,
         } = this.props;
-        const { quantity } = this.state;
+        const { quantity,messages } = this.state;
         let prices;
 
         if ( product.compareAtPrice ) {
@@ -90,7 +100,8 @@ class Product extends Component {
                 </React.Fragment>
             );
         } else {
-            // prices = <Currency value={product.price} />;
+            prices = <Currency value={product.price} />;
+            // prices = <div>{product.price}</div>;
         }
 
         return (
@@ -141,15 +152,15 @@ class Product extends Component {
                                 <Rating value={product.rating} />
                             </div>
                             <div className="product__rating-legend">
-                                <Link to="/">{`${ product.numReviews } Reviews`}</Link>
-                                <span>/</span>
-                                <Link to="/">Write A Review</Link>
+                                {/* <Link to="/">{`${ product.numReviews } Reviews`}</Link> */}
+                                <span>{`${ product.numReviews } ${messages.reviews}`}</span>
+                                {/* <Link to="/">Write A Review</Link> */}
                             </div>
                         </div>
                         <div className="product__description">
                             {product.shortDescription}
                         </div>
-                        <ul className="product__features">
+                        <ul className="product__features d-none">
                             <li>Speed: 750 RPM</li>
                             <li>Power Source: Cordless-Electric</li>
                             <li>Battery Cell Type: Lithium</li>
@@ -158,12 +169,12 @@ class Product extends Component {
                         </ul>
                         <ul className="product__meta">
                             <li className="product__meta-availability">
-                                Availability:
+                                {messages.availability} :
                                 {' '}
-                                <span className="text-success">In Stock</span>
+                                <span className="text-success">{messages.inStock}</span>
                             </li>
                             {(product.brand&&product.brand.name)&&(<li>
-                                Brand:
+                                {messages.brand}:
                                 <Link to="/">{product.brand.name}</Link>
                             </li>)}
                             {/* <li>SKU: 83690/32</li> */}
@@ -172,9 +183,9 @@ class Product extends Component {
 
                     <div className="product__sidebar">
                         <div className="product__availability">
-                            Availability:
+                            {messages.availability} :
                             {' '}
-                            <span className="text-success">In Stock</span>
+                            <span className="text-success">{messages.inStock}</span>
                         </div>
 
                         <div className="product__prices">
@@ -184,7 +195,7 @@ class Product extends Component {
                         <form className="product__options">
                             {this.colors.length > 0 && (
                                 <div className="form-group product__option">
-                                <div className="product__option-label">Color</div>
+                                <div className="product__option-label">{messages.colors}</div>
                                 <div className="input-radio-color">
                                     <div className="input-radio-color__list">
                                             {this.colors.map( ( color ) => (
@@ -212,7 +223,7 @@ class Product extends Component {
                             </div>
                             
                             )}
-                            <div className="form-group product__option">
+                            <div className="form-group product__option d-none">
                                 <div className="product__option-label">Material</div>
                                 <div className="input-radio-label">
                                     <div className="input-radio-label__list">
@@ -232,7 +243,7 @@ class Product extends Component {
                                 </div>
                             </div>
                             <div className="form-group product__option">
-                                <label htmlFor="product-quantity" className="product__option-label">Quantity</label>
+                                <label htmlFor="product-quantity" className="product__option-label">{messages.quantity}</label>
                                 <div className="product__actions">
                                     <div className="product__actions-item">
                                         <InputNumber
@@ -257,12 +268,12 @@ class Product extends Component {
                                                         'btn-loading': loading,
                                                     } )}
                                                 >
-                                                    Add to cart
+                                                    {messages.addToCart}
                                                 </button>
                                             )}
                                         />
                                     </div>
-                                    <div className="product__actions-item product__actions-item--wishlist">
+                                    <div className="product__actions-item product__actions-item--wishlist d-none">
                                         <AsyncAction
                                             action={() => wishlistAddItem( product )}
                                             render={( { run, loading } ) => (
@@ -280,7 +291,7 @@ class Product extends Component {
                                             )}
                                         />
                                     </div>
-                                    <div className="product__actions-item product__actions-item--compare">
+                                    <div className="product__actions-item product__actions-item--compare d-none">
                                         <AsyncAction
                                             action={() => compareAddItem( product )}
                                             render={( { run, loading } ) => (
@@ -303,7 +314,7 @@ class Product extends Component {
                         </form>
                     </div>
 
-                    <div className="product__footer">
+                    <div className="product__footer d-none">
                         <div className="product__tags tags">
                             <div className="tags__list">
                                 <Link to="/">Mounts</Link>
@@ -312,14 +323,7 @@ class Product extends Component {
                             </div>
                         </div>
 
-                        <div className="product__share-links share-links">
-                            <ul className="share-links__list">
-                                <li className="share-links__item share-links__item--type--like"><Link to="/">Like</Link></li>
-                                <li className="share-links__item share-links__item--type--tweet"><Link to="/">Tweet</Link></li>
-                                <li className="share-links__item share-links__item--type--pin"><Link to="/">Pin It</Link></li>
-                                <li className="share-links__item share-links__item--type--counter"><Link to="/">4K</Link></li>
-                            </ul>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -342,7 +346,8 @@ const mapStateToProps = ( state ) => {
     const userLogin = state.userLogin;
     const { userInfo } = userLogin;
     return {
-        userInfo
+        userInfo,
+        locale:state.locale
     }
 };
 

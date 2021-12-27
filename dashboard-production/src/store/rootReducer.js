@@ -57,6 +57,7 @@ import {
     orderGetReducer,
     orderCancelReducer,
     userOrdersListReducer,
+    recentOrdersReducer,
 } from "./order";
 
 //category
@@ -143,6 +144,7 @@ export default combineReducers({
     order: orderGetReducer,
     cancelOrder: orderCancelReducer,
     userOrdersList: userOrdersListReducer,
+    recentOrders: recentOrdersReducer,
     forgetPassword: forgetPasswordReducer,
     resetPassword: resetPasswordReducer,
     confirmationMessage: confirmationMessageReducer,

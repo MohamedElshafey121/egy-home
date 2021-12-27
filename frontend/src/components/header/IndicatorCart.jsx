@@ -1,5 +1,5 @@
 // react
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 
 // third-party
 import classNames from 'classnames';
@@ -11,8 +11,12 @@ import AsyncAction from '../shared/AsyncAction';
 import Currency from '../shared/Currency';
 import Indicator from './Indicator';
 import { Cart20Svg, Cross10Svg } from '../../svg';
-// import { cartRemoveItem } from '../../store/oldCart';
 import { url } from '../../services/utils';
+
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
 
 // MY WORK
 import {
@@ -27,6 +31,13 @@ function IndicatorCart ( props ) {
     const { cartItems } = cart;
     let dropdown;
     let totals;
+
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
 
     const removeCartItem = useSelector( ( state ) => state.removeCartItem );
     const { loading: removeItemLoading } = removeCartItem;
@@ -59,11 +70,11 @@ function IndicatorCart ( props ) {
         totals = (
             <React.Fragment>
                 <tr>
-                    <th>Subtotal</th>
+                    <th>{messages.subtotal}</th>
                     <td><Currency value={cart.itemPrices} /></td>
                 </tr>
                 <tr>
-                    <th>Shipping</th>
+                    <th>{messages.shipping}</th>
                     <td><Currency value={cart.shippingPrice} /></td>
                 </tr>
             </React.Fragment>
@@ -129,7 +140,7 @@ function IndicatorCart ( props ) {
                         <tbody>
                             {totals}
                             <tr>
-                                <th>Total</th>
+                                <th>{messages.total}</th>
                                 <td><Currency value={cart.totalPrice} /></td>
                             </tr>
                         </tbody>
@@ -137,8 +148,8 @@ function IndicatorCart ( props ) {
                 </div>
 
                 <div className="dropcart__buttons">
-                    <Link className="btn btn-secondary" to="/shop/cart">View Cart</Link>
-                    <Link className="btn btn-primary" to="/shop/checkout">Checkout</Link>
+                    <Link className="btn btn-secondary" to="/shop/cart">{messages.shoppingCart}</Link>
+                    <Link className="btn btn-primary" to="/shop/checkout">{messages.proceedToCheckout}</Link>
                 </div>
             </div>
         );
@@ -146,7 +157,7 @@ function IndicatorCart ( props ) {
         dropdown = (
             <div className="dropcart">
                 <div className="dropcart__empty">
-                    عربة التسوق فارغة
+                    {messages.emptyCart}
                 </div>
             </div>
         );

@@ -62,10 +62,10 @@ function Topbar ( props ) {
                         ) : (
                                 <React.Fragment>
                                     <div className="topbar__item topbar__item--link">
-                                        <Link className="topbar-link" to='/auth/login'>تسجيل الدخول</Link>
+                                        <Link className="topbar-link" to='/account/login'>تسجيل الدخول</Link>
                                     </div>
                                     <div className="topbar__item topbar__item--link">
-                                        <Link className="topbar-link" to='/auth/signup'>إنشاء حساب</Link>
+                                        <Link className="topbar-link" to='/account/signup'>إنشاء حساب</Link>
                                     </div>
                                 </React.Fragment>
                         )

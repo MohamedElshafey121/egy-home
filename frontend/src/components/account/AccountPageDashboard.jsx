@@ -23,7 +23,7 @@ import {getMyOrders} from '../../store/order'
 
 
 function AccountPageDashboard ( { history } ) {
-     const locale = useSelector( state => state.locale )
+    const locale = useSelector( state => state.locale )
     const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
     
     useEffect( () => {

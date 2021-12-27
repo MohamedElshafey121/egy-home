@@ -7,6 +7,11 @@ import { withRouter } from 'react-router';
 
 //site
 import { dashboardSidebarMobileOpen, dashboardSidebarMobileClose } from './../../store/dashboard-sidebar';
+import {
+    logout
+} from '../../store/authentication'
+import { Link } from 'react-router-dom';
+
 
 function ToolBar ( props ) {
     const { history } = props;
@@ -22,9 +27,15 @@ function ToolBar ( props ) {
     //check for user
     useEffect( () => {
         if ( !userInfo ) {
-            history.push( '/' )
+            history.push( '/auth/login' )
         }
     }, [userInfo] );
+
+    const dispatch = useDispatch();
+    const handleLogout = ( e ) => {
+        e.preventDefault();
+        dispatch( logout() )
+    }
 
     const user =userInfo && (
         <div className="dropdown sa-toolbar__item">
@@ -49,7 +60,7 @@ function ToolBar ( props ) {
                 <li><a className="dropdown-item" href="app-inbox-list.html">Inbox</a></li>
                 <li><a className="dropdown-item" href="app-settings-toc.html">Settings</a></li>
                 <li><hr className="dropdown-divider" /></li>
-                <li><a className="dropdown-item" href="auth-sign-in.html">Sign Out</a></li>
+                <li><Link onClick={e => handleLogout( e )} className="dropdown-item" >Sign Out</Link></li>
             </ul>
         </div>
     );

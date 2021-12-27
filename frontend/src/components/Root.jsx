@@ -20,8 +20,6 @@ import { localeChange } from '../store/locale';
 
 // pages
 import Layout from './Layout';
-import DashboardLayout from './DashboardLayout'
-import AuthLayout from './AuthLayout'
 
 class Root extends Component {
     constructor( props ) {
@@ -77,28 +75,11 @@ class Root extends Component {
                             <Switch>
 
                                 <Route
-                                    path="/dashboard"
-                                    render={( props ) => (
-                                        <DashboardLayout {...props} style={style} setFileSite={this.setFileSite}/>
-                                    )}
-                                />
-
-                                <Route
-                                    path="/auth"
-                                    render={( props ) => (
-                                        <AuthLayout {...props} style={style} setFileSite={this.setFileSite}/>
-                                    )}
-                                />
-
-                                
-                                <Route
                                     path="/"
                                     render={( props ) => (
                                         <Layout {...props} style={style} setFileSite={this.setFileSite}/>
                                     )}
                                 />
-
-                                
 
                                 <Redirect to="/" />
                             </Switch>

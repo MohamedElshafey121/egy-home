@@ -1,14 +1,15 @@
 import React from 'react'
 import classnames from "classnames";
+import { Link } from 'react-router-dom';
 
 
 function WidgetHeader ( props ) {
-    const { title, className } = props;
-    const id='12'
+    const { title, className,type } = props;
+    const id = `${ type }` || 12;
     return (
         <div className={classnames( 'sa-widget-header', className )}>
             <h2 className="sa-widget-header__title">{title}</h2>
-            <div className="sa-widget-header__actions">
+            {type&& <div className="sa-widget-header__actions">
                 <div className="dropdown">
                     <button
                         type="button"
@@ -27,13 +28,12 @@ function WidgetHeader ( props ) {
                     </button>
 
                     <ul className="dropdown-menu dropdown-menu-end" aria-labelledby={`widget-context-menu-${ id }`}>
-                        <li><a className="dropdown-item" href="#">Settings</a></li>
-                        <li><a className="dropdown-item" href="#">Move</a></li>
-                        <li><hr className="dropdown-divider" /></li>
-                        <li><a className="dropdown-item text-danger" href="#">Remove</a></li>
+                        {type === 'products' && ( <li><Link className="dropdown-item" to='/dashboard/products-list'>View</Link></li>)}
+                        {type === 'category' && ( <li><Link className="dropdown-item" to='/dashboard/categories'>View</Link></li>)}
+                        
                     </ul>
                 </div>
-            </div>
+            </div>}
         </div>
     );
 }

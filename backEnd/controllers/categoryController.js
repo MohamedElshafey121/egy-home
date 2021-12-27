@@ -198,7 +198,9 @@ exports.getOneSubCategory = factory.getOne(SubCategory);
  * @access   public
  */
 exports.getMainCategories = catchAsync(async (req, res, next) => {
-  const categories = await Category.find().sort("-createdAt").limit(4);
+  const limit = req.query.limit || 6;
+  // console.log(req.query.limit);
+  const categories = await Category.find().sort("-createdAt").limit(limit);
 
   if (!categories) {
     return next(new AppError("Top Products is not found", 404));

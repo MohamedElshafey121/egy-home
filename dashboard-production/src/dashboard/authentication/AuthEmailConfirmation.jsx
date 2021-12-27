@@ -79,7 +79,7 @@ function AuthEmailConfirmation (props) {
 
                     <p className="mb-0 sa-text--sm">
                         {/* Back to <a href={url( 'auth/sign-in' )}>Sign In</a> page. */}
-                        Back to <Link to="/auth/login" onClick={()=>resetConfirmHandler()} >Sign In</Link> page.
+                        Back to <Link to="/dashboardauth/login" onClick={()=>resetConfirmHandler()} >Sign In</Link> page.
                     </p>
                 </div>
             </div>

@@ -18,6 +18,9 @@ import {
     GET_USER_ORDERS_LIST_REQUEST,
     GET_USER_ORDERS_LIST_SUCCESS,
     GET_USER_ORDERS_LIST_FAIL,
+    GET_RECENT_ORDERS_REQUEST,
+    GET_RECENT_ORDERS_SUCCESS,
+    GET_RECENT_ORDERS_FAIL,
 } from "./orderActionsTypes";
 
 function orderCreateReducer(state = {}, action) {
@@ -104,6 +107,20 @@ function userOrdersListReducer(state = { orders: null }, action) {
     }
 }
 
+//all orders for admin
+function recentOrdersReducer(state = { orders: [] }, action) {
+    switch (action.type) {
+        case GET_RECENT_ORDERS_REQUEST:
+            return { loading: true };
+        case GET_RECENT_ORDERS_SUCCESS:
+            return { loading: false, success: true, orders: action.payload };
+        case GET_RECENT_ORDERS_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+}
+
 export {
     orderCreateReducer,
     OrdersMyListReducer,
@@ -111,4 +128,5 @@ export {
     orderGetReducer,
     orderCancelReducer,
     userOrdersListReducer,
+    recentOrdersReducer,
 };
