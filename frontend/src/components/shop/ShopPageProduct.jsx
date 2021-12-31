@@ -96,7 +96,7 @@ function ShopPageProduct ( props ) {
                         <div className=" shop-layout__content">
                             <div className=" block">
                                 <Product product={product} layout={layout} />
-                                <ProductTabs withSidebar description={product.description} />
+                                <ProductTabs reviews={product.reviews?product.reviews:[]} productId={product._id} withSidebar description={product.description} />
                             </div>
 
                             {( products && products.length > 0 ) && (
@@ -117,7 +117,7 @@ function ShopPageProduct ( props ) {
                     <div className="block">
                         <div className="container">
                             <Product product={product} layout={layout} />
-                            <ProductTabs productId={product._id} description={product.description} />
+                            <ProductTabs reviews={product.reviews?product.reviews:[]} productId={product._id} description={product.description} />
                         </div>
                     </div>
 

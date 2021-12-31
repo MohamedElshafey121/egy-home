@@ -14,9 +14,7 @@ const reviewSchema = mongoose.Schema(
       ref: "User",
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 const SpecificationSchema = new mongoose.Schema({
@@ -31,7 +29,7 @@ const SpecificationSchema = new mongoose.Schema({
   },
   color: {
     type: String,
-    required: [true, "Color Must be Provided"],
+    // required: [true, "Color Must be Provided"],
   },
   photo: {
     type: String,
@@ -86,8 +84,9 @@ const ProductSchem = new mongoose.Schema(
     },
     color: {
       type: String,
-      required: [true, "You Should specify product color or shape"],
+      // required: [true, "You Should specify product color or shape"],
     },
+    reviews: [reviewSchema],
     Specifications: [SpecificationSchema],
     supplier: {
       type: mongoose.Types.ObjectId,
@@ -132,7 +131,6 @@ const ProductSchem = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Brand",
     },
-    reviews: [reviewSchema],
     rating: {
       type: Number,
       required: true,

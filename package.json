@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node backEnd/server.js",
-    "start:prod": "set NODE_ENV=production && nodemon server.js",
+    "start:prod": "set NODE_ENV=production && nodemon backEnd/server.js",
     "server": "nodemon backEnd/server",
     "client": "npm start --prefix frontend",
     "client:dash": "npm start --prefix dashboard-production",

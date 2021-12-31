@@ -10,6 +10,8 @@ import ProductTabDescription from './ProductTabDescription';
 import ProductTabSpecification from './ProductTabSpecification';
 import ProductTabReviews from './ProductTabReviews';
 
+
+
 class ProductTabs extends Component {
     constructor(props) {
         super(props);
@@ -25,14 +27,14 @@ class ProductTabs extends Component {
 
     render() {
         const { currentTab } = this.state;
-        const { withSidebar,description,productId } = this.props;
+        const { withSidebar,description,productId ,reviews} = this.props;
         const classes = classNames('product-tabs', {
             'product-tabs--layout--sidebar': withSidebar,
         });
 
         const tabs = [
             { key: 'description', title: 'الوصف', content: <ProductTabDescription description={description} /> },
-            { key: 'reviews', title: 'التقييمات', content: <ProductTabReviews productId={productId} /> },
+            { key: 'reviews', title: 'التقييمات', content: <ProductTabReviews reviews={reviews}  productId={productId} /> },
             // { key: 'specification', title: 'Specification', content: <ProductTabSpecification /> },
         ];
 

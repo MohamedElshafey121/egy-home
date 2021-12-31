@@ -552,10 +552,10 @@ exports.getRecentProducts = catchAsync(async (req, res, next) => {
 // @access  Private
 exports.createProductReview = catchAsync(async (req, res, next) => {
   const { rating, comment } = req.body;
-  console.log("body ", req.body);
+  console.log(typeof Number(rating));
 
   const product = await Product.findById(req.params.id);
-  console.log("product", product);
+  // console.log("product", product);
 
   if (!product) {
     return next(new AppError("product is not found", 404));
@@ -577,7 +577,6 @@ exports.createProductReview = catchAsync(async (req, res, next) => {
   };
 
   product.reviews.push(review);
-
   product.numReviews = product.reviews.length;
 
   product.rating =
@@ -585,5 +584,16 @@ exports.createProductReview = catchAsync(async (req, res, next) => {
     product.reviews.length;
 
   await product.save();
+
+  // await Product.findByIdAndUpdate(req.params.id, {
+  //   $push: {
+  //     reviews: review,
+  //   },
+  //   numReviews: product.reviews.length,
+  //   rating:
+  //     product.reviews.reduce((acc, item) => item.rating + acc, 0) /
+  //     product.reviews.length,
+  // });
+
   res.status(201).json({ success: true, message: "Review added" });
 });
