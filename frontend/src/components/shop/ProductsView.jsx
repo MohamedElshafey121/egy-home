@@ -134,8 +134,9 @@ function ProductsView ( props ) {
     // const handleLimitChange = useSetOption('limit', (event) => parseFloat(event.target.value), dispatch);
 
     const handleResetFilters = useCallback(() => {
-        dispatch({ type: 'RESET_FILTERS' });
-    }, [dispatch]);
+        // dispatch({ type: 'RESET_FILTERS' });
+        history.push('/shop/catalog')
+    }, []);
 
     const filtersCount = Object.keys( filters ).map( ( x ) => filters[x] ).filter( ( x ) => x ).length;
 

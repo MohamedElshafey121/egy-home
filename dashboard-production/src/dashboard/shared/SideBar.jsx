@@ -161,12 +161,12 @@ function SideBar ( props ) {
                                                     <span className="sa-nav__title">Roles</span>
                                                 </Link>
                                         </li>
-                                        <li className="sa-nav__menu-item">
+                                        {/* <li className="sa-nav__menu-item">
                                                 <Link to='/dashboard/permissions-list' className="sa-nav__link">
                                                     <span className="sa-nav__menu-item-padding"></span>
                                                     <span className="sa-nav__title">Permissions</span>
                                                 </Link>
-                                            </li>
+                                            </li> */}
                                         </ul>
                                     </li>
                                 
@@ -200,39 +200,6 @@ function SideBar ( props ) {
                                     </li>
                                     <li className="sa-nav__menu-item sa-nav__menu-item--has-icon" data-sa-collapse-item="sa-nav__menu-item--open">
                                         <a href="" className="sa-nav__link" data-sa-collapse-trigger="">
-                                            <span className="sa-nav__icon">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor">
-                                                    <path
-                                                        d="M11.5,3C12.9,3,14,4.1,14,5.5c0,2.7-4.3,6.4-6,7.4c-1.7-1-6-4.7-6-7.4C2,4.1,3.1,3,4.5,3C5.3,3,6,3.3,6.4,3.9L8,5.3l1.6-1.4C10,3.3,10.7,3,11.5,3 M11.5,1C10.1,1,8.8,1.6,8,2.7C7.2,1.6,5.9,1,4.5,1C2,1,0,3,0,5.5C0,10,7,15,8,15s8-5,8-9.5C16,3,14,1,11.5,1L11.5,1z"
-                                                    ></path>
-                                                </svg>
-                                            </span>
-                                            <span className="sa-nav__title">Marketing</span>
-                                            <span className="sa-nav__arrow">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="6" height="9" viewBox="0 0 6 9" fill="currentColor">
-                                                    <path
-                                                        d="M5.605,0.213 C6.007,0.613 6.107,1.212 5.706,1.612 L2.696,4.511 L5.706,7.409 C6.107,7.809 6.107,8.509 5.605,8.808 C5.204,9.108 4.702,9.108 4.301,8.709 L-0.013,4.511 L4.401,0.313 C4.702,-0.087 5.304,-0.087 5.605,0.213 Z"
-                                                    ></path>
-                                                </svg>
-                                            </span>
-                                        </a>
-                                        <ul className="sa-nav__menu sa-nav__menu--sub" data-sa-collapse-content="">
-                                            <li className="sa-nav__menu-item">
-                                                <a href="app-coupons-list.html" className="sa-nav__link">
-                                                    <span className="sa-nav__menu-item-padding"></span>
-                                                    <span className="sa-nav__title">Coupons List</span>
-                                                </a>
-                                            </li>
-                                            <li className="sa-nav__menu-item">
-                                                <a href="app-coupon.html" className="sa-nav__link">
-                                                    <span className="sa-nav__menu-item-padding"></span>
-                                                    <span className="sa-nav__title">Coupon</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li className="sa-nav__menu-item sa-nav__menu-item--has-icon" data-sa-collapse-item="sa-nav__menu-item--open">
-                                        <a href="" className="sa-nav__link" data-sa-collapse-trigger="">
                                             <span className="sa-nav__icon"><i className="fas fa-envelope"></i></span>
                                             <span className="sa-nav__title">Inbox</span>
                                             <span className="sa-nav__arrow">
@@ -254,70 +221,6 @@ function SideBar ( props ) {
                                                 <a href="app-inbox-conversation.html" className="sa-nav__link">
                                                     <span className="sa-nav__menu-item-padding"></span>
                                                     <span className="sa-nav__title">Conversation</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                    <li className="sa-nav__menu-item sa-nav__menu-item--has-icon">
-                                        <a href="app-chat.html" className="sa-nav__link">
-                                            <span className="sa-nav__icon"><i className="fas fa-comment"></i></span>
-                                            <span className="sa-nav__title">Chat</span>
-                                            <span className="sa-nav__menu-item-badge badge badge-sa-pill badge-sa-theme">8</span>
-                                        </a>
-                                    </li>
-                                    <li className="sa-nav__menu-item sa-nav__menu-item--has-icon">
-                                        <a href="app-file-manager.html" className="sa-nav__link">
-                                            <span className="sa-nav__icon"><i className="fas fa-hdd"></i></span>
-                                            <span className="sa-nav__title">File Manager</span>
-                                        </a>
-                                    </li>
-                                    <li className="sa-nav__menu-item sa-nav__menu-item--has-icon">
-                                        <a href="app-calendar.html" className="sa-nav__link">
-                                            <span className="sa-nav__icon"><i className="fas fa-calendar-alt"></i></span>
-                                            <span className="sa-nav__title">Calendar</span>
-                                        </a>
-                                    </li>
-                                    <li className="sa-nav__menu-item sa-nav__menu-item--has-icon">
-                                        <a href="app-analytics.html" className="sa-nav__link">
-                                            <span className="sa-nav__icon">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor">
-                                                    <path
-                                                        d="M14.5,15h-1c-0.8,0-1.5-0.7-1.5-1.5v-8C12,4.7,12.7,4,13.5,4h1C15.3,4,16,4.7,16,5.5v8C16,14.3,15.3,15,14.5,15z M8.5,15h-1C6.7,15,6,14.3,6,13.5v-11C6,1.7,6.7,1,7.5,1h1C9.3,1,10,1.7,10,2.5v11C10,14.3,9.3,15,8.5,15z M2.5,15h-1C0.7,15,0,14.3,0,13.5v-5C0,7.7,0.7,7,1.5,7h1C3.3,7,4,7.7,4,8.5v5C4,14.3,3.3,15,2.5,15z"
-                                                    ></path>
-                                                </svg>
-                                            </span>
-                                            <span className="sa-nav__title">Analytics</span>
-                                        </a>
-                                    </li>
-                                    <li className="sa-nav__menu-item sa-nav__menu-item--has-icon" data-sa-collapse-item="sa-nav__menu-item--open">
-                                        <a href="" className="sa-nav__link" data-sa-collapse-trigger="">
-                                            <span className="sa-nav__icon">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor">
-                                                    <path
-                                                        d="M14,6.8l-0.2,0.1C14,7.3,14,7.6,14,8c0,0.4,0,0.7-0.1,1.1L14,9.2c1,0.6,1.4,1.9,0.8,3c-0.5,0.9-1.6,1.2-2.5,0.7l-0.5-0.3c-0.6,0.5-1.2,0.8-1.9,1.1v0.8c0,0.9-0.7,1.6-1.6,1.6H7.6C6.7,16,6,15.3,6,14.4v-0.8c-0.7-0.2-1.3-0.6-1.9-1.1l-0.5,0.3c-0.9,0.5-2,0.2-2.5-0.7c-0.6-1-0.3-2.4,0.8-3l0.2-0.1C2,8.7,2,8.4,2,8c0-0.4,0-0.7,0.1-1.1L2,6.8c-1.1-0.6-1.4-2-0.8-3C1.7,3,2.8,2.7,3.6,3.2l0.5,0.3C4.7,3,5.3,2.6,6,2.4V1.6C6,0.7,6.7,0,7.6,0h0.8C9.3,0,10,0.7,10,1.6v0.8c0.7,0.2,1.3,0.6,1.9,1.1l0.5-0.3c0.9-0.5,2-0.2,2.5,0.7C15.4,4.9,15.1,6.2,14,6.8z M8,5.5C6.6,5.5,5.5,6.6,5.5,8s1.1,2.5,2.5,2.5s2.5-1.1,2.5-2.5S9.4,5.5,8,5.5z"
-                                                    ></path>
-                                                </svg>
-                                            </span>
-                                            <span className="sa-nav__title">Settings</span>
-                                            <span className="sa-nav__arrow">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="6" height="9" viewBox="0 0 6 9" fill="currentColor">
-                                                    <path
-                                                        d="M5.605,0.213 C6.007,0.613 6.107,1.212 5.706,1.612 L2.696,4.511 L5.706,7.409 C6.107,7.809 6.107,8.509 5.605,8.808 C5.204,9.108 4.702,9.108 4.301,8.709 L-0.013,4.511 L4.401,0.313 C4.702,-0.087 5.304,-0.087 5.605,0.213 Z"
-                                                    ></path>
-                                                </svg>
-                                            </span>
-                                        </a>
-                                        <ul className="sa-nav__menu sa-nav__menu--sub" data-sa-collapse-content="">
-                                            <li className="sa-nav__menu-item">
-                                                <a href="app-settings-toc.html" className="sa-nav__link">
-                                                    <span className="sa-nav__menu-item-padding"></span>
-                                                    <span className="sa-nav__title">Table of Content</span>
-                                                </a>
-                                            </li>
-                                            <li className="sa-nav__menu-item">
-                                                <a href="app-settings-form.html" className="sa-nav__link">
-                                                    <span className="sa-nav__menu-item-padding"></span>
-                                                    <span className="sa-nav__title">Form</span>
                                                 </a>
                                             </li>
                                         </ul>

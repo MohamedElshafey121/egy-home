@@ -21,6 +21,10 @@ import {
     GET_RECENT_ORDERS_REQUEST,
     GET_RECENT_ORDERS_SUCCESS,
     GET_RECENT_ORDERS_FAIL,
+    ADMIN_UPDATE_ORDER_REQUEST,
+    ADMIN_UPDATE_ORDER_SUCCESS,
+    ADMIN_UPDATE_ORDER_FAIL,
+    ADMIN_UPDATE_ORDER_RESET,
 } from "./orderActionsTypes";
 
 function orderCreateReducer(state = {}, action) {
@@ -121,6 +125,21 @@ function recentOrdersReducer(state = { orders: [] }, action) {
     }
 }
 
+function adminUpdateOrderReducer(state = {}, action) {
+    switch (action.type) {
+        case ADMIN_UPDATE_ORDER_REQUEST:
+            return { loading: true };
+        case ADMIN_UPDATE_ORDER_SUCCESS:
+            return { loading: false, success: true };
+        case ADMIN_UPDATE_ORDER_FAIL:
+            return { loading: false, error: action.payload };
+        case ADMIN_UPDATE_ORDER_RESET:
+            return {};
+        default:
+            return state;
+    }
+}
+
 export {
     orderCreateReducer,
     OrdersMyListReducer,
@@ -129,4 +148,5 @@ export {
     orderCancelReducer,
     userOrdersListReducer,
     recentOrdersReducer,
+    adminUpdateOrderReducer,
 };

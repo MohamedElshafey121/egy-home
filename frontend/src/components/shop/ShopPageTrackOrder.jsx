@@ -1,25 +1,73 @@
 // react
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 
 // third-party
 import { Helmet } from 'react-helmet-async';
+import { useSelector, useDispatch } from 'react-redux';
+import {toast} from 'react-toastify'
 
 // application
 import PageHeader from '../shared/PageHeader';
+import{checkTrackOrderAction} from '../../store/order'
+import { useLocation } from 'react-router';
+
+
 
 // data stubs
 import theme from '../../data/theme';
 
-function ShopPageTrackOrder() {
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
+function ShopPageTrackOrder ( { history, params } ) {
+    const query = useQuery();
+
+    console.log(params)
     const breadcrumb = [
-        { title: 'Home', url: '' },
-        { title: 'Track Order', url: '' },
+        { title: 'الرئيسية', url: '/' },
+        { title: 'تتبع طلبك', url: '' },
     ];
+
+    const[orderId,setOrderId]=useState()
+
+    const checkTrackOrder = useSelector((state) => state.checkTrackOrder);
+    const { error, loading, success } = checkTrackOrder;
+
+    const userLogin = useSelector((state) => state.userLogin);
+    const { userInfo } = userLogin;
+
+    const dispatch = useDispatch();
+    
+    useEffect( () => {
+        if ( !userInfo ) {
+            history.push('/account/login')
+        }
+
+        if ( error ) {
+            toast.error( 'هذا الطلب غير موجود', { theme: 'colored' } )
+        }
+
+        if ( success ) {
+            history.push(`/shop/track/${orderId}`)
+        }
+
+        
+        
+
+    }, [dispatch, userInfo,error,success] );
+    
+    const submitHandler = ( e ) => {
+        e.preventDefault();
+        dispatch(checkTrackOrderAction(orderId));
+    }
+  
 
     return (
         <React.Fragment>
             <Helmet>
-                <title>{`Track Order — ${theme.name}`}</title>
+                <title>تتبع طلبك</title>
             </Helmet>
 
             <PageHeader breadcrumb={breadcrumb} />
@@ -38,14 +86,21 @@ function ShopPageTrackOrder() {
                                     <form>
                                         <div className="form-group">
                                             <label htmlFor="track-order-id">الرقم التعريفى الخاص بطلبك</label>
-                                            <input id="track-order-id" type="text" className="form-control" placeholder="الرقم التعريفى الخاص بطلبك" />
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="track-email">البريد الالكترونى</label>
-                                            <input id="track-email" type="email" className="form-control" placeholder="البريد الالكترونى" />
+                                            <input id="track-order-id"
+                                                type="text"
+                                                className="form-control"
+                                                placeholder="الرقم التعريفى الخاص بطلبك"
+                                                value={orderId}
+                                                onChange={e=>setOrderId(e.target.value)}
+                                            />
                                         </div>
                                         <div className="pt-3">
-                                            <button type="submit" className="btn btn-primary btn-lg btn-block">إستعلام</button>
+                                            <button
+                                                type="submit"
+                                                className="btn btn-primary btn-lg btn-block"
+                                                onClick={e => submitHandler( e )}
+                                                disabled={!orderId?true:false}
+                                            >إستعلام</button>
                                         </div>
                                     </form>
                                 </div>

@@ -38,4 +38,14 @@ router
   .get(authController.protect, orderController.getOrder)
   .patch(authController.protect, orderController.updateOrder);
 
+router
+  .route("/admin/:id")
+  .patch(authController.protect, orderController.updateOrderStatus);
+
+router.get(
+  "/track/:id",
+  authController.protect,
+  orderController.checkTrackOrder
+);
+
 module.exports = router;

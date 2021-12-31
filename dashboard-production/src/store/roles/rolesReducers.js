@@ -8,12 +8,18 @@ import {
     ADD_PERMISSION_TO_ROLE_REQUEST,
     ADD_PERMISSION_TO_ROLE_SUCCESS,
     ADD_PERMISSION_TO_ROLE_FAIL,
+    ADD_PERMISSION_TO_ROLE_RESET,
     CREATE_NEW_ROLE_REQUEST,
     CREATE_NEW_ROLE_SUCCESS,
     CREATE_NEW_ROLE_FAIL,
+    CREATE_NEW_ROLE_RESET,
     REMOVE_PERMISSION_FROM_ROLE_REQUEST,
     REMOVE_PERMISSION_FROM_ROLE_SUCCESS,
     REMOVE_PERMISSION_FROM_ROLE_FAIL,
+    REMOVE_PERMISSION_FROM_ROLE_RESET,
+    UPDATE_ROLE_DESCRIPTION_REQUEST,
+    UPDATE_ROLE_DESCRIPTION_SUCCESS,
+    UPDATE_ROLE_DESCRIPTION_FAIL,
 } from "./rolesActionTypes";
 
 function allRolesReducer(state = { roles: null }, action) {
@@ -42,7 +48,7 @@ function getOneRoleReducer(state = { role: null }, action) {
     }
 }
 
-function addPermissionToRoleReducer(state = {}, action) {
+function removePermissionFromRoleReducer(state = {}, action) {
     switch (action.type) {
         case REMOVE_PERMISSION_FROM_ROLE_REQUEST:
             return { loading: true };
@@ -50,12 +56,14 @@ function addPermissionToRoleReducer(state = {}, action) {
             return { loading: false, success: true };
         case REMOVE_PERMISSION_FROM_ROLE_FAIL:
             return { loading: false, error: action.payload };
+        case REMOVE_PERMISSION_FROM_ROLE_RESET:
+            return {};
         default:
             return state;
     }
 }
 
-function removePermissionFromRoleReducer(state = {}, action) {
+function addPermissionToRoleReducer(state = {}, action) {
     switch (action.type) {
         case ADD_PERMISSION_TO_ROLE_REQUEST:
             return { loading: true };
@@ -63,6 +71,21 @@ function removePermissionFromRoleReducer(state = {}, action) {
             return { loading: false, success: true };
         case ADD_PERMISSION_TO_ROLE_FAIL:
             return { loading: false, error: action.payload };
+        case ADD_PERMISSION_TO_ROLE_RESET:
+            return {};
+        default:
+            return state;
+    }
+}
+
+function updateRoleDescriptionReducer(state = {}, action) {
+    switch (action.type) {
+        case UPDATE_ROLE_DESCRIPTION_REQUEST:
+            return { loading: true };
+        case UPDATE_ROLE_DESCRIPTION_SUCCESS:
+            return { loading: false, success: true };
+        case UPDATE_ROLE_DESCRIPTION_FAIL:
+            return {};
         default:
             return state;
     }
@@ -76,6 +99,8 @@ function createRoleReducer(state = {}, action) {
             return { loading: false, success: true };
         case CREATE_NEW_ROLE_FAIL:
             return { loading: false, error: action.payload };
+        case CREATE_NEW_ROLE_RESET:
+            return {};
         default:
             return state;
     }
@@ -87,4 +112,5 @@ export {
     addPermissionToRoleReducer,
     createRoleReducer,
     removePermissionFromRoleReducer,
+    updateRoleDescriptionReducer,
 };

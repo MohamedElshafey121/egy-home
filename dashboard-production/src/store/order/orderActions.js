@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 import {
     ORDER_CREATE_REQUEST,
@@ -23,6 +24,10 @@ import {
     GET_RECENT_ORDERS_REQUEST,
     GET_RECENT_ORDERS_SUCCESS,
     GET_RECENT_ORDERS_FAIL,
+    ADMIN_UPDATE_ORDER_REQUEST,
+    ADMIN_UPDATE_ORDER_SUCCESS,
+    ADMIN_UPDATE_ORDER_FAIL,
+    ADMIN_UPDATE_ORDER_RESET,
 } from "./orderActionsTypes";
 
 export function createOrder(order) {
@@ -288,4 +293,41 @@ export function getUserOrders(userId) {
             });
         }
     };
+}
+
+//UPDATE ORDER (By Admin)
+export function updateOrder(orderId, updatedData) {
+    return async (dispatch, getState) => {
+        try {
+            dispatch({ type: ADMIN_UPDATE_ORDER_REQUEST });
+
+            const {
+                userLogin: { userInfo },
+            } = getState();
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${userInfo.token}`,
+                },
+            };
+
+            await axios.patch(`/api/orders/admin/${orderId}`, updatedData, config);
+            dispatch({
+                type: ADMIN_UPDATE_ORDER_SUCCESS,
+            });
+            toast.success("تم تحديث المنتج بنجاح", { theme: "colored" });
+        } catch (error) {
+            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+            toast.error("خطأ فى تحديث حالة الطلب يرجى المحاولة مرة آخرى", { theme: "colored" });
+            dispatch({
+                type: ADMIN_UPDATE_ORDER_FAIL,
+                payload: message,
+            });
+        }
+    };
+}
+
+export function adminUpdateOrderReset() {
+    return { type: ADMIN_UPDATE_ORDER_RESET };
 }

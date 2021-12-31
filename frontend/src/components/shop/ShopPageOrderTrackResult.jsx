@@ -4,12 +4,14 @@ import React,{useEffect,useState} from 'react';
 // third-party
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import {useSelector,useDispatch} from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import {toast} from 'react-toastify'
 
 // application
 import Currency from '../shared/Currency';
 import { Check100Svg } from '../../svg';
-import { getOrder, cancelOrder } from "../../store/order";
+import { getOrder, cancelOrder,resetCheckTrack } from "../../store/order";
+import BlockLoader from '../blocks/BlockLoader';
 
 
 // data stubs
@@ -19,16 +21,21 @@ import { url } from '../../services/utils';
 import message_ar from '../../data/messages_ar'
 import message_en from '../../data/messages_en'
 
-export default function ShopPageOrderSuccess ( { history, match } ) {
+export default function ShopPageOrderTrackResult ( { history, match } ) {
     const locale = useSelector( state => state.locale )
     const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
     
     useEffect( () => {
         setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
     }, [locale] )
+
     const orderId = match.params.id;
     const order = useSelector((state) => state.order);
-    const { order: userOrder, loading } = order;
+    const { order: userOrder, loading, error } = order;
+    
+    const checkTrackOrder = useSelector((state) => state.checkTrackOrder);
+    const {  success:trackSuccess } = checkTrackOrder;
+
 
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
@@ -58,26 +65,30 @@ export default function ShopPageOrderSuccess ( { history, match } ) {
         if (paymentMethodFromLocalStorage) {
           localStorage.removeItem("paymentMethod");
         }
-      }
+        }
+        
     } else {
       dispatch(getOrder(orderId));
-    }
+     }
+     
+     if ( error ) {
+         history.push('/')
+     }
+     
 
     if (paymentMethod) {
       //reset cart
     //   dispatch({ type: RESET_CART });
     }
-  }, [dispatch, history, userInfo, userOrder, paymentMethod]);
+ }, [dispatch, history, userInfo, userOrder, paymentMethod, error] );
+    
+    useEffect( () => {
+        if ( trackSuccess ) {
+            dispatch(resetCheckTrack())
+        }
+    },[])
+    
     const items = (userOrder && userOrder.orderItems.map((item) => {
-        // const options = (item.options || []).map((option) => (
-        //     <li className="order-list__options-item">
-        //         <span className="order-list__options-label">
-        //             {option.label}
-        //             {': '}
-        //         </span>
-        //         <span className="order-list__options-value">{option.value}</span>
-        //     </li>
-        // ));
 
         return (
             <tr>
@@ -90,13 +101,6 @@ export default function ShopPageOrderSuccess ( { history, match } ) {
                 </td>
                 <td className="order-list__column-product">
                     <Link to={url.product(item)}>{item.name}</Link>
-                    {/* {options.length > 0 && (
-                        <div className="order-list__options">
-                            <ul className="order-list__options-list">
-                                {options}
-                            </ul>
-                        </div>
-                    )} */}
                 </td>
                 <td className="order-list__column-quantity" data-title="Qty:">{item.qty}</td>
                 <td className="order-list__column-total"><Currency value={(item.price * item.qty)} /></td>
@@ -109,7 +113,7 @@ export default function ShopPageOrderSuccess ( { history, match } ) {
             <ul className="order-success__meta-list">
                 <li className="order-success__meta-item">
                     <span className="order-success__meta-title">{ messages.orderNumber} :</span>
-                    <span className="order-success__meta-value">{`#${ userOrder._id }`}</span>
+                    <span className="order-success__meta-value">{`${ userOrder._id }`}</span>
                 </li>
                 <li className="order-success__meta-item">
                     <span className="order-success__meta-title">{messages.createdAt_order} :</span>
@@ -126,20 +130,44 @@ export default function ShopPageOrderSuccess ( { history, match } ) {
             </ul>
         </div> )
     );
+
+    const orderStatus = ( status ) => {
+        return {
+            ordered: messages.orderUnderReview,
+            onhold: messages.orderOnWay,
+            canceled: messages.orderCanceled,
+            refused: messages.orderRefused,
+            completed:messages.orderCompelete
+        }[status]
+    }
+
+    const orderStatusMsg = ( status ) => {
+        return {
+            ordered:messages.orderUnderReviewMsg,
+            onhold: messages.orderOnWayMsg,
+            canceled: messages.orderCanceledMsg,
+            refused: messages.orderRefusedMsg,
+            completed:messages.orderCompeleteMsg
+        }[status]
+    }
     
+
+    if ( loading ) {
+        return <BlockLoader/>
+    }
 
     return (
         <div className="block order-success">
             <Helmet>
-                <title>{messages.orderSuccess}</title>
+                <title>{messages.trackOrder}</title>
             </Helmet>
 
             <div className="container">
                 <div className="order-success__body">
                     <div className="order-success__header">
                         <Check100Svg className="order-success__icon" />
-                        <h1 className="order-success__title">{messages.thankYou} </h1>
-                        <div className="order-success__subtitle">{messages.orderReceivedMessage} </div>
+                        <h1 className="order-success__title">{userOrder&& orderStatus(userOrder.status.trim())} </h1>
+                        <div className="order-success__subtitle">{userOrder && orderStatusMsg(userOrder.status.trim())} </div>
                         <div className="order-success__actions">
                             <Link to="/" className="btn btn-xs btn-secondary">{ messages.goToHome}</Link>
                         </div>

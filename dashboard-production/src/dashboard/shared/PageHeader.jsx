@@ -28,8 +28,8 @@ function PageHeader (props) {
             } else {
                 link = (
                     <li key={index} className="breadcrumb-item">
-                        <Link to={item.url}>{item.title}</Link>
-                        <ArrowRoundedRight6x9Svg className="breadcrumb-arrow" />
+                        <Link to={item.url}>{item.title}</Link> /
+                        {/* <ArrowRoundedRight6x9Svg className="breadcrumb-arrow" /> */}
                     </li>
                 );
             }

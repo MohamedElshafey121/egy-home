@@ -580,8 +580,7 @@ function ProductListCatalog ( { history } ) {
                         ]}
                         breadcrumb={[
                             { title: 'Dashboard', url: '/dashboard' },
-                            { title: 'Products', url: '/dashboard/products-list' },
-                            { title: '', url: '' },
+                            { title: 'Products', url: '' },
                         ]}
                     />
                 </div>

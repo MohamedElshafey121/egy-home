@@ -106,49 +106,29 @@ export default function PermissionList ({history}) {
             <table className="w-100">
                 <thead>
                     <tr>
-                        <th className="w-min" data-orderable="false" style={{ position: 'relative' }}>
-                            <input type="checkbox" className="form-check-input m-0 fs-exact-16 d-block" aria-label="..." />
-                        </th>
                         <th className="min-w-15x" style={{ paddingLeft: "30px" }}>Name</th>
-                        <th>Items</th>
-                        <th>created At</th>
-                        <th className="w-min" data-orderable="false" />
+                        <th>Arabic Name</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
-                    {categories && categories.map( ( category, categoryIdx ) => (
-                        <tr key={categoryIdx}>
-                            <td style={{ position: 'relative' }}>
-                                <input type="checkbox" className="form-check-input m-0 fs-exact-16 d-block" aria-label="..." />
-                            </td>
+                    {permissions && permissions.map( ( permission, permissionIdx ) => (
+                        <tr key={permissionIdx}>
+                            
                             <td>
-                                <div className="d-flex align-items-center" style={{ marginLeft: "30px" }}>
-                                    <Link to={url.categoryDashboard( category )} className="me-4">
-                                        <div className="sa-symbol sa-symbol--shape--rounded sa-symbol--size--lg">
-                                            <img src={`/uploads/imgs/categories/${ category.photo }`} alt="" />
-                                        </div>
-                                    </Link>
-                                    <div>
-                                        <Link to={url.categoryDashboard( category )} className="text-reset">{category.name}</Link>
-                                        <ul className="sa-meta__list">
-                                            {category.slug && (
-                                                <li className="sa-meta__item">
-                                                    Slug: <span title="Click to copy product ID" className="st-copy">{category.slug}</span>
-                                                </li>
-                                            )}
-                                        </ul>
+                                <div>
+                                <Link onClick={e=>e.preventDefault()} className="me-4 text-reset">
+                                    {permission.name}
+                                </Link>
                                     </div>
+                            </td>
+                            
+                            <td>
+                                <div>
+                                    <Link onClick={e=>e.preventDefault()} className="text-reset">{permission.name_ar ? permission.name_ar : ""}</Link>
                                 </div>
                             </td>
-                            <td>
-                                {category.subCategories && category.subCategories.length}
-                            </td>
-                            <td>
-                                {new Date( category.createdAt ).toDateString()}
-                            </td>
-                            <td>
-                                <MoreButton id={`category-context-menu-${ categoryIdx }`} categoryId={category._id} />
-                            </td>
+                            
                         </tr>
                     ) )}
 

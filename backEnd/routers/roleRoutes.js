@@ -10,6 +10,7 @@ const {
   addRolePermission,
   removeRolePermission,
   getOneRole,
+  updateRoleDescription,
 } = require("../controllers/roleController");
 
 router
@@ -24,6 +25,10 @@ router
     ACLMiddleware("removeRolePermission"),
     removeRolePermission
   );
+
+router
+  .route("/description/:id")
+  .patch(authController.protect, updateRoleDescription);
 
 router
   .route("/:id")

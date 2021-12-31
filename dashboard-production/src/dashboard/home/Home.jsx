@@ -80,23 +80,23 @@ function Home () {
         {
             title: 'Total sells',
             value: '$3799.00',
-            delta: '34.7%',
-            deltaDirection: 'rise',
-            caption: 'Compared to April 2021',
+            // delta: '34.7%',
+            // deltaDirection: 'rise',
+            // caption: 'Compared to April 2021',
         },
         {
             title: 'Average order value',
             value: '$272.98',
-            delta: '12.0%',
-            deltaDirection: 'fall',
-            caption: 'Compared to April 2021',
+            // delta: '12.0%',
+            // deltaDirection: 'fall',
+            // caption: 'Compared to April 2021',
         },
         {
             title: 'Total orders',
             value: '578',
-            delta: '27.9%',
-            deltaDirection: 'rise',
-            caption: 'Compared to April 2021',
+            // delta: '27.9%',
+            // deltaDirection: 'rise',
+            // caption: 'Compared to April 2021',
         },
     ];
     
@@ -226,14 +226,14 @@ function Home () {
                 <PageHeader
                     title="Dashboard"
                     breadcrumb={breadcrumb}
-                    actions={[
-                        <select key="date" className="form-select me-3">
-                            <option selected>7 October, 2021</option>
-                        </select>,
-                        <a key="export" href="#" className="btn btn-primary">
-                            Export
-                        </a>,
-                    ]}
+                    // actions={[
+                    //     <select key="date" className="form-select me-3">
+                    //         <option selected>7 October, 2021</option>
+                    //     </select>,
+                    //     <a key="export" href="#" className="btn btn-primary">
+                    //         Export
+                    //     </a>,
+                    // ]}
                 />
 
                 <div className="row g-4 g-xl-5">
@@ -249,11 +249,11 @@ function Home () {
                                     <div className={classnames( 'saw-indicator__delta', { 'saw-indicator__delta--rise': indicator.deltaDirection === 'rise', 'saw-indicator__delta--fall': indicator.deltaDirection === 'fall' } )}>
                                         <div className="saw-indicator__delta-direction">
                                             {/* {svg( indicator.deltaDirection === 'rise' ? 'stroyka/arrow-rise' : 'stroyka/arrow-fall' )} */}
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="3" height="13" fill="currentColor">
+                                            {/* <svg xmlns="http://www.w3.org/2000/svg" width="3" height="13" fill="currentColor">
                                                 <path
                                                     d="M1.5,8C0.7,8,0,7.3,0,6.5S0.7,5,1.5,5S3,5.7,3,6.5S2.3,8,1.5,8z M1.5,3C0.7,3,0,2.3,0,1.5S0.7,0,1.5,0 S3,0.7,3,1.5S2.3,3,1.5,3z M1.5,10C2.3,10,3,10.7,3,11.5S2.3,13,1.5,13S0,12.3,0,11.5S0.7,10,1.5,10z"
                                                 ></path>
-                                            </svg>
+                                            </svg> */}
                                         </div>
                                         <div className="saw-indicator__delta-value">{indicator.delta}</div>
                                     </div>

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 import {
     ORDER_CREATE_REQUEST,
@@ -7,7 +8,6 @@ import {
     ORDER_MY_LIST_REQUEST,
     ORDER_MY_LIST_SUCCESS,
     ORDER_MY_LIST_FAIL,
-    ORDER_MY_LIST_RESET,
     ORDER_LIST_REQUEST,
     ORDER_LIST_SUCCESS,
     ORDER_LIST_FAIL,
@@ -20,6 +20,10 @@ import {
     GET_USER_ORDERS_LIST_REQUEST,
     GET_USER_ORDERS_LIST_SUCCESS,
     GET_USER_ORDERS_LIST_FAIL,
+    CHECK_TRACK_ORDER_REQUEST,
+    CHECK_TRACK_ORDER_SUCCESS,
+    CHECK_TRACK_ORDER_FAIL,
+    CHECK_TRACK_ORDER_RESET,
 } from "./orderActionsTypes";
 
 export function createOrder(order) {
@@ -154,7 +158,7 @@ export function getOrder(orderId) {
 }
 
 //cancel order by id
-export function cancelOrder(orderId, canceled = true) {
+export function cancelOrderHandler(orderId) {
     return async (dispatch, getState) => {
         try {
             dispatch({ type: CANCEL_ORDER_REQUEST });
@@ -170,12 +174,13 @@ export function cancelOrder(orderId, canceled = true) {
                 },
             };
 
-            const { data } = await axios.patch(`/api/orders/${orderId}`, { canceled }, config);
+            const { data } = await axios.patch(`/api/orders/${orderId}`, { status: "canceled" }, config);
             dispatch({ type: CANCEL_ORDER_SUCCESS });
             dispatch({
                 type: GET_ORDER_SUCCESS,
                 payload: data.data.data,
             });
+            toast.warning("تم إلغاء طلبك", { theme: "colored" });
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
 
@@ -183,40 +188,7 @@ export function cancelOrder(orderId, canceled = true) {
                 type: CANCEL_ORDER_FAIL,
                 payload: message,
             });
-        }
-    };
-}
-
-//cancel order by id
-export function markOrderAsDelivered(orderId, isDelivered = true) {
-    return async (dispatch, getState) => {
-        try {
-            dispatch({ type: CANCEL_ORDER_REQUEST });
-
-            const {
-                userLogin: { userInfo },
-            } = getState();
-
-            const config = {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${userInfo.token}`,
-                },
-            };
-
-            const { data } = await axios.patch(`/api/orders/${orderId}`, { isDelivered }, config);
-            dispatch({ type: CANCEL_ORDER_SUCCESS });
-            dispatch({
-                type: GET_ORDER_SUCCESS,
-                payload: data.data.data,
-            });
-        } catch (error) {
-            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
-
-            dispatch({
-                type: CANCEL_ORDER_FAIL,
-                payload: message,
-            });
+            toast.warning("خطأ أثناء محاولة إلغاء طلبك ", { theme: "colored" });
         }
     };
 }
@@ -252,4 +224,40 @@ export function getUserOrders(userId) {
             });
         }
     };
+}
+
+//CHECK TRACK ORDER
+export function checkTrackOrderAction(orderId) {
+    return async (dispatch, getState) => {
+        try {
+            dispatch({ type: CHECK_TRACK_ORDER_REQUEST });
+
+            const {
+                userLogin: { userInfo },
+            } = getState();
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${userInfo.token}`,
+                },
+            };
+
+            await axios.get(`/api/orders/track/${orderId}`, config);
+            dispatch({
+                type: CHECK_TRACK_ORDER_SUCCESS,
+            });
+        } catch (error) {
+            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+
+            dispatch({
+                type: CHECK_TRACK_ORDER_FAIL,
+                payload: message,
+            });
+        }
+    };
+}
+
+export function resetCheckTrack() {
+    return { type: CHECK_TRACK_ORDER_RESET };
 }

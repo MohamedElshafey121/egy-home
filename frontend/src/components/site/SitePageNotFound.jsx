@@ -10,7 +10,19 @@ import { useSelector } from 'react-redux';
 import theme from '../../data/theme';
 
 
-function SitePageNotFound () {
+function SitePageNotFound ({history}) {
+
+    const [query, setQuery] = useState('');
+
+    const submithHandler = (e) => {
+        e.preventDefault();
+        if ( query.trim() === '' ) {
+            history.push(`/shop/catalog`)
+        } else {
+            history.push(`/shop/catalog?name=${query}`)
+        }
+        
+    }
     
     return (
         <div className="block">
@@ -34,8 +46,19 @@ function SitePageNotFound () {
                         </p>
 
                         <form className="not-found__search">
-                            <input type="text" className="not-found__search-input form-control" placeholder="أدخل كلمات البحث..." />
-                            <button type="submit" className="not-found__search-button btn btn-primary">بحث</button>
+                            <input
+                                type="text"
+                                className="not-found__search-input form-control"
+                                placeholder="أدخل كلمات البحث..."
+                                onChange={e => setQuery( e.target.value )}
+                            />
+                            <button
+                                type="submit"
+                                className="not-found__search-button btn btn-primary"
+                                onClick={submithHandler}
+                            >
+                                بحث
+                            </button>
                         </form>
 
                         <p className="not-found__text">

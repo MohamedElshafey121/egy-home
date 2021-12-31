@@ -37,6 +37,7 @@ function Search ( props ) {
         inputRef,
         onClose,
         location,
+        history
     } = props;
     const [cancelFn, setCancelFn] = useState(() => () => {});
     const [suggestionsOpen, setSuggestionsOpen] = useState(false);
@@ -138,6 +139,19 @@ function Search ( props ) {
         }, 10);
     };
 
+    const handleSubmit = ( e ) => {
+        e.preventDefault();
+        if ( query.trim() === '' ) {
+            history.push(`/shop/catalog`)
+        } else {
+            if ( category ) {
+                history.push(`/shop/catalog?name=${query}&c=${category}`)
+            } else {
+                history.push(`/shop/catalog?name=${query}`)
+            }
+        }
+    }
+
     // Close suggestions when the Escape key has been pressed.
     const handleKeyDown = (event) => {
         // Escape.
@@ -167,7 +181,7 @@ function Search ( props ) {
     return (
         <div className={rootClasses} ref={wrapper} onBlur={handleBlur}>
             <div className="search__body">
-                <form className="search__form" action="">
+                <form className="search__form" action="" onSubmit={handleSubmit}>
                     {context === 'header' && (
                         <select
                             className="search__categories"
@@ -193,7 +207,7 @@ function Search ( props ) {
                         type="text"
                         autoComplete="off"
                     />
-                    <button className="search__button search__button--type--submit" type="submit">
+                    <button className="search__button search__button--type--submit" type="submit" onClick={handleSubmit}>
                         <Search20Svg />
                     </button>
                     {closeButton}

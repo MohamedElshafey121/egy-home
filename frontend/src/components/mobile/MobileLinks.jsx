@@ -16,7 +16,7 @@ import {
 } from '../../store/authentication'
 
 function MobileLinks(props) {
-    const { links, level, onItemClick,logoutUser,userInfo } = props;
+    const { links, level, onItemClick, logoutUser, userInfo, categories } = props;
 
     const handleItemClick = (item) => {
         if (onItemClick) {

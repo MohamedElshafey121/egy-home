@@ -119,7 +119,7 @@ export default function AccountPageLogin ( props ) {
                 <title>{`${ messages.register }`}</title>
             </Helmet>
 
-            <div className="block mt-6">
+            <div className="block mt-5">
                 <div className="container">
                     <div className="row">
                         <div className="col-md-5 d-flex mt-4 mt-md-0 m-auto">
@@ -205,9 +205,13 @@ export default function AccountPageLogin ( props ) {
                                                     <p className='text-success'>{checkpassMatch}</p>
                                                 )}
                                         </div>
+                                        <div>
+                                            <p>  إن كنت تمتلك حساب بالفعل يمكنك تسجيل الدخول <Link to='/account/login'>من هنا  </Link>   </p>
+                                        </div>
                                         <button type="submit" className="btn btn-primary mt-2 mt-md-3 mt-lg-4" onClick={e => checkData( e )}>
                                             {messages.register}
                                         </button>
+                                        
                                     </form>
                                 </div>
                             </div>

@@ -4,7 +4,7 @@ import React,{useEffect,useState} from 'react';
 // third-party
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import {useSelector,useDispatch} from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 
 // application
@@ -45,7 +45,7 @@ export default function AccountPageLogin(props) {
 
     useEffect( () => {
         if ( userInfo ) {
-            history.push('/')
+            history.push( '/' )
         }   
     },[userInfo])
 
@@ -57,7 +57,7 @@ export default function AccountPageLogin(props) {
             </Helmet>
 
 
-            <div className="block mt-6">
+            <div className="block mt-5">
                 <div className="container">
                     <div className="row">
                         <div className="col-md-5 d-flex m-auto">
@@ -107,7 +107,9 @@ export default function AccountPageLogin(props) {
                                                     {messages.rememberMe}
                                                 </label>
                                             </div>
+                                            <p>إن كنت لا تمتلك حساب يمكنك إنشاء حساب جديد  <Link to='/account/signup'>  من هنا </Link> </p>
                                         </div>
+                                        
                                         <button type="submit" className="btn btn-primary mt-2 mt-md-3 mt-lg-4"
                                              onClick={e=>handleSubmit(e)}
                                         >

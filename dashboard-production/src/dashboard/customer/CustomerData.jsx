@@ -48,10 +48,9 @@ export default function CustomerData ({match}) {
 
     const main = (
         <>
-            <div className="sa-card-area">
+            {/* <div className="sa-card-area">
                 <textarea className="sa-card-area__area" rows={2} placeholder="Notes about customer" />
                 <div className="sa-card-area__card">
-                    {/* {svg('feather/edit')} */}
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="1em"
@@ -69,7 +68,7 @@ export default function CustomerData ({match}) {
                     </svg>
 
                 </div>
-            </div>
+            </div> */}
 
             <div className="card mt-5">
                 <div className="card-body px-5 py-4 d-flex align-items-center justify-content-between">
@@ -89,12 +88,12 @@ export default function CustomerData ({match}) {
                 <div className="table-responsive">
                     <table className="sa-table text-nowrap">
                         <tbody>
-                            {orders && orders.map( ( order, orderIdx ) => {
+                            {(orders && orders.length>0)? orders.map( ( order, orderIdx ) => {
                                 return (
-                                    ( orderIdx < 4 ) &&
+                                    // ( orderIdx < 4 ) &&
                                     <tr key={orderIdx}>
                                         <td>
-                                            <a href={url.order( order )}>{order._id.slice( 0, 6 )}</a>
+                                            <Link to={`/dashboard/orders/${order._id}`}>{order._id}</Link>
                                         </td>
                                         <td>{new Date( order.createdAt ).toDateString()}</td>
                                         <td>{order.status}</td>
@@ -102,18 +101,25 @@ export default function CustomerData ({match}) {
                                         <td> {order.totalPrice} EGP </td>
                                     </tr>
                                 )
-                            } )}
+                            }
+                            ) : (
+                                    <tr>
+                                        <td>
+                                            This Customer Has No orders
+                                            </td>
+                                        </tr>
+                             )}
                         </tbody>
                     </table>
                 </div>
-                {( orders && orders.length > 4 ) && (
+                {/* {( orders && orders.length > 4 ) && (
                     <>
                         <div className="sa-divider" />
                         <div className="px-5 py-4 text-center">
                             <a href={url.order( { _id: 2 } )}>View all {orders.length} orders</a>
                         </div>
                     </>
-                )}
+                )} */}
             </div>
 
             <div className="card mt-5">
@@ -184,7 +190,7 @@ export default function CustomerData ({match}) {
                                 ( orders && orders.length > 0 ) ? (
                                     <>
                                         <dt className="fs-exact-14 fw-medium">Last Order</dt>
-                                        <dd className="fs-exact-13 text-muted mb-0 mt-1"> {new Date( orders[0].createdAt ).toDateString()} – <a href={url.order( { _id: 1 } )}>#{orders[0]._id.slice( 0, 5 )}</a></dd>
+                                        <dd className="fs-exact-13 text-muted mb-0 mt-1"> {new Date( orders[0].createdAt ).toDateString()} – <a href={url.order( { _id: 1 } )}>#{orders[0]._id}</a></dd>
                                     </>
                                 ) : (
                                     <dt className="fs-exact-14 fw-medium">No Orders Yet</dt>
@@ -230,14 +236,14 @@ export default function CustomerData ({match}) {
                     <div className="container container--max--xl">
                         <PageHeader
                             title={user&&user.name}
-                            actions={[
-                                <a key="delete" href="#" className="btn btn-secondary me-3">
-                                    Delete
-                                </a>,
-                                <a key="edit" href="#" className="btn btn-primary">
-                                    Edit
-                                </a>,
-                            ]}
+                            // actions={[
+                            //     <a key="delete" href="#" className="btn btn-secondary me-3">
+                            //         Delete
+                            //     </a>,
+                            //     <a key="edit" href="#" className="btn btn-primary">
+                            //         Edit
+                            //     </a>,
+                            // ]}
                             breadcrumb={[
                                 { title: 'Dashboard', url: '/dashboard'  },
                                 { title: 'Customers', url: '/dashboard/customers-list'  },

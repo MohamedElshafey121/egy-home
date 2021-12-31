@@ -50,6 +50,8 @@ import OrderDetails from '../dashboard/Order/OrderDtetails'
 import OrderInvoice from '../dashboard/Order/OrderInvoice'
 import OrderList from '../dashboard/Order/OrderList'
 import RoleList from '../dashboard/ACL/RoleList'
+import RoleAdd from '../dashboard/ACL/RoleAdd'
+import RoleEdit from '../dashboard/ACL/RoleEdit'
 import PermissionList from '../dashboard/ACL/PermissionList'
 
 
@@ -161,7 +163,9 @@ function DashboardLayout ( props ) {
 
                         {/* Roles */}
                         <Route exact path={`${ match.path }/roles-list`} component={RoleList} />
-                        <Route exact path={`${ match.path }/permissions-list`} component={PermissionList} />
+                        <Route exact path={`${ match.path }/roles-add`} component={RoleAdd} />
+                        <Route exact path={`${ match.path }/roles/:id`} component={RoleEdit} />
+                        {/* <Route exact path={`${ match.path }/permissions-list`} component={PermissionList} /> */}
                         
                         
                     </Switch>

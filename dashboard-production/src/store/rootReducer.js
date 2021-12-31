@@ -58,6 +58,7 @@ import {
     orderCancelReducer,
     userOrdersListReducer,
     recentOrdersReducer,
+    adminUpdateOrderReducer,
 } from "./order";
 
 //category
@@ -94,6 +95,7 @@ import {
     removePermissionFromRoleReducer,
     addPermissionToRoleReducer,
     createRoleReducer,
+    updateRoleDescriptionReducer,
 } from "./roles";
 
 import { dashboardSidebarMobileReducer } from "./dashboard-sidebar";
@@ -145,6 +147,7 @@ export default combineReducers({
     cancelOrder: orderCancelReducer,
     userOrdersList: userOrdersListReducer,
     recentOrders: recentOrdersReducer,
+    adminUpdateOrder: adminUpdateOrderReducer,
     forgetPassword: forgetPasswordReducer,
     resetPassword: resetPasswordReducer,
     confirmationMessage: confirmationMessageReducer,
@@ -173,4 +176,5 @@ export default combineReducers({
     addPermissionToRole: addPermissionToRoleReducer,
     removePermissionFromRole: removePermissionFromRoleReducer,
     createRole: createRoleReducer,
+    roleDescriptionUpdate: updateRoleDescriptionReducer,
 });

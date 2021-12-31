@@ -95,6 +95,21 @@ const messages_ar = {
     showing: "عرض",
     of: "من",
     filters: "البحث ",
+    trackOrder: "تتبع طلبك",
+    orderUnderReview: "طلبك تحت المراجعة ",
+    orderUnderReviewMsg: " طلبك تحت المراجعة وسيتم  إرسال بريد الكترونى فى حال التأكيد او الرفض",
+    orderCompelete: "تم التسليك",
+    orderCompeleteMsg: "",
+    orderRefused: "تم رفض الطلب",
+    orderRefusedMsg: "لقد قام أحد المسئولين برفض طلبك لعدم وجود بيانات كافيه عن عنوان التوصيل او أسباب آخرى",
+    orderCanceled: "تم الإلغاء",
+    orderCanceledMsg: "لقم قمت بإلغاء الطلب ",
+    orderOnWay: "جارى الشحن",
+    orderOnWayMsg: "مندوبنا فى الطريق اليك ",
+    cancelOrder: "إلغاء الطلب",
+    cancelOrderInstructions:
+        "يمكنك إلغاء الطلب فى حاله أن مندوب التسليم لم يقم بإستلام المنتج بعد. فى حالة استلام المندوب للطلب لا يمكنك الغاء الطلب إلا من خلال خدمة العملاء مع ملاحظه أن هذه العمليه قد تؤدى إلى تةقف خدمة الدفع عند الاستلام الخاصة بك",
+    orderDetails: "تفاصيل الطلب",
 };
 
 export default messages_ar;

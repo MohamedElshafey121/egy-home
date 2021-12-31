@@ -1,33 +1,118 @@
-import React,{useEffect} from 'react';
-// import Image from "../components/Image";
+//react
+import React, { useEffect,useState } from 'react';
+
+//components
 import Price from "../shared/Price";
 import PageHeader from '../shared/PageHeader'
+import BlockLoader from '../../components/blocks/BlockLoader'
+
+//utils
 import { url } from '../../services/utils';
 import './../utils/containerQry'
+
+//third-party
 import { useSelector, useDispatch } from 'react-redux'
-import { getOrder } from "../../store/order";
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import classNames from 'classnames'
 
+//application
+import { getOrder,updateOrder,adminUpdateOrderReset } from "../../store/order";
 
+const messages = {
+    orderUnderReview: "طلبك تحت المراجعة ",
+    orderUnderReviewMsg: " طلبك تحت المراجعة وسيتم  إرسال بريد الكترونى فى حال التأكيد او الرفض",
+    orderCompelete: "تم التسليك",
+    orderCompeleteMsg: "",
+    orderRefused: "تم رفض الطلب",
+    orderRefusedMsg: "لقد قام أحد المسئولين برفض طلبك لعدم وجود بيانات كافيه عن عنوان التوصيل او أسباب آخرى",
+    orderCanceled: "تم الإلغاء",
+    orderCanceledMsg: "لقم قمت بإلغاء الطلب ",
+    orderOnWay: "جارى الشحن",
+    orderOnWayMsg: "مندوبنا فى الطريق اليك ",
+}
 
 export default function OrderDetails ({match}) {
-    // const imageSize = 16 * 2.5;
-    const imageSize = 40;
+    const orderId = match.params.id;
 
+    const[orderNotes,setOrderNotes]=useState()
+    const order = useSelector( ( state ) => state.order );
+    const { order: userOrder, loading: loadingOrder } = order;
+
+    const adminUpdateOrder = useSelector( state => state.adminUpdateOrder )
+    const {success:updateOrderSuccess } = adminUpdateOrder;
+    
     //load necessary scripts
     useEffect( () => {
         window.stroyka.containerQuery();
-    }, [] );
+    }, [loadingOrder] );
 
-    const orderId = match.params.id;
-  const order = useSelector((state) => state.order);
-    const { order: userOrder, loading } = order;
-    
+
   const dispatch = useDispatch();
     //load Order
     useEffect( () => {
         dispatch( getOrder( orderId ) );
     }, [] );
+    
+    //reload product after update
+    useEffect( () => {
+        if ( updateOrderSuccess ) {
+            dispatch( adminUpdateOrderReset() )
+            dispatch(getOrder(orderId))
+        }
+    },[updateOrderSuccess])
+
+    //HANDLERS
+    //ON HOLD
+    const setOrderAsOnHold = (e) => {
+        e.preventDefault();
+        if ( orderNotes && orderNotes.trim() ) {
+            dispatch( updateOrder( orderId, {status: 'onhold',adminNotes: orderNotes} ) )
+        } else {
+            dispatch( updateOrder( orderId, {status: 'onhold'} ) );
+        }
+    }
+
+    //CANCELED 
+    const setOrderAsCanceled = (e) => {
+        e.preventDefault();
+        if ( orderNotes && orderNotes.trim() ) {
+            dispatch( updateOrder( orderId, {status: 'canceled',adminNotes: orderNotes} ) )
+        } else {
+            dispatch( updateOrder( orderId, {status: 'canceled'} ) );
+        }
+    }
+
+    // REFUSED
+    const setOrderAsRefused = ( e ) => {
+        e.preventDefault();
+        if ( orderNotes && orderNotes.trim() ) {
+            dispatch( updateOrder( orderId, {status:'refused',adminNotes:orderNotes} ) );
+        } else {
+            toast.warning('You should provide refusion reason',{theme:'colored'})
+        }
+
+    };
+
+    // COMPLETED
+    const setOrderAsCompleted = (e) => {
+        e.preventDefault();
+        if ( orderNotes && orderNotes.trim() ) {
+            dispatch( updateOrder( orderId, {status: 'completed',adminNotes: orderNotes} ) )
+        } else {
+            dispatch( updateOrder( orderId, {status: 'completed'} ) );
+        }
+    }
+
+    //ADD ORDER NOTES
+    const addOrderNotes = (e) => {
+        e.preventDefault();
+        if ( orderNotes && orderNotes.trim() ) {
+            dispatch( updateOrder( orderId, {adminNotes: orderNotes} ) )
+        } else {
+           toast.warning('يجب إضافة ملاحظات أولا',{theme:'colored'})
+        }
+    }
 
     const paidStyle = ( status ) => (
         {
@@ -36,13 +121,22 @@ export default function OrderDetails ({match}) {
         }[status]
     );
 
+    const orderStatus = ( status ) => {
+        return {
+            ordered: messages.orderUnderReview,
+            onhold: messages.orderOnWay,
+            canceled: messages.orderCanceled,
+            refused: messages.orderRefused,
+            completed:messages.orderCompelete
+        }[status]
+    }
+
     //order items
     const items = ( userOrder && userOrder.orderItems ) && userOrder.orderItems.map( ( item, itemIdx ) => (
         <tr key={itemIdx}>
             <td className="min-w-20x">
                 <div className="d-flex align-items-center">
-                    {/* <Image src={item.image} size={imageSize} className="me-4" /> */}
-                    <img src={`/uploads/imgs/products/${ item.photo }`} className="me-4" style={{ width: '40px' }} />
+                    <img src={`/uploads/imgs/products/${ item.photo }`} className="me-4" style={{ width: '40px',margin:'0 10px' }} alt="" />
                     <a href={url.order( item )} className="text-reset">
                         {item.name}
                     </a>
@@ -86,10 +180,87 @@ export default function OrderDetails ({match}) {
         </React.Fragment>
     );
 
+    const transactions = ( <div className="card mt-5">
+        <div className="card-body px-5 py-4 d-flex align-items-center justify-content-between">
+            <h2 className="mb-0 fs-exact-18 me-4">Transactions</h2>
+            <div className="text-muted fs-exact-14">
+                <a href="#">Add transaction</a>
+            </div>
+        </div>
+        <div className="table-responsive">
+            <table className="sa-table text-nowrap">
+                <tbody>
+                    <tr>
+                        <td>
+                            Payment
+                            <div className="text-muted fs-exact-13">via PayPal</div>
+                        </td>
+                        <td>October 7, 2020</td>
+                        <td className="text-end"><Price value={2000} /></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Payment
+                            <div className="text-muted fs-exact-13">from account balance</div>
+                        </td>
+                        <td>November 2, 2020</td>
+                        <td className="text-end"><Price value={50} /></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Refund
+                            <div className="text-muted fs-exact-13">to PayPal</div>
+                        </td>
+                        <td>December 10, 2020</td>
+                        <td className="text-end text-danger"><Price value={-325} /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    );
+
+    const orderActions = userOrder && (
+        <div className="card mt-5">
+            <div className="card-body">
+                {userOrder.status === 'ordered' && (
+                    <React.Fragment>
+                        <button key="onhold" className="btn btn-primary me-3" onClick={e=>setOrderAsOnHold(e)} >
+                            Accept
+                        </button>
+                        <button key="refuse" className="btn btn-secondary me-3" onClick={e=>setOrderAsRefused(e)} >
+                            Refuse
+                        </button>
+                    </React.Fragment>
+                
+                )}
+
+                {userOrder.status === 'onhold' && (
+                    <React.Fragment>
+                        <button key="completed" className="btn btn-primary me-3" onClick={e=>setOrderAsCompleted(e)}  >
+                            Completed
+                        </button>
+                        <button key="canceled" className="btn btn-secondary me-3" onClick={e=>setOrderAsCanceled(e)} >
+                            Cancele
+                        </button>
+                    </React.Fragment>
+                
+                )}
+            </div>
+        </div>
+    );
+
     const main = (
         <>
             <div className="sa-card-area">
-                <textarea className="sa-card-area__area" rows={2} placeholder="Notes about order" />
+                <textarea
+                    className="sa-card-area__area"
+                    rows={2}
+                    placeholder="Notes about order"
+                    onChange={e => setOrderNotes( e.target.value )}
+                    value={orderNotes}
+                    defaultValue={(userOrder && userOrder.adminNotes)&&userOrder.adminNotes}
+                />
                 <div className="sa-card-area__card">
                     {/* {svg('feather/edit')} */}
                     <svg
@@ -114,7 +285,7 @@ export default function OrderDetails ({match}) {
                 <div className="card-body px-5 py-4 d-flex align-items-center justify-content-between">
                     <h2 className="mb-0 fs-exact-18 me-4">Items</h2>
                     <div className="text-muted fs-exact-14">
-                        <a href="#">Edit items</a>
+                        {/* <a href="#">Edit items</a> */}
                     </div>
                 </div>
                 <div className="table-responsive">
@@ -123,82 +294,16 @@ export default function OrderDetails ({match}) {
                             {items}
                         </tbody>
                         {prices}
-                        </table>
-                </div>
-            </div>
-
-            <div className="card mt-5">
-                <div className="card-body px-5 py-4 d-flex align-items-center justify-content-between">
-                    <h2 className="mb-0 fs-exact-18 me-4">Transactions</h2>
-                    <div className="text-muted fs-exact-14">
-                        <a href="#">Add transaction</a>
-                    </div>
-                </div>
-                <div className="table-responsive">
-                    <table className="sa-table text-nowrap">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    Payment
-                                    <div className="text-muted fs-exact-13">via PayPal</div>
-                                </td>
-                                <td>October 7, 2020</td>
-                                <td className="text-end"><Price value={2000} /></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    Payment
-                                    <div className="text-muted fs-exact-13">from account balance</div>
-                                </td>
-                                <td>November 2, 2020</td>
-                                <td className="text-end"><Price value={50} /></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    Refund
-                                    <div className="text-muted fs-exact-13">to PayPal</div>
-                                </td>
-                                <td>December 10, 2020</td>
-                                <td className="text-end text-danger"><Price value={-325} /></td>
-                            </tr>
-                        </tbody>
                     </table>
                 </div>
             </div>
 
-            <div className="card mt-5">
-                <div className="card-body px-5 py-4 d-flex align-items-center justify-content-between">
-                    <h2 className="mb-0 fs-exact-18 me-4">Balance</h2>
-                </div>
-                <table className="sa-table">
-                    <tbody className="sa-table__group">
-                        <tr>
-                            <td>Order Total</td>
-                            <td className="text-end"><Price value={5882} /></td>
-                        </tr>
-                        <tr>
-                            <td>Return Total</td>
-                            <td className="text-end"><Price value={0} /></td>
-                        </tr>
-                    </tbody>
-                    <tbody className="sa-table__group">
-                        <tr>
-                            <td>Paid by customer</td>
-                            <td className="text-end"><Price value={-80} /></td>
-                        </tr>
-                        <tr>
-                            <td>Refunded</td>
-                            <td className="text-end"><Price value={0} /></td>
-                        </tr>
-                    </tbody>
-                    <tbody>
-                        <tr>
-                            <td>Balance <span className="text-muted">(customer owes you)</span></td>
-                            <td className="text-end"><Price value={5802} /></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            {/* {transactions} */}
+
+            {userOrder&& (
+                userOrder.status === 'ordered' ||
+                userOrder.status === 'onhold' 
+            ) && orderActions}
         </>
     );
 
@@ -206,12 +311,11 @@ export default function OrderDetails ({match}) {
         <div className="card">
             <div className="card-body d-flex align-items-center justify-content-between pb-0 pt-4">
                 <h2 className="fs-exact-16 mb-0">Customer</h2>
-                <a href="#" className="fs-exact-14">Edit</a>
+                {/* <a href="#" className="fs-exact-14">Edit</a> */}
             </div>
             <div className="card-body d-flex align-items-center pt-4">
                 <div className="sa-symbol sa-symbol--shape--circle sa-symbol--size--lg">
-                    {/* <Image src="images/customers/customer-1.jpg" size={imageSize} /> */}
-                    <img src="images/customers/customer-1.jpg" size={40} />
+                    <img src="/uploads/imgs/users/user_avatar.png"  />
                 </div>
                 <div className="ms-3 ps-2">
                     <div className="fs-exact-14 fw-medium">
@@ -230,7 +334,7 @@ export default function OrderDetails ({match}) {
         <div className="card mt-5">
                 <div className="card-body d-flex align-items-center justify-content-between pb-0 pt-4">
                     <h2 className="fs-exact-16 mb-0">Contact person</h2>
-                    <a href="#" className="fs-exact-14">Edit</a>
+                    {/* <a href="#" className="fs-exact-14">Edit</a> */}
                 </div>
                 <div className="card-body pt-4 fs-exact-14">
                     <div>
@@ -250,7 +354,7 @@ export default function OrderDetails ({match}) {
         <div className="card mt-5">
             <div className="card-body d-flex align-items-center justify-content-between pb-0 pt-4">
                 <h2 className="fs-exact-16 mb-0">Shipping Address</h2>
-                <a href="#" className="fs-exact-14">Edit</a>
+                {/* <a href="#" className="fs-exact-14">Edit</a> */}
             </div>
             <div className="card-body pt-4 fs-exact-14">
                 {userOrder.shippingAddress.firstName} {userOrder.shippingAddress.lastName}<br />
@@ -262,6 +366,19 @@ export default function OrderDetails ({match}) {
                 {userOrder.phone}
             </div>
         </div>
+    ) );
+
+    const SidebarShippingAddressNotes = ( userOrder && (
+        userOrder.shippingAddress.orderNotes && (
+            <div className="card mt-5">
+            <div className="card-body d-flex align-items-center justify-content-between pb-0 pt-4">
+                <h2 className="fs-exact-16 mb-0">Shipping Address Notes</h2>
+            </div>
+            <div className="card-body pt-4 fs-exact-14">
+                {userOrder.shippingAddress.orderNotes} 
+            </div>
+        </div>
+        )
     ) );
 
     //NOT USED
@@ -284,8 +401,13 @@ export default function OrderDetails ({match}) {
             {sidebarCustomer}
             {sidebarContactPerson}
             {SidebarShippingAddress}
+            {SidebarShippingAddressNotes}
         </>
     );
+
+    if ( loadingOrder ) {
+        return <BlockLoader/>
+    }
 
     return (
         <React.Fragment>
@@ -298,13 +420,17 @@ export default function OrderDetails ({match}) {
                                 <Link to={`/dashboard/orders-invoice/${userOrder&&userOrder._id?userOrder._id:''}`} key="invoice" className="btn btn-secondary me-3">
                                     invoice
                                 </Link>,
-                                <a key="refuse" href="#" className="btn btn-danger me-3">
-                                    refuse
-                                </a>,
-                                <a key="ensure" href="#" className="btn btn-success me-3">
-                                    ensure
-                                </a>
-                                
+                                <button
+                                    key="refuse"
+                                    // className="btn btn-primary me-3"
+                                    disabled={!orderNotes && true}
+                                    onClick={e => addOrderNotes( e )}
+                                    className={classNames( 'btn btn-primary me-3', {
+                                        'd-none':userOrder&&(userOrder.status === 'completed' || userOrder.status === 'refused' || userOrder.status === 'canceled')
+                                    })}
+                                >
+                                    update
+                                </button>,
                             ]}
                             breadcrumb={[
                                 {title: 'Dashboard', url: '/dashboard'},
@@ -328,6 +454,13 @@ export default function OrderDetails ({match}) {
                                             {userOrder&&userOrder.isPaid ?'Paid':'Not Paid'}
                                         </span>
                                     </div>
+
+                                     <div className="sa-page-meta__item d-flex align-items-center fs-6">
+                                        <span className={`badge ${ paidStyle( userOrder && userOrder.isPaid ? 'Yes' : 'No' ) }`}>
+                                            {userOrder&&orderStatus(userOrder.status)}
+                                        </span>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

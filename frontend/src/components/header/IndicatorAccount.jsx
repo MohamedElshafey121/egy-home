@@ -87,7 +87,7 @@ export default function IndicatorAccount ( props ) {
                             <button type="submit" onClick={e => handleSubmit( e )} className="btn btn-primary btn-sm">Login</button>
                         </div>
                         <div className="account-menu__form-link">
-                            <Link to="/auth/signup">إنشاء حساب</Link>
+                            <Link to="/account/signup">إنشاء حساب</Link>
                         </div>
                     </form>
                     <div className="account-menu__divider" />

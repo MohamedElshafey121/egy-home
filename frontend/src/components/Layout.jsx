@@ -32,6 +32,7 @@ import PageCompare from './shop/ShopPageCompare';
 import PageWishlist from './shop/ShopPageWishlist';
 import ShopPageCategory from './shop/ShopPageCategory';
 import ShopPageOrderSuccess from './shop/ShopPageOrderSuccess';
+import ShopPageOrderTrackResult from './shop/ShopPageOrderTrackResult'
 import ShopPageProduct from './shop/ShopPageProduct';
 import ShopPageTrackOrder from './shop/ShopPageTrackOrder';
 import SitePageAboutUs from './site/SitePageAboutUs';
@@ -142,6 +143,7 @@ function Layout ( props ) {
                         <Route exact path="/shop/cart" component={PageCart} />
                         <Route exact path="/shop/checkout" component={PageCheckout} />
                         <Route exact path="/shop/checkout/success/:id" component={ShopPageOrderSuccess} />
+                        <Route exact path="/shop/track/:id" component={ShopPageOrderTrackResult} />
                         <Route exact path="/shop/wishlist" component={PageWishlist} />
                         <Route exact path="/shop/compare" component={PageCompare} />
                         <Route exact path="/shop/track-order" component={ShopPageTrackOrder} />

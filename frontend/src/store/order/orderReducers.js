@@ -5,7 +5,6 @@ import {
     ORDER_MY_LIST_REQUEST,
     ORDER_MY_LIST_SUCCESS,
     ORDER_MY_LIST_FAIL,
-    ORDER_MY_LIST_RESET,
     ORDER_LIST_REQUEST,
     ORDER_LIST_SUCCESS,
     ORDER_LIST_FAIL,
@@ -18,6 +17,10 @@ import {
     GET_USER_ORDERS_LIST_REQUEST,
     GET_USER_ORDERS_LIST_SUCCESS,
     GET_USER_ORDERS_LIST_FAIL,
+    CHECK_TRACK_ORDER_REQUEST,
+    CHECK_TRACK_ORDER_SUCCESS,
+    CHECK_TRACK_ORDER_FAIL,
+    CHECK_TRACK_ORDER_RESET,
 } from "./orderActionsTypes";
 
 function orderCreateReducer(state = {}, action) {
@@ -42,8 +45,6 @@ function OrdersMyListReducer(state = { orders: [] }, action) {
             return { loading: false, success: true, orders: action.payload };
         case ORDER_MY_LIST_FAIL:
             return { loading: false, error: action.payload };
-        case ORDER_MY_LIST_RESET:
-            return {};
         default:
             return state;
     }
@@ -104,6 +105,22 @@ function userOrdersListReducer(state = { orders: null }, action) {
     }
 }
 
+//check track order
+function checkTrackOrderReducer(state = {}, action) {
+    switch (action.type) {
+        case CHECK_TRACK_ORDER_REQUEST:
+            return { loading: true };
+        case CHECK_TRACK_ORDER_SUCCESS:
+            return { loading: false, success: true };
+        case CHECK_TRACK_ORDER_FAIL:
+            return { loading: false, error: action.payload };
+        case CHECK_TRACK_ORDER_RESET:
+            return {};
+        default:
+            return state;
+    }
+}
+
 export {
     orderCreateReducer,
     OrdersMyListReducer,
@@ -111,4 +128,5 @@ export {
     orderGetReducer,
     orderCancelReducer,
     userOrdersListReducer,
+    checkTrackOrderReducer,
 };

@@ -66,50 +66,24 @@ const orderSchema = mongoose.Schema(
       required: true,
       default: false,
     },
-    // onHold: {
-    //   type: Boolean,
-    //   required: true,
-    //   default: false,
-    // },
-    // delayed: {
-    //   type: Boolean,
-    //   required: true,
-    //   default: false,
-    // },
-    // canceled: {
-    //   type: Boolean,
-    //   required: true,
-    //   default: false,
-    // },
     status: {
       type: String,
       required: [true, "order status is required"],
-      enum: [
-        "ordered",
-        "onhold",
-        "delayed",
-        "canceled",
-        "refused",
-        "completed",
-      ],
+      enum: ["ordered", "onhold", "canceled", "refused", "completed"],
       default: "ordered",
     },
     isReviewed: {
       type: Boolean,
       required: [true, "order reviewed status is required"],
-      default: true,
+      default: false,
     },
     paidAt: {
       type: Date,
     },
-    isDelivered: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
     deliveredAt: {
       type: Date,
     },
+    adminNotes: String,
   },
   {
     timestamps: true,

@@ -95,6 +95,21 @@ const messages_en = {
     showing: "Showing",
     of: "of",
     filters: "Filters",
+    trackOrder: "Track Order",
+    orderUnderReview: "Order Under Review",
+    orderUnderReviewMsg: "Order Under Review. we will send an email in case of acceptance or refustion",
+    orderCompelete: "Delivered",
+    orderCompeleteMsg: "Order has delivered successfully",
+    orderRefused: "Refused",
+    orderRefusedMsg: "Admins Refused your order",
+    orderCanceled: "Canceled",
+    orderCanceledMsg: "You canceled this order",
+    orderOnWay: "on Way",
+    orderOnWayMsg: "Our customer in its way to you",
+    cancelOrder: "Cancel order",
+    cancelOrderInstructions:
+        "you can cancel order manual while it was in our stock. If our representative received order then you cannot cancel it manual. instead,You have to call customer service",
+    orderDetails: "Order Details",
 };
 
 export default messages_en;

@@ -1,9 +1,9 @@
 // react
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 
 // third-party
 import classNames from 'classnames';
-import { connect} from 'react-redux';
+import { connect,useSelector,useDispatch} from 'react-redux';
 import { Link } from 'react-router-dom';
 
 // application
@@ -17,6 +17,20 @@ import { mobileMenuClose } from '../../store/mobile-menu';
 import currencies from '../../data/shopCurrencies';
 // import mobileMenuLinks from '../../data/mobileMenu';
 
+import {
+    getSearchCategories,
+} from "../../store/homePage"
+
+
+function prepareCategories ( categories ) {
+    const listcategory=[]
+    for (const category of categories) {
+        listcategory.push( { type: "link",label:category.name,url:"/shop/category"})
+    }
+
+    return listcategory;
+}
+
 const shopLinks = {
     type: "link",
     label: "Shop",
@@ -26,7 +40,7 @@ const shopLinks = {
 const accounLogin = {
     type: "link",
     label: "Login",
-    url: "/auth/login"
+    url: "/account/login"
 };
     
 const accountlinks = {
@@ -52,7 +66,11 @@ const homeLink = {
 };
 
 function MobileMenu ( props ) {
+    const searchCategories = useSelector( state => state.searchCategories )
+    const { categories } = searchCategories;
+
     const mobileMenuLinks = [];
+
     const {
         mobileMenuState,
         closeMobileMenu,
@@ -61,15 +79,21 @@ function MobileMenu ( props ) {
         userLogin:{userInfo}
     } = props;
 
+    const dispatch = useDispatch()
+    useEffect( () => {
+        if ( !categories ) {
+            dispatch( getSearchCategories() )
+        }
+    }, [dispatch, categories] );
+
+    mobileMenuLinks.push( homeLink );
+    mobileMenuLinks.push( shopLinks );
     if ( userInfo ) {
-        mobileMenuLinks.push(homeLink)
         mobileMenuLinks.push(accountlinks)
-        mobileMenuLinks.push(shopLinks)
-    } else {
-        mobileMenuLinks.push(homeLink)
-        mobileMenuLinks.push(shopLinks)
-        mobileMenuLinks.push(accounLogin)
     };
+
+
+    
 
     const classes = classNames('mobilemenu', {
         'mobilemenu--open': mobileMenuState.open,
@@ -103,21 +127,28 @@ function MobileMenu ( props ) {
             <div className="mobilemenu__body">
                 <div className="mobilemenu__header">
                     <div className="mobilemenu__title">
-                        <Link to='/' onClick={closeMobileMenu}>
-                            <img src='/uploads/imgs/site/logo2_ar.png' style={{maxWidth:'60px'}}/>
-                        </Link>
+                        {
+                            userInfo
+                                ? <span onClick={closeMobileMenu} style={{fontWeight:'normal'}}>
+                                    {userInfo.name}
+                                </span>
+                                : <Link to='/account/login' onClick={closeMobileMenu} style={{color:'#333'}}>
+                                    <i className="fa fa-user" style={{margin:'0 10px'}}></i>
+                                    Login
+                                </Link>
+                        }
                     </div>
                     <button type="button" className="mobilemenu__close" onClick={closeMobileMenu}>
                         <Cross20Svg />
                     </button>
                 </div>
                 <div className="mobilemenu__content">
-                    <MobileLinks links={mobileMenuLinks} userInfo={userInfo} onItemClick={handleItemClick} />
+                    <MobileLinks categories={categories} links={mobileMenuLinks} userInfo={userInfo} onItemClick={handleItemClick} />
                 </div>
             </div>
         </div>
     );
-}
+};
 
 const mapStateToProps = (state) => ({
     mobileMenuState: state.mobileMenu,

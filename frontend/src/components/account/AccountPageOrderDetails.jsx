@@ -15,7 +15,8 @@ import Currency from '../shared/Currency';
 
 
 import {
-    getOrder
+    getOrder,
+    cancelOrderHandler
 } from '../../store/order'
 
 
@@ -37,6 +38,9 @@ export default function AccountPageOrderDetails ( { match } ) {
 
     const userLogin = useSelector( ( state ) => state.userLogin );
     const { userInfo } = userLogin;
+
+    const cancelOrder = useSelector( state => state.cancelOrder );
+    const { loading:loadingCancelOrder, success:cancelOrderSuccess, error } = cancelOrder;
     
     const dispatch = useDispatch();
     useEffect( () => {
@@ -44,27 +48,18 @@ export default function AccountPageOrderDetails ( { match } ) {
             if ( userOrder._id !== orderId ) {
                 dispatch( getOrder( orderId ) )
             }
-            // else {
-            //     const shippingAddressFromLocalStorage = JSON.parse( localStorage.getItem( 'shippingAddress' ) );
-            //     const paymentMethodFromLocalStorage = JSON.parse( localStorage.getItem( 'paymentMethod' ) );
-            //     if ( shippingAddressFromLocalStorage ) {
-            //         localStorage.removeItem( 'shippingAddress' );
-            //     }
-            //     if ( paymentMethodFromLocalStorage ) {
-            //         localStorage.removeItem('paymentMethod')
-            //     }
-            // }
+           
         } else {
             dispatch( getOrder( orderId ) )
         }
 
-        // if ( paymentMethod ) {
-        //     //reset cart
-        //     dispatch({type:RESET_CART})
-        // }
-            
-        
+      
     }, [dispatch, userInfo, userOrder] );
+
+    const cancelHandler = ( e ) => {
+        e.preventDefault();
+        dispatch(cancelOrderHandler(orderId))
+    }
 
     
     const content = (userOrder&& userOrder.orderItems) &&  userOrder.orderItems.map( ( item ) => (
@@ -73,16 +68,40 @@ export default function AccountPageOrderDetails ( { match } ) {
             <td><Currency value={item.qty * item.price}/> </td>
         </tr>
     ) );
+
+    const orderStatus = ( status ) => {
+        return {
+            ordered: messages.orderUnderReview,
+            onhold: messages.orderOnWay,
+            canceled: messages.orderCanceled,
+            refused: messages.orderRefused,
+            completed:messages.orderCompelete
+        }[status]
+    }
+
+    const orderStatusMsg = ( status ) => {
+        return {
+            ordered:messages.orderUnderReviewMsg,
+            onhold: messages.orderOnWayMsg,
+            canceled: messages.orderCanceledMsg,
+            refused: messages.orderRefusedMsg,
+            completed:messages.orderCompeleteMsg
+        }[status]
+    }
     
     return (
         <React.Fragment>
             <Helmet>
-                <title>{`Order Details — ${ theme.name }`}</title>
+                <title>{messages.orderDetails}</title>
             </Helmet>
 
             <div className="card">
                 <div className="order-header">
                     <div className="order-header__actions">
+                        {( userOrder && userOrder.status === 'ordered' ) && <button
+                            className="btn btn-xs btn-danger ml-2"
+                            onClick={(e)=>cancelHandler(e)}
+                        >{messages.cancelOrder}</button>}
                         <Link to="/account/orders" className="btn btn-xs btn-secondary">{messages.backToOrderList}</Link>
                     </div>
                     <h5 className="order-header__title">{messages.orderNumber}: { userOrder&& userOrder._id}</h5>
@@ -90,11 +109,13 @@ export default function AccountPageOrderDetails ( { match } ) {
                         {messages.wasPlacedOn}
                         {' '}
                         <mark className="order-header__date">{userOrder&&(new Date(userOrder.createdAt).toDateString())}</mark>
-                        {' '}
-                        and is currently
-                        {' '}
-                        <mark className="order-header__status">On hold</mark>
+                        <br />
+                        
+                        <mark className="order-header__status">{userOrder && orderStatusMsg(userOrder.status.trim())}</mark>
                         .
+                    </div>
+                    <div className="order-header__subtitle ">
+                        {messages.cancelOrderInstructions}
                     </div>
                 </div>
                 

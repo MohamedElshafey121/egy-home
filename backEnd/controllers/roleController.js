@@ -41,7 +41,7 @@ const getRolesWithPermissions = catchAsync(async (req, res, next) => {
 const ACLMiddleware = (permission) => {
   return async (req, res, next) => {
     const userRole = req.user.role;
-    console.log("userRole => ", userRole);
+    // console.log("userRole => ", userRole);
 
     if (userRole.toLowerCase().trim() === "admin") return next();
     // const permissionName = "getusersList"
@@ -75,9 +75,13 @@ const ACLMiddleware = (permission) => {
  * @access   private admin
  */
 const createRole = catchAsync(async (req, res, next) => {
-  const { name, description, name_ar } = req.body;
+  console.log(req.body);
+  const { name, description, permissions } = req.body;
 
-  const role = new Role({ name, description, name_ar });
+  const role = new Role({ name, description });
+  if (role && permissions.length) {
+    permissions.forEach((permission) => role.permissions.push(permission));
+  }
   await role.save();
 
   if (!role) {
@@ -125,11 +129,13 @@ const getAllroles = catchAsync(async (req, res, next) => {
 });
 
 /*
- * @desc     Add Permission To Role
+ * @desc     Add Permission To Role & Update role description
  * @route    PATCH /api/roles/:id
  * @access   private admin
  */
 const addRolePermission = catchAsync(async (req, res, next) => {
+  const { description } = req.body;
+  console.log(req.body);
   //check if permission exist in DB
   const permission = await Permission.findById(req.body.permissionId);
   if (!permission) {
@@ -145,6 +151,12 @@ const addRolePermission = catchAsync(async (req, res, next) => {
   const existPermission = role.permissions.includes(permission._id);
   if (existPermission) {
     return next(new AppError("permission already exist", 404));
+  }
+
+  //update  Role Description decription
+  if (description) {
+    role.description = description;
+    await role.save();
   }
 
   //update the role
@@ -164,6 +176,33 @@ const addRolePermission = catchAsync(async (req, res, next) => {
     data: {
       role: newRole,
     },
+  });
+});
+
+/*
+ * @desc      Update role description
+ * @route    PATCH /api/roles/description/:id
+ * @access   private admin
+ */
+const updateRoleDescription = catchAsync(async (req, res, next) => {
+  const { description } = req.body;
+
+  //check if permission already belongs to role
+  const role = await Role.findById(req.params.id);
+  if (!role) {
+    return next(new AppError("Role not found", 404));
+  }
+
+  //update  Role Description decription
+  if (!description) {
+    return next(new AppError("Provide a description", 400));
+  }
+
+  role.description = description;
+  await role.save();
+
+  res.status(200).json({
+    status: "success",
   });
 });
 
@@ -240,4 +279,5 @@ module.exports = {
   removeRolePermission,
   ACLMiddleware,
   getOneRole,
+  updateRoleDescription,
 };

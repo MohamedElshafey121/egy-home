@@ -13,7 +13,7 @@ import {
     createCategoryReset,
     updateOneCategoryReset
 } from "../../store/category"
-import{getAllRoles} from '../../store/roles'
+import{getAllRoles,resetCreateRole} from '../../store/roles'
 
 function useQuery () {
     // return new URLSearchParams(location.search)
@@ -29,15 +29,13 @@ export default function RoleList ({history}) {
     const filterObj = {name}
     
     
-    // const createCategory = useSelector( state => state.createCategory );
-    // const { success } = createCategory;
-
-    // const updateCategory = useSelector( state => state.updateCategory );
-    // const { success: updateCategorySuccess } = updateCategory;
-    
     //select roles
     const allRoles = useSelector( state => state.allRoles )
-    const { roles, loading, error, page: currentPage, count  } = allRoles;
+    const { roles, loading, error, page: currentPage, count } = allRoles;
+    
+    const createRole = useSelector( ( state ) => state.createRole );
+    const {  success } = createRole;
+
     
 
     const dispatch = useDispatch()
@@ -51,19 +49,13 @@ export default function RoleList ({history}) {
     }, [ dispatch, name,page] )
     
 
-    //RESET CREATE
-    //  useEffect( () => {
-    //     if ( success ) {
-    //         dispatch(createCategoryReset())
-    //     }
-    // }, [dispatch,success] )
+    // RESET CREATE
+     useEffect( () => {
+        if ( success ) {
+            dispatch(resetCreateRole())
+        }
+    }, [dispatch,success] )
     
-    //RESET UPDATE
-    // useEffect( () => {
-    //     if ( updateCategorySuccess){
-    //         dispatch(updateOneCategoryReset())
-    //     }
-    // }, [updateCategorySuccess] )
     
     //search handler
      const searchByNameHandler = ( name ) => {
@@ -106,7 +98,6 @@ export default function RoleList ({history}) {
                         </th> */}
                         {/* <th className="min-w-15x" style={{ paddingLeft: "30px" }}>Name</th> */}
                         <th className="min-w-15x" >Name</th>
-                        <th className="min-w-15x" >Arabic Name</th>
                         <th>Permissions</th>
                         {/* <th>Items</th> */}
                         <th>created At</th>
@@ -116,16 +107,13 @@ export default function RoleList ({history}) {
                 <tbody>
                     {roles && roles.map( ( role, roleIdx ) => (
                         <tr key={roleIdx}>
-                            {/* <td style={{ position: 'relative' }}>
-                                <input type="checkbox" className="form-check-input m-0 fs-exact-16 d-block" aria-label="..." />
-                            </td> */}
                             
                             <td>
+                                <Link to={`/dashboard/roles/${ role._id }`}>
                                 {role.name}
+                                </Link>
                             </td>
-                            <td>
-                                {role.name_ar?role.name_ar:'أعد التعيين'}
-                            </td>
+                            
                             <td>
                                 {role.name.toLowerCase()==='admin'?"جميع الصلاحيات":role.permissions.length}
                             </td>
@@ -164,8 +152,8 @@ export default function RoleList ({history}) {
                         <PageHeader
                             title="Roles"
                             actions={[
-                                <Link key="new_category" to="/dashboard/categories-add" className="btn btn-primary">
-                                    New category
+                                <Link key="new_category" to="/dashboard/roles-add" className="btn btn-primary">
+                                    New Role
                                 </Link>,
                             ]}
                             breadcrumb={[

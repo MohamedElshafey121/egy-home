@@ -4,13 +4,8 @@ const roleSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Role arabic name is required"],
-      unique: [true, "Role arabic name must be unique"],
-    },
-    name_ar: {
-      type: String,
-      required: [true, "Role arabic name is required"],
-      unique: [true, "Role arabic name must be unique"],
+      required: [true, " name is required"],
+      unique: [true, " name must be unique"],
     },
     description: { type: String },
     permissions: [

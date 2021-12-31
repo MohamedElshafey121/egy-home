@@ -43,8 +43,8 @@ function Footer ( props ) {
     ];
     } else {
         accountLinks = [
-        { title: 'Login', url: '/auth/login' },
-        { title: 'Sign up', url: '/auth/signup' }
+        { title: 'Login', url: '/account/login' },
+        { title: 'Sign up', url: '/account/signup' }
     ];
     }
 
@@ -59,8 +59,8 @@ function Footer ( props ) {
     ];
     } else {
         accountLinks_ar = [
-        { title: 'تسجيل الدخول', url: '/auth/login' },
-        { title: 'التسجيل', url: '/auth/signup' }
+        { title: 'تسجيل الدخول', url: '/account/login' },
+        { title: 'التسجيل', url: '/account/signup' }
     ];
     }
 

@@ -120,8 +120,73 @@ exports.getUserOrderList = (req, res, next) => {
 };
 
 /**
- * @desc   Update order Status (canceled,onHold,delayed)
+ * @desc   Update order all or  Status (canceled,onHold,delayed)
  * @route  PATCH /api/orders/:id
  * @access Private
  */
 exports.updateOrder = Factory.updateOne(Order);
+
+/**
+ * @desc   Update order Status (canceled,onHold,delayed)
+ * @route  PATCH /api/orders/admin/:id
+ * @access Private
+ */
+exports.updateOrderStatus = catchAsync(async (req, res, next) => {
+  const { status: newStatus, adminNotes } = req.body;
+  const order = await Order.findById(req.params.id);
+  if (!order) {
+    return next(new AppError("Order not found", 404));
+  }
+
+  //check if we can update status
+  if (
+    order.status === "canceled" ||
+    order.status === "completed" ||
+    order.status === "refused"
+  ) {
+    return next(new AppError("Order cannot be updated any more", 401));
+  }
+
+  //when complete mean received then it's paid
+  if (newStatus === "completed") {
+    if (order.isPaid === false) {
+      order.isPaid = true;
+      order.paidAt = new Date(Date.now());
+    }
+  }
+
+  //update status
+  order.status = newStatus;
+
+  if (adminNotes) {
+    order.adminNotes = adminNotes;
+  }
+  if (!order.isReviewed) {
+    order.isReviewed = true;
+  }
+  await order.save({ validateBeforeSave: true });
+
+  res.status(200).json({ status: "Success" });
+});
+
+/**
+ * @desc   Update order Status (canceled,onHold,delayed)
+ * @route  get /api/orders/track/:id
+ * @access Private
+ */
+exports.checkTrackOrder = catchAsync(async (req, res, next) => {
+  const order = await Order.findById(req.params.id);
+
+  if (!order) {
+    return next(new AppError("Order not found", 404));
+  }
+
+  console.log("user Order ".toString().trim(), order.user._id);
+  console.log("req.user._id ", req.user._id);
+
+  if (order.user._id.toString().trim() !== req.user._id.toString().trim()) {
+    return next(new AppError("You are not allowed to view that order", 403));
+  }
+
+  res.status(200).json({ status: "Success" });
+});

@@ -434,86 +434,6 @@ export default function ProductAdd ({history}) {
                             onChange={handleCreateSpecification}
                     />
                         <div className="sa-divider" />
-                        {/* {( images && images.length > 0 ) && (
-                            <React.Fragment>
-                     <div className="table-responsive">
-                            <table className="sa-table">
-                                <thead>
-                                    <tr>
-                                        <th className="w-min">Image</th>
-                                        <th className="min-w-10x">color</th>
-                                        <th className="min-w-10x">size</th>
-                                        <th className="w-min">Price</th>
-                                        <th className="w-min" />
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    { images.map( ( image, imageIdx ) => (
-                                        <tr key={imageIdx}>
-                                            <td>
-                                                <div className="sa-symbol sa-symbol--shape--rounded sa-symbol--size--lg">
-                                                    <img src={URL.createObjectURL(image)}  />
-                                                </div>
-                                            </td>
-                                            <td>
-                                                 <select className="sa-select2 form-select" id={imageIdx}>
-                            <option selected >Select Color</option>
-                            <option  >Select Color</option>
-                            <option  >Select Color</option>
-                            <option  >Select Color</option>
-                            <option  >Select Color</option>
-                            <option  >Select Color</option>
-                           
-                        </select>
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    className="form-control form-control-sm"
-                                                    onChange={addSpecificationSize}
-                                                    id={imageIdx}
-                                                />
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="number"
-                                                    className="form-control form-control-sm w-4x"
-                                                    id={imageIdx}
-                                                    onChange={addSpecificationPrice}
-                                                />
-                                            </td>
-                                            <td>
-                                                <button
-                                                    id={imageIdx}
-                                                    onClick={removeSpecification}
-                                                    className="btn btn-sa-muted btn-sm mx-n3"
-                                                    type="button"
-                                                    aria-label="Delete image"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-placement="right"
-                                                    title="Delete image"
-                                                >
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="12"
-                                                        height="12"
-                                                        viewBox="0 0 12 12"
-                                                        fill="currentColor"
-                                                    >
-                                                        <path
-                                                            d="M10.8,10.8L10.8,10.8c-0.4,0.4-1,0.4-1.4,0L6,7.4l-3.4,3.4c-0.4,0.4-1,0.4-1.4,0l0,0c-0.4-0.4-0.4-1,0-1.4L4.6,6L1.2,2.6 c-0.4-0.4-0.4-1,0-1.4l0,0c0.4-0.4,1-0.4,1.4,0L6,4.6l3.4-3.4c0.4-0.4,1-0.4,1.4,0l0,0c0.4,0.4,0.4,1,0,1.4L7.4,6l3.4,3.4 C11.2,9.8,11.2,10.4,10.8,10.8z"
-                                                        ></path>
-                                                    </svg>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ) )}
-                                </tbody>
-                            </table>
-                        </div>
-                                <div className="sa-divider" />
-                                </React.Fragment>
-                        )} */}
                         {( specifications && specifications.length > 0 ) && (
                             <React.Fragment>
                      <div className="table-responsive">
@@ -594,29 +514,6 @@ export default function ProductAdd ({history}) {
                     </div>
                 }
             /> 
-
-            {/* <Card
-                title="Search engine optimization"
-                help="Provide information that will help improve the snippet and bring your product to the top of search engines."
-                className="mt-5"
-            >
-                <div className="mb-4">
-                    <label htmlFor="form-product/seo-title" className="form-label">
-                        Page title
-                    </label>
-                    <input type="text" className="form-control" id="form-product/seo-title" />
-                </div>
-                <div>
-                    <label htmlFor="form-product/seo-description" className="form-label">
-                        Meta description
-                    </label>
-                    <textarea
-                        id="form-product/seo-description"
-                        className="form-control"
-                        rows={2}
-                    />
-                </div>
-            </Card> */}
         </>
     );
 
