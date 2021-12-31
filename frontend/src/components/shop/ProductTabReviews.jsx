@@ -17,7 +17,7 @@ import {
 
 
 function ProductTabReviews ( { productId, reviews } ) {
-     const userLogin = useSelector(state=>state.userLogin);
+    const userLogin = useSelector(state=>state.userLogin);
     const { userInfo } = userLogin;
 
     const createProductReview = useSelector( state => state.createProductReview )
@@ -27,33 +27,20 @@ function ProductTabReviews ( { productId, reviews } ) {
     const [rating, setRating] = useState(5)
     const [comment, setComment] = useState();
     const [page, setpage] = useState( 1 )
-    
-    const [alreadyReviewed, setAlreadyReviewed] = useState( false );
 
+    const alreadyReviewed=reviews.find( review => review.user === userInfo._id )
     
-    
-    useEffect( () => {
-        reviews.forEach( review => {
-            if (review.user===userInfo._id) {
-                setAlreadyReviewed( true );
-            }
-        })
-    },[])
 
     const dispatch = useDispatch();
     //create review
     function createReviewHandler ( event ) {
         event.preventDefault();
-        const ratingForm = new FormData();
-        // if ( rating ) ratingForm.append( 'rating',rating )
-        // if ( comment ) ratingForm.append( 'comment', comment )
-        
+    
         dispatch(createProductReviewHandler(productId,{rating,comment}))
     };
 
     useEffect( () => {
         if ( success ) {
-            setAlreadyReviewed( true );
             dispatch(resetProductReviews())
             dispatch( handleGetOneProduct( productId ) );
         }
@@ -128,7 +115,7 @@ function ProductTabReviews ( { productId, reviews } ) {
                 {reviews.length===0 && (<div className="reviews-list"> Ther is No Reviews Yet </div>)}
             </div>
 
-            {!alreadyReviewed && reviewForm}
+            {(!alreadyReviewed && userInfo) && reviewForm}
 
             </div>
     );
