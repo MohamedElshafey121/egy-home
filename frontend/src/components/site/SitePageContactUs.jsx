@@ -78,8 +78,7 @@ function SitePageContactUs () {
                                             <p>
                                                 {messages.email}: stroyka@example.com
                                                 <br />
-                                                {messages.PhoneNumber}: 01111444013
-                                            </p>
+                                                {messages.PhoneNumber}: 01010-098-1072                                            </p>
 
                                             <p>
 
