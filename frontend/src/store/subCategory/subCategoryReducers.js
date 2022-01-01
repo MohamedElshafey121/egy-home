@@ -14,8 +14,33 @@ import {
     UPDATE_SUB_CATEGORY_SUCCESS,
     UPDATE_SUB_CATEGORY_FAIL,
     UPDATE_SUB_CATEGORY_RESET,
+    GET_CATEGORY_SUBCATEGORIES_REQUEST,
+    GET_CATEGORY_SUBCATEGORIES_SUCCESS,
+    GET_CATEGORY_SUBCATEGORIES_FAIL,
 } from "./subCategoryActionTypes";
 
+//get subcategories belongs to category
+export function getCategorySubCategories(state = { SubCategories: null }, action) {
+    switch (action.type) {
+        case GET_CATEGORY_SUBCATEGORIES_REQUEST:
+            return { loading: true };
+        case GET_CATEGORY_SUBCATEGORIES_SUCCESS:
+            return {
+                loading: false,
+                subCategories: action.payload,
+                success: true,
+                page: action.page,
+                count: action.count,
+            };
+        case GET_CATEGORY_SUBCATEGORIES_FAIL:
+            return { loading: false, error: action.payload };
+        // case GET_SUB_CATEGORIES_RESEST:
+        //     return { SubCategories: [] };
+        default:
+            return state;
+    }
+}
+//get All sub categories reducer
 export function getSubCategories(state = { SubCategories: null }, action) {
     switch (action.type) {
         case GET_SUB_CATEGORIES_REQUEST:

@@ -24,10 +24,42 @@ import {
     UPDATE_SUB_CATEGORY_SUCCESS,
     UPDATE_SUB_CATEGORY_FAIL,
     UPDATE_SUB_CATEGORY_RESET,
+    GET_CATEGORY_SUBCATEGORIES_REQUEST,
+    GET_CATEGORY_SUBCATEGORIES_SUCCESS,
+    GET_CATEGORY_SUBCATEGORIES_FAIL,
 } from "./subCategoryActionTypes";
 
 //get sub categories belong to a specific category
+export function handleGetAllCategorySubCategories(categoryId = null) {
+    return async (dispatch, getState) => {
+        try {
+            dispatch({
+                type: GET_CATEGORY_SUBCATEGORIES_REQUEST,
+            });
 
+            const { data } = await axios.get(`/api/categories/subCategories/${categoryId}?limit=20`);
+
+            return dispatch({
+                type: GET_CATEGORY_SUBCATEGORIES_SUCCESS,
+                payload: data.data.subcategories,
+                page: data.data.page,
+                count: data.data.count,
+            });
+        } catch (error) {
+            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+
+            dispatch({
+                type: GET_CATEGORY_SUBCATEGORIES_FAIL,
+                payload: message,
+            });
+            toast.error(`Error while loading Sub Categories, Please Refresh the page`, {
+                theme: "colored",
+            });
+        }
+    };
+}
+
+//get all categories && sub categories belong to a specific category
 export function handleGetAllSubCategories(filterObj = {}, limit = 10, sort = "", page = 1, categoryId = null) {
     return async (dispatch, getState) => {
         try {

@@ -25,27 +25,6 @@ import {
 } from '../../svg';
 import { sidebarOpen } from '../../store/sidebar';
 
-import { handleGetAllProducts } from "../../store/product";
-
-function useSetOption(option, filter, dispatch) {
-    const callback = useCallback(filter, []);
-
-    return useCallback((data) => {
-        dispatch({
-            type: 'SET_OPTION_VALUE',
-            option,
-            value: callback(data),
-        });
-    }, [option, callback, dispatch]);
-}
-
-
-//Important
-function useQuery() {
-  // return new URLSearchParams(location.search)
-  return new URLSearchParams(useLocation().search);
-}
-
 function ProductsView ( props ) {
     const locale = useSelector( state => state.locale )
     const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
@@ -55,90 +34,98 @@ function ProductsView ( props ) {
     }, [locale] )
 
     const {
-        // productsList,
-        history,
-        options,
-        filters,
-        // dispatch,
         layout: propsLayout, //important
         offcanvas,
         sidebarOpen,
+        productsList,
+        productsLoading,
+        currentPage,
+        allProducts,
+        sortHanler,
+        limit,
+        sort,
+        limitHandler,
+        count,
+        handleStepsPushHandler,
+        handleResetFilters
     } = props;
 
     // const limit = 50;
 //   const sort = "-createdAt";
-  const query = useQuery();
-  const name = query.get("name") || "";
-  const category = query.get("c") || "";
-  const rating = query.get("r") || "";
-  const subCategory = query.get("s") || "";
-  const page = query.get("p") || 1;
-  // const [page,setPage]=useState(query.get( 'p' ) || 1)
+//   const query = useQuery();
+//   const name = query.get("name") || "";
+//     const category = query.get( "c" ) || "";
+//     const brand = query.get( 'brand' ) || '';
+//   const rating = query.get("r") || "";
+//   const subCategory = query.get("s") || "";
+//   const page = query.get("p") || 1;
+//   // const [page,setPage]=useState(query.get( 'p' ) || 1)
     const [layout, setLayout] = useState( propsLayout );
-    const [sort, setSort] = useState( '-createdAt' );
-    const [limit, setLimit] = useState( 18 );
+//     const [sort, setSort] = useState( '-createdAt' );
+//     const [limit, setLimit] = useState( 18 );
     
 
-  const allProducts = useSelector((state) => state.allProducts);
-  const {
-    loading:productsLoading,
-    products:productsList,
-    error,
-    page: currentPage,
-    count,
-    category: categoryFound,
-  } = allProducts;
+//   const allProducts = useSelector((state) => state.allProducts);
+//   const {
+//     loading:productsLoading,
+//     products:productsList,
+//     error,
+//     page: currentPage,
+//     count,
+//     category: categoryFound,
+//   } = allProducts;
     
-    const filterObj = {
-    name,
-    category,
-    rating,
-    subCategory,
-    };
+//     const filterObj = {
+//     name,
+//     category,
+//     rating,
+//         subCategory,
+//     brand
+//     };
     
 
-    //MY WORK
-    const dispatch = useDispatch();
-    useEffect( () => {
-        dispatch( handleGetAllProducts( filterObj, limit, sort, page ) );
-    }, [dispatch, name, category, rating, subCategory, page,sort,limit] );
+//     //MY WORK
+//     const dispatch = useDispatch();
+//     useEffect( () => {
+//         dispatch( handleGetAllProducts( filterObj, limit, sort, page ) );
+//     }, [dispatch, name, category, rating, subCategory, page,sort,limit,brand] );
 
-    const sortHanler = ( e ) => {
-    e.preventDefault();
-        // dispatch( handleGetAllProducts( filterObj, limit, e.target.value, 1 ) )
-        setSort(e.target.value)
-    };
+//     const sortHanler = ( e ) => {
+//     e.preventDefault();
+//         // dispatch( handleGetAllProducts( filterObj, limit, e.target.value, 1 ) )
+//         setSort(e.target.value)
+//     };
 
-    const limitHandler = (e) => {
-        e.preventDefault();
-        setLimit( e.target.value );
-    }
+//     const limitHandler = (e) => {
+//         e.preventDefault();
+//         setLimit( e.target.value );
+//     }
 
-    const handleStepsPushHandler = ( p) => {
-    if (query) {
-      if (query.get("p") && query.get("p").trim()) {
-        query.set("p", p);
-        history.push(`/shop/catalog?${query}`);
-      } else {
-        history.push(`/shop/catalog?${query}&p=${p}`);
-      }
-    } else {
-      history.push(`/shop/catalog?p=${p}`);
-    }
-    // setPage( p );
-  };
+//     const handleStepsPushHandler = ( p) => {
+//     if (query) {
+//       if (query.get("p") && query.get("p").trim()) {
+//         query.set("p", p);
+//         history.push(`/shop/catalog?${query}`);
+//       } else {
+//         history.push(`/shop/catalog?${query}&p=${p}`);
+//       }
+//     } else {
+//       history.push(`/shop/catalog?p=${p}`);
+//     }
+//     // setPage( p );
+//   };
 
 
-    // const handlePageChange = useSetOption('page', parseFloat, dispatch);
-    // const handleSortChange = useSetOption('sort', (event) => event.target.value, dispatch);
-    // const handleLimitChange = useSetOption('limit', (event) => parseFloat(event.target.value), dispatch);
+//     // const handlePageChange = useSetOption('page', parseFloat, dispatch);
+//     // const handleSortChange = useSetOption('sort', (event) => event.target.value, dispatch);
+//     // const handleLimitChange = useSetOption('limit', (event) => parseFloat(event.target.value), dispatch);
 
-    const handleResetFilters = useCallback(() => {
-        // dispatch({ type: 'RESET_FILTERS' });
-        history.push('/shop/catalog')
-    }, []);
+//     const handleResetFilters = useCallback(() => {
+//         // dispatch({ type: 'RESET_FILTERS' });
+//         history.push('/shop/catalog')
+//     }, []);
 
-    const filtersCount = Object.keys( filters ).map( ( x ) => filters[x] ).filter( ( x ) => x ).length;
+    // const filtersCount = Object.keys( filters ).map( ( x ) => filters[x] ).filter( ( x ) => x ).length;
 
     //View Modes important
     let viewModes = [
@@ -193,7 +180,7 @@ function ProductsView ( props ) {
                             <button type="button" className="filters-button" onClick={() => sidebarOpen()}>
                                 <Filters16Svg className="filters-button__icon" />
                                 <span className="filters-button__title">{messages.filters}</span>
-                                {!!filtersCount && <span className="filters-button__counter">{filtersCount}</span>}
+                                {/* {!!filtersCount && <span className="filters-button__counter">{'filtersCount'}</span>} */}
                             </button>
                         </div>
                         <div className="view-options__layout">
@@ -265,14 +252,22 @@ function ProductsView ( props ) {
                     </div>
                 </div>
 
-                <div className="products-view__pagination">
+                {count > limit &&
+                    ( <div className="products-view__pagination">
                     <Pagination
                         current={currentPage}
                         siblings={2}
                         total={Math.ceil(count / limit)}
                         onPageChange={handleStepsPushHandler}
                     />
-                </div>
+                </div> )
+                }
+
+                {count < limit && (
+                    <div className="products-view__pagination text-center">
+                        No more products
+                    </div>
+                )}
             </div>
         );
     } else {

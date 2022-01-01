@@ -4,12 +4,14 @@ import React, { useCallback,useState,useEffect } from 'react';
 // third-party
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router';
 
 // application
 import Collapse from '../shared/Collapse';
 import FilterCategory from '../filters/FilterCategory';
 import FilterCategoryMine from '../filters/FilterCategoryMine';
+import FilterBrands from '../filters/FilterBrands'
 import FilterCheck from '../filters/FilterCheck';
 import FilterColor from '../filters/FilterColor';
 import FilterRadio from '../filters/FilterRadio';
@@ -22,6 +24,9 @@ import {
     getSuggestedSearchProducts
 } from "../../store/homePage"
 
+import { handleGetAllCategorySubCategories } from '../../store/subCategory'
+import {getAllBrands} from '../../store/brand'
+
 const filterComponents = {
     category: FilterCategory,
     range: FilterRange,
@@ -30,86 +35,26 @@ const filterComponents = {
     color: FilterColor,
 };
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 function WidgetFilters(props) {
     const {
-        // dispatch,
-        filters,
-        values,
         title,
         offcanvas,
+        subCategories,
+        categories,
+        brands,
+        category,
+        subCategory,
+        brand,
+        brandPushHandler,
+        categoryPushHandler,
+        handleResetFilters
     } = props;
 
-     const searchCategories = useSelector( state => state.searchCategories )
-    const { categories } = searchCategories;
-
-    const dispatch = useDispatch()
-    //load categories
-    useEffect( () => {
-        if ( !categories ) {
-            dispatch( getSearchCategories() )
-        }
-    }, [ dispatch, categories] )
-
-    const handleValueChange = useCallback(({ filter, value }) => {
-        const handler = getFilterHandler(filter);
-
-        if (handler) {
-            dispatch({
-                type: 'SET_FILTER_VALUE',
-                filter: filter.slug,
-                value: handler.isDefaultValue(filter, value) ? undefined : handler.serialize(value),
-            });
-        }
-    }, [dispatch]);
-
-    const handleResetFilters = () => {
-        dispatch({ type: 'RESET_FILTERS' });
-    };
-
-    const filtersList = filters.map( ( filter ) => {
-        
-        let filterView;
-        let { value } = filter;
-        const handler = getFilterHandler(filter);
-
-        if (handler && filter.slug in values) {
-            value = handler.deserialize(values[filter.slug]) || handler.getDefaultValue(filter);
-        }
-
-        const FilterComponent = filterComponents[filter.type];
-
-        if (FilterComponent) {
-            filterView = (
-                <FilterComponent
-                    data={filter}
-                    value={value}
-                    onChangeValue={handleValueChange}
-                />
-            );
-        }
-
-        return (
-            <div key={filter.slug} className="widget-filters__item">
-                <Collapse
-                    toggleClass="filter--opened"
-                    render={({ toggle, setItemRef, setContentRef }) => (
-                        <div className="filter filter--opened" ref={setItemRef}>
-                            <button type="button" className="filter__title" onClick={toggle}>
-                                {filter.name}
-                                <ArrowRoundedDown12x7Svg className="filter__arrow" />
-                            </button>
-                            <div className="filter__body" ref={setContentRef}>
-                                <div className="filter__container">
-                                    {filterView}
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                />
-            </div>
-        );
-    });
-
+    
     const classes = classNames('widget-filters widget', {
         'widget-filters--offcanvas--always': offcanvas === 'always',
         'widget-filters--offcanvas--mobile': offcanvas === 'mobile',
@@ -133,31 +78,42 @@ function WidgetFilters(props) {
                             <div className="filter__body" ref={setContentRef}>
                                 <div className="filter__container">
                                     {/* <FilterCategory /> */}
-                                    <FilterCategoryMine data={categories ?categories :[]}/>
+                                    <FilterCategoryMine
+                                        subCategories={subCategories ? subCategories : null}
+                                        category={category}
+                                        categories={categories ? categories : []}
+                                        subCategory={subCategory}
+                                        categoryPushHandler={categoryPushHandler}
+                                    />
                                 </div>
                             </div>
                         </div>
                     )}
                 />
-            </div>
-                <div  className="widget-filters__item">
+                </div>
+                
+                {brands&&(<div  className="widget-filters__item">
                 <Collapse
                     toggleClass="filter--opened"
                     render={({ toggle, setItemRef, setContentRef }) => (
                         <div className="filter filter--opened" ref={setItemRef}>
                             <button type="button" className="filter__title" onClick={toggle}>
-                                Color
+                                Brands
                                 <ArrowRoundedDown12x7Svg className="filter__arrow" />
                             </button>
                             <div className="filter__body" ref={setContentRef}>
                                 <div className="filter__container">
-                                    <FilterColor/>
+                                    <FilterBrands
+                                        selectedBrand={brand}
+                                        brands={brands}
+                                        brandPushHandler={brandPushHandler}
+                                        />
                                 </div>
                             </div>
                         </div>
                     )}
                 />
-            </div>
+            </div>)}
 
             </div>
 

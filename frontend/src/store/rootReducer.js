@@ -75,6 +75,7 @@ import {
     createSubCategoryReducer,
     getOneSubCategoryReducer,
     updateSubcategoryReducer,
+    getCategorySubCategories,
 } from "./subCategory";
 //home page
 import {
@@ -154,6 +155,7 @@ export default combineReducers({
     getCategory: getOneCategoryReducer,
     updateCategory: updateCategoryReducer,
     allSubCategories: getSubCategories,
+    allCategorySubCategories: getCategorySubCategories,
     createSubCategory: createSubCategoryReducer,
     getSubcategory: getOneSubCategoryReducer,
     updateSubcategory: updateSubcategoryReducer,

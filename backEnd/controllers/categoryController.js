@@ -146,6 +146,7 @@ exports.getAllCategorySubs = (req, res, next) => {
   req.query.category = req.params.catId || " ";
   next();
 };
+
 // exports.getAllSubCategory = factory.getAll(SubCategory);
 exports.getAllSubCategory = catchAsync(async (req, res, next) => {
   let category;

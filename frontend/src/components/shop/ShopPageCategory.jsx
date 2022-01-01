@@ -1,5 +1,5 @@
 // react
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useCallback,useEffect, useReducer, useState } from 'react';
 
 // third-party
 import PropTypes from 'prop-types';
@@ -21,115 +21,25 @@ import { sidebarClose } from '../../store/sidebar';
 import {
     getRecentProducts,
     handleGetAllProducts
-}from '../../store/product'
+} from '../../store/product'
+
+import {
+    getSearchCategories,
+    getSuggestedSearchProducts
+} from "../../store/homePage"
+
+import { handleGetAllCategorySubCategories } from '../../store/subCategory'
+import {getAllBrands} from '../../store/brand'
+
+
 
 
 // data stubs
 import theme from '../../data/theme';
 import { url, getCategoryParents } from '../../services/utils';
 
-//get filters (query params) //limit, page, sort
-function parseQueryOptions(location) {
-    const query = queryString.parse(location);
-    const optionValues = {};
 
-    if (typeof query.page === 'string') {
-        optionValues.page = parseFloat(query.page);
-    }
-    if (typeof query.limit === 'string') {
-        optionValues.limit = parseFloat(query.limit);
-    }
-    if (typeof query.sort === 'string') {
-        optionValues.sort = query.sort;
-    }
 
-    return optionValues;
-}
-
-//filter color and brands
-function parseQueryFilters(location) {
-    const query = queryString.parse(location);
-    const filterValues = {};
-
-    Object.keys(query).forEach((param) => {
-        const mr = param.match(/^filter_([-_A-Za-z0-9]+)$/);
-
-        if (!mr) {
-            return;
-        }
-
-        const filterSlug = mr[1];
-
-        filterValues[filterSlug] = query[param];
-    });
-
-    return filterValues;
-}
-
-function parseQuery(location) {
-    return [
-        parseQueryOptions(location),
-        parseQueryFilters(location),
-    ];
-}
-
-function buildQuery(options, filters) {
-    const params = {};
-
-    if (options.page !== 1) {
-        params.page = options.page;
-    }
-
-    if (options.limit !== 12) {
-        params.limit = options.limit;
-    }
-
-    if (options.sort !== 'default') {
-        params.sort = options.sort;
-    }
-
-    Object.keys(filters).filter((x) => x !== 'category' && !!filters[x]).forEach((filterSlug) => {
-        params[`filter_${filterSlug}`] = filters[filterSlug];
-    });
-
-    return queryString.stringify(params, { encode: false });
-}
-
-// const initialState = {
-//     init: false,
-//     /**
-//      * Indicates that the category is loading.
-//      */
-//     categoryIsLoading: true,
-//     /**
-//      * Category object.
-//      */
-//     category: null,
-//     /**
-//      * Indicates that the products list is loading.
-//      */
-//     productsListIsLoading: true,
-//     /**
-//      * Products list.
-//      */
-//     productsList: null,
-//     /**
-//      * Products list options.
-//      *
-//      * options.page:  number - Current page.
-//      * options.limit: number - Items per page.
-//      * options.sort:  string - Sort algorithm.
-//      */
-//     options: {},
-//     /**
-//      * Products list filters.
-//      *
-//      * filters[FILTER_SLUG]: string - filter value.
-//      */
-//     filters: {},
-// };
-
-//Important
 function useQuery() {
   // return new URLSearchParams(location.search)
   return new URLSearchParams(useLocation().search);
@@ -137,92 +47,169 @@ function useQuery() {
 
 function ShopPageCategory ( props ) {
     const {
-        categorySlug,
         columns,
         viewMode,
         sidebarPosition,
-        location
+        location,
+        history
     } = props;
-    // const query = queryString.parse( location );
-    // console.log('query ',query)
-
-
-      // const limit = 50;
-//   const sort = "-createdAt";
-  const query = useQuery();
+    //////////////////////////////
+    const query = useQuery();
   const name = query.get("name") || "";
-  const category = query.get("c") || "";
+    const category = query.get( "c" ) || "";
+    const brand = query.get( 'brand' ) || '';
   const rating = query.get("r") || "";
   const subCategory = query.get("s") || "";
-    const page = query.get( "p" ) || 1;
-     const [sort, setSort] = useState( '-createdAt' );
+  const page = query.get("p") || 1;
+  // const [page,setPage]=useState(query.get( 'p' ) || 1)
+    // const [layout, setLayout] = useState( propsLayout );
+    const [sort, setSort] = useState( '-createdAt' );
     const [limit, setLimit] = useState( 18 );
     
-    const filterObj = {
-    name,
-    category,
-    rating,
-    subCategory,
-    };
-  
 
-    const offcanvas = columns === 3 ? 'mobile' : 'always';
-    // Latest Products
-    const dispatch = useDispatch();
-    const recentProducts = useSelector( state => state.recentProducts );
-    const { products: latestProducts, success: recentProductsSuccess, error: recentProductsError } = recentProducts;
-    
-    //products List
-    const allProducts = useSelector((state) => state.allProducts);
+  const allProducts = useSelector((state) => state.allProducts);
   const {
-    loading:productsListIsLoading,
+    loading:productsLoading,
     products:productsList,
     error,
     page: currentPage,
     count,
     category: categoryFound,
   } = allProducts;
-   
+    
+    const filterObj = {
+    name,
+    category,
+    rating,
+        subCategory,
+    brand
+    };
+    
 
-    // Replace current url.
-    // useEffect(() => {
-    //     const query = buildQuery(state.options, state.filters);
-    //     const location = `${window.location.pathname}${query ? '?' : ''}${query}`;
-
-    //     window.history.replaceState(null, '', location);
-    // }, [state.options, state.filters]);
-
-    // Load category.
-    useEffect(() => {
-        let request;
-        let canceled = false;
-
-        dispatch({ type: 'RESET', categorySlug });
-
-        if (categorySlug) {
-            request = shopApi.getCategoryBySlug(categorySlug);
-        } else {
-            request = Promise.resolve(null);
-        }
-
-        request.then((category) => {
-            if (canceled) {
-                return;
-            }
-
-            dispatch({ type: 'FETCH_CATEGORY_SUCCESS', category });
-        });
-
-        return () => {
-            canceled = true;
-        };
-    }, [dispatch, categorySlug]);
-
-    // Load products.
+    //MY WORK
+    const dispatch = useDispatch();
     useEffect( () => {
         dispatch( handleGetAllProducts( filterObj, limit, sort, page ) );
-    }, [dispatch, name, category, rating, subCategory, page,sort,limit] );
+    }, [dispatch, name, category, rating, subCategory, page,sort,limit,brand] );
 
+    const sortHanler = ( e ) => {
+    e.preventDefault();
+        // dispatch( handleGetAllProducts( filterObj, limit, e.target.value, 1 ) )
+        setSort(e.target.value)
+    };
+
+    const limitHandler = (e) => {
+        e.preventDefault();
+        setLimit( e.target.value );
+    }
+
+    const handleStepsPushHandler = ( p) => {
+    if (query) {
+      if (query.get("p") && query.get("p").trim()) {
+        query.set("p", p);
+        history.push(`/shop/catalog?${query}`);
+      } else {
+        history.push(`/shop/catalog?${query}&p=${p}`);
+      }
+    } else {
+      history.push(`/shop/catalog?p=${p}`);
+    }
+    // setPage( p );
+  };
+
+
+    const handleResetFilters = useCallback( () => {
+        history.push( '/shop/catalog' )
+    }, [] );
+
+    ///////////////////////////////////////
+
+    //CATEGORIES
+    const searchCategories = useSelector( state => state.searchCategories );
+    const { categories } = searchCategories;
+
+    //SUB CATEGORIES
+    const allCategorySubCategories = useSelector( state => state.allCategorySubCategories )
+    const { subCategories } = allCategorySubCategories;
+    
+    //BRANDS
+    const allBrands = useSelector( state => state.allBrands )
+    const {brands,success } = allBrands;
+
+    //load categories
+    useEffect( () => {
+        if ( !categories ) {
+            dispatch( getSearchCategories() )
+        }
+    }, [dispatch, categories] )
+    
+    //load subcategories
+    useEffect( () => {
+        if ( category && category.trim()!=='' ) {
+            dispatch(handleGetAllCategorySubCategories(category))
+        }
+    }, [category] )
+    
+    //load brands
+    useEffect( () => {
+        if ( !brands ) {
+            dispatch(getAllBrands())
+        }
+    }, [] )
+
+    const brandPushHandler = (e, val) => {
+        e.preventDefault();
+        window.scrollTo( {
+            top: 0,
+            behavior:'smooth'
+        })
+    if (query) {
+      if (query.get("brand") ) {
+        if (e.target.checked) {
+          query.set("brand", val);
+          history.push(`/shop/catalog?${query}`);
+        } else {
+          query.delete("brand");
+          history.push(`/shop/catalog?${query}`);
+        }
+      } else {
+        history.push(`/shop/catalog?${query}&brand=${val}`);
+      }
+    } else {
+      history.push(`/shop/catalog?brand=${val}`);
+        }
+    };
+    
+
+    // category Push handler
+    const categoryPushHandler = ( e, val ) => {
+        e.preventDefault();
+        if ( query ) {
+            if ( query.get( "s" ) ) {
+                query.delete( 's' )
+            }
+
+            if ( query.get( "c" ) && query.get( "c" ).trim() ) {
+                
+                query.set( "c", val );
+                history.push( `/shop/catalog?${ query }` );
+                
+            } else {
+                history.push( `/shop/catalog?${ query }&c=${ val }` );
+            }
+        } else {
+            history.push( `/shop/catalog?c=${ val }` );
+        }
+    };
+    
+
+    ///////////////////////////////////////////////////
+    
+    const offcanvas = columns === 3 ? 'mobile' : 'always';
+    // Latest Products
+    const recentProducts = useSelector( state => state.recentProducts );
+    const { products: latestProducts, success: recentProductsSuccess, error: recentProductsError } = recentProducts;
+   
     
     // Load latest products.
     useEffect( () => {
@@ -236,28 +223,26 @@ function ShopPageCategory ( props ) {
     let pageTitle = 'المتجر';
     let content;
 
-    // if (state.category) {
-    //     getCategoryParents(state.category).forEach((parent) => {
-    //         breadcrumb.push({ title: parent.name, url: url.category(parent) });
-    //     });
-
-    //     breadcrumb.push({ title: state.category.name, url: url.category(state.category) });
-
-    //     pageTitle = state.category.name;
-    // }
-
+  
     const productsView = (
         <ProductsView
-            isLoading={productsListIsLoading}
-            productsList={productsList}
-            // options={state.options}
             options={{}}
-            // filters={state.filters}
             filters={{}}
             dispatch={dispatch}
             layout={viewMode}
             grid={`grid-${columns}-${columns > 3 ? 'full' : 'sidebar'}`}
             offcanvas={offcanvas}
+            productsList={productsList}
+            productsLoading={productsLoading}
+            currentPage={currentPage}
+            allProducts={allProducts}
+            sortHanler={sortHanler}
+            limit={limit}
+            sort={sort}
+            limitHandler={limitHandler}
+            count={count}
+            handleStepsPushHandler={handleStepsPushHandler}
+            handleResetFilters={handleResetFilters}
         />
     );
 
@@ -267,11 +252,17 @@ function ShopPageCategory ( props ) {
                 <WidgetFilters
                     title="Filters"
                     offcanvas={offcanvas}
-                    // filters={state.productsList.filters}
-                    filters={[]}
-                    // values={state.filters}
-                    values={{}}
                     dispatch={dispatch}
+                    subCategories={subCategories}
+                    categories={categories}
+                    brands={brands}
+                    category={category}
+                    subCategory={subCategory}
+                    brand={brand}
+                    brandPushHandler={brandPushHandler}
+                    categoryPushHandler={categoryPushHandler}
+            handleResetFilters={handleResetFilters}
+
                 />
             </CategorySidebarItem>
             {offcanvas !== 'always' && (
@@ -320,7 +311,7 @@ function ShopPageCategory ( props ) {
             {content}
         </React.Fragment>
     );
-}
+};
 
 ShopPageCategory.propTypes = {
     /**

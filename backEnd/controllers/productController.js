@@ -248,6 +248,19 @@ exports.getAllProducts = catchAsync(async (req, res, next) => {
   let category;
   const limit = req.query.limit || 20;
 
+  const features = new APIFeatures(Product.find(), req.query)
+    .filter()
+    .sort()
+    .limit()
+    .paginate();
+
+  const countdocs = new APIFeatures().countDocuments(Product, req.query);
+  const count = await countdocs;
+  const products = await features.query;
+  const page = req.query.page;
+
+  console.log("count => ", count);
+
   if (req.query.category) {
     console.log("req.query.category: ", req.query.category);
     category = await Category.findById(req.query.category);
@@ -263,19 +276,6 @@ exports.getAllProducts = catchAsync(async (req, res, next) => {
       });
     }
   }
-
-  const features = new APIFeatures(Product.find(), req.query)
-    .filter()
-    .sort()
-    .limit()
-    .paginate();
-
-  const countdocs = new APIFeatures().countDocuments(Product, req.query);
-  const count = await countdocs;
-  const products = await features.query;
-  const page = req.query.page;
-
-  console.log("count => ", count);
 
   res.status(200).json({
     status: "success",

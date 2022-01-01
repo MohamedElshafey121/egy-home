@@ -18,7 +18,7 @@ import {
     UPDATE_BRAND_RESET,
 } from "./brandActionTypes";
 
-function getAllBrands(filterObj = {}, limit = 10, sort = "", page = 1) {
+function getAllBrands(filterObj = {}, limit = 100, sort = "-createdAt", page = 1) {
     return async (dispatch) => {
         try {
             let url = `/api/brands?page=${page}&limit=${limit}`;
