@@ -16,6 +16,8 @@ import FilterCheck from '../filters/FilterCheck';
 import FilterColor from '../filters/FilterColor';
 import FilterRadio from '../filters/FilterRadio';
 import FilterRange from '../filters/FilterRange';
+import FilterRatings from '../filters/FilterRatings';
+import FilterPrice from '../filters/FilterPrice';
 import getFilterHandler from '../../services/filters';
 import { ArrowRoundedDown12x7Svg } from '../../svg';
 
@@ -49,9 +51,12 @@ function WidgetFilters(props) {
         category,
         subCategory,
         brand,
+        rating,
         brandPushHandler,
         categoryPushHandler,
-        handleResetFilters
+        handleResetFilters,
+        subCategoryPushHandler,
+        ratingPushHandler
     } = props;
 
     
@@ -84,6 +89,7 @@ function WidgetFilters(props) {
                                         categories={categories ? categories : []}
                                         subCategory={subCategory}
                                         categoryPushHandler={categoryPushHandler}
+                                        subCategoryPushHandler={subCategoryPushHandler}
                                     />
                                 </div>
                             </div>
@@ -113,7 +119,34 @@ function WidgetFilters(props) {
                         </div>
                     )}
                 />
-            </div>)}
+                </div> )}
+                
+
+                <div  className="widget-filters__item">
+                <Collapse
+                    toggleClass="filter--opened"
+                    render={({ toggle, setItemRef, setContentRef }) => (
+                        <div className="filter filter--opened" ref={setItemRef}>
+                            <button type="button" className="filter__title" onClick={toggle}>
+                                Ratings
+                                <ArrowRoundedDown12x7Svg className="filter__arrow" />
+                            </button>
+                            <div className="filter__body" ref={setContentRef}>
+                                <div className="filter__container">
+                                    <FilterRatings
+                    ratingPushHandler={ratingPushHandler}
+                                        selectedRating={rating}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                />
+                </div> 
+                
+
+                
+                
 
             </div>
 

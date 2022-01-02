@@ -14,7 +14,7 @@ function MegamenuLinks(props) {
         let subLinks = null;
 
         if (link.name) {
-            title = <Link to={link.name}>{link.name}</Link>;
+            title = <Link to={`/shop/catalog?s=${link._id}`}>{link.name}</Link>;
         }
 
         // if (link.links && link.links.length) {

@@ -44,7 +44,6 @@ function getSubcategories ( categoryId, subCategories ) {
 }
 
 // data stubs
-import departments from '../../data/headerDepartments';
 
 function DepartmentsLinksNew () {
     const allCategories = useSelector( state => state.allCategories )
@@ -100,11 +99,11 @@ function DepartmentsLinksNew () {
         return (
             <li key={index} className={`departments__item ${itemClass}`}>
                 {/* <Link onClick={e=>e.preventDefaut()} onMouseOver={e=>getSubCategoriesHandler(category._id)}> */}
-                <Link onClick={e=>e.preventDefault()}>
+                <Link to={`/shop/catalog?c=${category._id}`}>
                     {category.name}
                     {arrow}
                 </Link>
-                {submenu}
+                {category.subCategories.length>0 && submenu}
             </li>
         );
     });

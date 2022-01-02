@@ -60,7 +60,8 @@ function ShopPageCategory ( props ) {
     const brand = query.get( 'brand' ) || '';
   const rating = query.get("r") || "";
   const subCategory = query.get("s") || "";
-  const page = query.get("p") || 1;
+    const page = query.get( "p" ) || 1;
+    
   // const [page,setPage]=useState(query.get( 'p' ) || 1)
     // const [layout, setLayout] = useState( propsLayout );
     const [sort, setSort] = useState( '-createdAt' );
@@ -81,7 +82,7 @@ function ShopPageCategory ( props ) {
     name,
     category,
     rating,
-        subCategory,
+    subCategory,
     brand
     };
     
@@ -201,6 +202,46 @@ function ShopPageCategory ( props ) {
             history.push( `/shop/catalog?c=${ val }` );
         }
     };
+
+    // category Push handler
+    const subCategoryPushHandler = (e, val) => {
+    e.preventDefault();
+    if (query) {
+      if (query.get("s") && query.get("s").trim()) {
+        
+          query.set("s", val);
+          history.push(`/shop/catalog?${query}`);
+        
+      } else {
+        history.push(`/shop/catalog?${query}&s=${val}`);
+      }
+    } else {
+      history.push(`/shop/catalog?s=${val}`);
+    }
+    };
+
+    const ratingPushHandler = (e, val) => {
+        e.preventDefault();
+        window.scrollTo( {
+            top: 60,
+            behavior:'smooth'
+        })
+    if (query) {
+      if (query.get("r") ) {
+        if (e.target.checked) {
+          query.set("r", val);
+          history.push(`/shop/catalog?${query}`);
+        } else {
+          query.delete("r");
+          history.push(`/shop/catalog?${query}`);
+        }
+      } else {
+        history.push(`/shop/catalog?${query}&r=${val}`);
+      }
+    } else {
+      history.push(`/shop/catalog?r=${val}`);
+        }
+    };
     
 
     ///////////////////////////////////////////////////
@@ -261,8 +302,10 @@ function ShopPageCategory ( props ) {
                     brand={brand}
                     brandPushHandler={brandPushHandler}
                     categoryPushHandler={categoryPushHandler}
-            handleResetFilters={handleResetFilters}
-
+                    handleResetFilters={handleResetFilters}
+                    subCategoryPushHandler={subCategoryPushHandler}
+                    ratingPushHandler={ratingPushHandler}
+                    rating={rating}
                 />
             </CategorySidebarItem>
             {offcanvas !== 'always' && (

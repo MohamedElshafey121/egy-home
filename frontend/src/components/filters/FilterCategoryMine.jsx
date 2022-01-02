@@ -13,8 +13,12 @@ import { ArrowRoundedLeft6x9Svg } from '../../svg';
 
 function FilterCategoryMine ( props ) {
     const {
-        categories, category, subCategories, subCategory,
-        categoryPushHandler
+        categories,
+        category,
+        subCategories,
+        subCategory,
+        categoryPushHandler,
+        subCategoryPushHandler
     } = props;
     const selectedCategory = categories.find( ( cat ) => category === cat._id );
 
@@ -47,7 +51,8 @@ function FilterCategoryMine ( props ) {
                     return ( <li className={classNames( 'filter-categories__item filter-categories__item--child', {
                         'filter-categories__item--current':(subCategory &&subCategory.trim()!=='' && subCategory===sub._id)
                     })}>
-                        <Link  to={`/shop/catalog?c=${ selectedCategory._id }&s=${sub._id}`} >{sub.name}</Link>
+                        {/* <Link  to={`/shop/catalog?c=${ selectedCategory._id }&s=${sub._id}`} >{sub.name}</Link> */}
+                        <Link  onClick={e=>subCategoryPushHandler(e,sub._id)} >{sub.name}</Link>
                     </li> )
                 } )}
                 

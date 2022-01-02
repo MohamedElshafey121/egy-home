@@ -50,82 +50,7 @@ function ProductsView ( props ) {
         handleResetFilters
     } = props;
 
-    // const limit = 50;
-//   const sort = "-createdAt";
-//   const query = useQuery();
-//   const name = query.get("name") || "";
-//     const category = query.get( "c" ) || "";
-//     const brand = query.get( 'brand' ) || '';
-//   const rating = query.get("r") || "";
-//   const subCategory = query.get("s") || "";
-//   const page = query.get("p") || 1;
-//   // const [page,setPage]=useState(query.get( 'p' ) || 1)
     const [layout, setLayout] = useState( propsLayout );
-//     const [sort, setSort] = useState( '-createdAt' );
-//     const [limit, setLimit] = useState( 18 );
-    
-
-//   const allProducts = useSelector((state) => state.allProducts);
-//   const {
-//     loading:productsLoading,
-//     products:productsList,
-//     error,
-//     page: currentPage,
-//     count,
-//     category: categoryFound,
-//   } = allProducts;
-    
-//     const filterObj = {
-//     name,
-//     category,
-//     rating,
-//         subCategory,
-//     brand
-//     };
-    
-
-//     //MY WORK
-//     const dispatch = useDispatch();
-//     useEffect( () => {
-//         dispatch( handleGetAllProducts( filterObj, limit, sort, page ) );
-//     }, [dispatch, name, category, rating, subCategory, page,sort,limit,brand] );
-
-//     const sortHanler = ( e ) => {
-//     e.preventDefault();
-//         // dispatch( handleGetAllProducts( filterObj, limit, e.target.value, 1 ) )
-//         setSort(e.target.value)
-//     };
-
-//     const limitHandler = (e) => {
-//         e.preventDefault();
-//         setLimit( e.target.value );
-//     }
-
-//     const handleStepsPushHandler = ( p) => {
-//     if (query) {
-//       if (query.get("p") && query.get("p").trim()) {
-//         query.set("p", p);
-//         history.push(`/shop/catalog?${query}`);
-//       } else {
-//         history.push(`/shop/catalog?${query}&p=${p}`);
-//       }
-//     } else {
-//       history.push(`/shop/catalog?p=${p}`);
-//     }
-//     // setPage( p );
-//   };
-
-
-//     // const handlePageChange = useSetOption('page', parseFloat, dispatch);
-//     // const handleSortChange = useSetOption('sort', (event) => event.target.value, dispatch);
-//     // const handleLimitChange = useSetOption('limit', (event) => parseFloat(event.target.value), dispatch);
-
-//     const handleResetFilters = useCallback(() => {
-//         // dispatch({ type: 'RESET_FILTERS' });
-//         history.push('/shop/catalog')
-//     }, []);
-
-    // const filtersCount = Object.keys( filters ).map( ( x ) => filters[x] ).filter( ( x ) => x ).length;
 
     //View Modes important
     let viewModes = [
@@ -193,13 +118,14 @@ function ProductsView ( props ) {
                         <div className="view-options__legend">
                             {messages.showing}
                             {
-                                Number( currentPage ) === 1
+                                (Number( currentPage ) === 1 )
                                     ? '1 - '
                                     : !isNaN( ( Number( currentPage ) - 1 ) * limit )
                                         ? `${(( Number( currentPage ) - 1 ) * limit)+1} — `
                                         :'' 
                             }
-                            {!isNaN( Number( currentPage ) * limit ) && Number( currentPage ) * limit}
+                            {( !isNaN( Number( currentPage ) * limit ) && count > limit ) ?Number( currentPage ) * limit:count
+                            }
                                                                 {allProducts.count &&(<> {messages.of} <span>{allProducts.count}</span></>)}
 
 
