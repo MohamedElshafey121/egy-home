@@ -208,7 +208,7 @@ const updateRoleDescription = catchAsync(async (req, res, next) => {
 
 /*
  * @desc     Remove Permission From Role
- * @route    DELETE /api/:roleId/permissions/:permissionId
+ * @route    DELETE /users/:userId
  * @access   private admin
  */
 const removeRolePermission = catchAsync(async (req, res, next) => {

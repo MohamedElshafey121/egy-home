@@ -29,6 +29,8 @@ import {
     updateAddressReducer,
     deleteAddressReducer,
     getAllUsersReducer,
+    cahngeUserRoleReducer,
+    cahngeUserCategoriesReducer,
 } from "./user";
 
 import { cartReducer, userCartReducer, addCartItemReducer, removeCartItemReducer } from "./cart";
@@ -122,6 +124,8 @@ export default combineReducers({
     addAddress: userAddressReducer,
     addressDetails: userAddressDetailsReducer,
     allusers: getAllUsersReducer,
+    changeUserRole: cahngeUserRoleReducer,
+    changeUserCategory: cahngeUserCategoriesReducer,
     updateAddress: updateAddressReducer,
     deleteAddress: deleteAddressReducer,
     userCart: userCartReducer, //logged in user cart

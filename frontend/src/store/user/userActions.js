@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import {
     USER_DETAILS_REQUEST,
@@ -27,6 +28,10 @@ import {
     GET_ALL_USERS_REQUEST,
     GET_ALL_USERS_SUCCESS,
     GET_ALL_USERS_FAIL,
+    CHANGE_USER_ROLE_REQUEST,
+    CHANGE_USER_ROLE_SUCCESS,
+    CHANGE_USER_ROLE_FAIL,
+    CHANGE_USER_ROLE_RESET,
 } from "./userActionsTypes";
 
 function getUserDetails(id) {
@@ -292,6 +297,45 @@ function getAllUsers(filterObj = {}, limit = 10, sort = "", page = 1) {
     };
 }
 
+function changeUserRoleHandler(userId, roleId) {
+    return async (dispatch, getState) => {
+        try {
+            dispatch({ type: CHANGE_USER_ROLE_REQUEST });
+
+            const {
+                userLogin: { userInfo },
+            } = getState();
+
+            const config = {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${userInfo.token}`,
+                },
+            };
+
+            await axios.patch(`/users/${userId}/roles`, { roleId }, config);
+
+            dispatch({
+                type: CHANGE_USER_ROLE_SUCCESS,
+            });
+
+            toast.success("تم تغيير الصلاحية بنجاح", { theme: "colored" });
+        } catch (error) {
+            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+            toast.error(`Error Updating User Data, try again later`, { theme: "colored" });
+
+            dispatch({
+                type: CHANGE_USER_ROLE_FAIL,
+                payload: message,
+            });
+        }
+    };
+}
+
+function changeUserRoleReset() {
+    return { type: CHANGE_USER_ROLE_RESET };
+}
+
 export {
     getUserDetails,
     updateUserProfile,
@@ -301,4 +345,6 @@ export {
     deleteUserAddress,
     getAllUsers,
     addUserAddressReset,
+    changeUserRoleHandler,
+    changeUserRoleReset,
 };

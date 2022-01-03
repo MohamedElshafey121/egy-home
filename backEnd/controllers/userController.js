@@ -1,4 +1,6 @@
 const User = require("../models/userModel");
+const Role = require("../models/RoleModel");
+const Category = require("../models/categoryModel");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
 const Factory = require("./handlerFactory");
@@ -32,6 +34,7 @@ exports.getUser = Factory.getOne(User);
 
 exports.changePassword = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.user._id).select("+password");
+
   if (!user) {
     return next(new AppError("User Not found", 404));
   }
@@ -233,5 +236,70 @@ exports.getAddress = catchAsync(async (req, res, next) => {
     data: {
       address,
     },
+  });
+});
+
+/*
+ * @desc     Change User Role
+ * @route    PATCH /users/:userId/roles
+ * @access   private admin
+ */
+//change User Role
+exports.changeUserRole = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.userId);
+  if (!user) {
+    return next(new AppError("User not found", 404));
+  }
+
+  if (user._id === req.user._id) {
+    return next(new AppError("You are not allowed to change your role", 403));
+  }
+
+  const role = await Role.findById(req.body.roleId);
+  if (!role) {
+    return next(new AppError("Role is not found", 404));
+  }
+
+  //Save changes
+  user.role = role.name;
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    status: "Success",
+  });
+});
+
+/*
+ * @desc     Assign Category or change user category
+ * @route    PATCH /users/:userId/categories
+ * @access   private admin
+ */
+//change User Role
+exports.assignCategoryToUser = catchAsync(async (req, res, next) => {
+  const user = await User.findById(req.params.userId);
+  if (!user) {
+    return next(new AppError("User is not found", 404));
+  }
+
+  if (user._id === req.user._id) {
+    return next(new AppError("You are not allowed to change your role", 403));
+  }
+  // .populate( {
+  //   path: "categories",
+  //   select: "name",
+  // });
+  // parent.children.id(_id)
+  // parent.children.push({ name: 'Liesl' })
+
+  const category = await Category.findById(req.body.category).select("name");
+  if (!category) {
+    return next(new AppError("Category is not found", 404));
+  }
+
+  user.categories = category._id;
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    status: "Success",
   });
 });

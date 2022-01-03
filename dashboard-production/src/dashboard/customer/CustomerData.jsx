@@ -1,5 +1,5 @@
 //react
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 
 //third-party
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,21 +15,63 @@ import { url } from '../../services/utils';
 import './../utils/containerQry'
 
 //actions
-import { getUserDetails } from '../../store/user'
-import{getUserOrders} from '../../store/order'
+import {
+    getUserDetails,
+    changeUserRoleHandler,
+    changeUserRoleReset,
+    changeUserCategoriesHandler,
+    changeUserCategoriesReset
+} from '../../store/user'
+import { getUserOrders } from '../../store/order'
+import { getAllRoles } from '../../store/roles'
+import {
+    handleGetAllCategories,
+} from "../../store/category"
+
+
 
 
 export default function CustomerData ({match}) {
     const userId = match.params.id;
 
+    //states
+    const[changRoleOpen,setChangRoleOpen]=useState(false)
+    const [changCategoryOpen, setChangCategoryOpen] = useState( false );
+    const [roleId, setRoleId] = useState( '' )
+    const [categoryId, setCategoryId] = useState( '' )
+    
+    //logged in user
+    const userLogin = useSelector(state=>state.userLogin);
+    const { userInfo } = userLogin;
+    
+
     //user details
     const userDetails = useSelector( state => state.userDetails )
     const { loading, user, error } = userDetails;
     const { address: addresses } = user;
+
+    //Roles
+    const allRoles = useSelector( state => state.allRoles )
+    const { roles } = allRoles;
+
+    //categories
+    const allCategories = useSelector( state => state.allCategories )
+    const {  categories } = allCategories;
+    
     
     //user orders list
     const userOrdersList = useSelector( state => state.userOrdersList )
-    const {loading:loadingOrders,orders,error:loadingOrdersError } = userOrdersList;
+    const { loading: loadingOrders, orders, error: loadingOrdersError } = userOrdersList;
+    
+    //change user role
+    const changeUserRole = useSelector( state => state.changeUserRole )
+    const { success } = changeUserRole;
+
+
+    //change user role
+    const changeUserCategory = useSelector( state => state.changeUserCategory )
+    const { success:changeCategoryUserSuccess } = changeUserCategory;
+
 
     useEffect( () => {
         window.stroyka.containerQuery();
@@ -44,7 +86,68 @@ export default function CustomerData ({match}) {
     //load user orders list
     useEffect( () => {
         dispatch(getUserOrders(userId))
-    },[])
+    }, [] )
+
+    //load roles
+    useEffect( () => {
+        if ( !roles ) {
+            dispatch(getAllRoles())
+        }
+    }, [] )
+
+    //load categories
+     useEffect( () => {
+        dispatch( handleGetAllCategories({}, 1000) )
+    }, [ dispatch] )
+
+    //load data after success
+    useEffect( () => {
+        if ( success  ) {
+            setChangRoleOpen(false)
+            dispatch( getUserDetails( userId ) )
+            dispatch(changeUserRoleReset())
+        }
+
+        if ( changeCategoryUserSuccess ) {
+            setChangCategoryOpen(false)
+            dispatch( getUserDetails( userId ) )
+            dispatch(changeUserCategoriesReset())
+        }
+        
+    },[success,changeCategoryUserSuccess])
+    
+    //HANDLERS
+    const changeRole = ( e ) => {
+        e.preventDefault();
+        dispatch(changeUserRoleHandler(user._id,roleId))
+    }
+
+     const changeCategory = ( e ) => {
+        e.preventDefault();
+        dispatch(changeUserCategoriesHandler(user._id,categoryId))
+    }
+    //Handle Open change
+    const handleOpenRoleChange = () => {
+        setChangRoleOpen( true );
+        window.scrollTo( {
+            top: Number( document.body.scrollHeight ) + 50,
+            behavior: 'smooth'
+        } )
+        if ( changCategoryOpen ) {
+            setChangCategoryOpen( false )
+        }
+    };
+
+    const handleOpenCategoryChange = () => {
+        setChangCategoryOpen( true );
+        window.scrollTo( {
+            top: Number( document.body.scrollHeight ) + 50,
+            behavior: 'smooth'
+        } )
+        if ( changRoleOpen ) {
+            setChangRoleOpen( false )
+        }
+    };
 
     const main = (
         <>
@@ -162,6 +265,69 @@ export default function CustomerData ({match}) {
         </>
     );
 
+    const changeRoleForm = roles&&( <div className="card mt-5">
+        <div className="card-body d-flex flex-column align-items-center">
+            <div className="w-100">
+                <dl className="list-unstyled m-0 mt-4">
+                    <dt className="fs-exact-14 fw-medium mb-5" >Change Role</dt>
+                    <form>
+                        <div className='form-group'>
+                            <label for='user-role'>User Role</label>
+                            <select className='form-control' onChange={(e)=>setRoleId(e.target.value)}>
+                                <option selected disabled> Select Role</option>
+                                {roles.map( ( role ) => (
+                                    <option key={role._id} value={role._id}> { role.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className='form-group mt-3'>
+                            <button className='btn btn-primary' onClick={ changeRole}>save</button>
+                            <button
+                                className='btn btn-secondary m-3'
+                                onClick={e=>setChangRoleOpen(false)}
+                            >Cancel</button>
+                        </div>
+                    </form>
+                </dl>
+            </div>
+        </div>
+    </div>
+    );
+
+    const changeCategoryForm =categories&& ( <div className="card mt-5">
+        <div className="card-body d-flex flex-column align-items-center">
+            <div className="w-100">
+                <dl className="list-unstyled m-0 mt-4">
+                    <dt className="fs-exact-14 fw-medium mb-5" >Change Category</dt>
+                    <form>
+                        <div className='form-group'>
+                            <label for='user-role'>Categories</label>
+                            <select className='form-control' onChange={e=>setCategoryId(e.target.value)}>
+                                <option selected disabled> Select Category</option>
+                                {categories.map( ( category,categoryIdx ) => (
+                                    <option value={category._id} key={categoryIdx}>{ category.name}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div className='form-group mt-3'>
+                            <button
+                                className='btn btn-primary'
+                                onClick={changeCategory}
+                            >save</button>
+                            <button
+                                className='btn btn-secondary m-3'
+                                onClick={()=>setChangCategoryOpen(false)}
+                            >Cancel</button>
+                        </div>
+                    </form>
+                </dl>
+            </div>
+        </div>
+    </div>
+    );
+
     const sidebar = user && (
         <>
             <div className="card">
@@ -175,7 +341,7 @@ export default function CustomerData ({match}) {
                     </div>
 
                     <div className="text-center mt-4">
-                        <div className="fs-exact-16 fw-medium">{user.name} ({ user.role})</div>
+                        <div className="fs-exact-16 fw-medium">{user.name} <br/> ({user.role})</div>
                         <div className="fs-exact-13 text-muted">
                             <div className="mt-1"><a href="">{user.email}</a></div>
                             {/* <div className="mt-1">+38 (094) 730-24-25</div> */}
@@ -219,9 +385,52 @@ export default function CustomerData ({match}) {
                             <dt className="fs-exact-14 fw-medium">Email Marketing</dt>
                             <dd className="fs-exact-13 text-muted mb-0 mt-1">Subscribed</dd>
                         </dl>
+
+                        {/* User Role */}
+                       { <dl className="list-unstyled m-0 mt-4">
+                            <dt className="fs-exact-14 fw-medium d-block w-50" style={{ float: 'left', }}>Role</dt>
+                           {(user._id!==userInfo._id)&&( <dt className="fs-exact-14 fw-normal d-block w-50" style={{ float: 'left', textAlign: 'right' }}>
+                                <button
+                                    className='btn btn-secondary'
+                                    style={{ backgroundColor: '#fff', color: 'blue', border: 'none', fontWeight: 'normal' }}
+                                    onClick={handleOpenRoleChange}
+                                    disabled={changRoleOpen}
+                                >Change</button>
+                            </dt>)}
+                            <dd className="fs-exact-13 text-muted mb-0 mt-1">{user.role}</dd>
+                        </dl>}
+
+                        {/* Assign Category */}
+                        <dl className="list-unstyled m-0 mt-4">
+                            <dt className="fs-exact-14 fw-medium d-block w-50" style={{ float: 'left', }}>Category</dt>
+                            {(user._id!==userInfo._id)&&(<dt className="fs-exact-14 fw-normal d-block w-50" style={{ float: 'left', textAlign: 'right' }}>
+                                <button
+                                    className='btn btn-secondary'
+                                    style={{ backgroundColor: '#fff', color: 'blue', border: 'none', fontWeight: 'normal' }}
+                                    onClick={handleOpenCategoryChange}
+                                    disabled={changCategoryOpen}
+                                >Change</button>
+                            </dt>)}
+                            <dd className="fs-exact-13 text-muted mb-0 mt-1">
+                                {
+                                    user.role === 'admin'
+                                        ? 'All'
+                                        : ( user.categories && user.categories.name )
+                                            ? user.categories.name
+                                            : 'No Category assigned yet'
+                                    }
+                            </dd>
+                        </dl>
                     </div>
                 </div>
             </div>
+        
+           
+            
+            {/* Start Actions */}
+            {changRoleOpen && changeRoleForm}
+            {changCategoryOpen && changeCategoryForm}
+            {/* End Actions */}
         </>
     );
 
@@ -247,7 +456,7 @@ export default function CustomerData ({match}) {
                             breadcrumb={[
                                 { title: 'Dashboard', url: '/dashboard'  },
                                 { title: 'Customers', url: '/dashboard/customers-list'  },
-                                { title: 'Jessica Moore', url: ''  },
+                                { title: `${user?user.name:''}`, url: ''  }
                             ]}
                         />
                         <div

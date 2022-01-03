@@ -25,6 +25,10 @@ import {
     GET_ALL_USERS_REQUEST,
     GET_ALL_USERS_SUCCESS,
     GET_ALL_USERS_FAIL,
+    CHANGE_USER_ROLE_REQUEST,
+    CHANGE_USER_ROLE_SUCCESS,
+    CHANGE_USER_ROLE_FAIL,
+    CHANGE_USER_ROLE_RESET,
 } from "./userActionsTypes";
 
 export function userDetailsReducer(state = { user: {} }, action) {
@@ -126,6 +130,21 @@ export function getAllUsersReducer(state = { users: null }, action) {
             return { loading: false, users: action.payload, page: action.page, count: action.count };
         case GET_ALL_USERS_FAIL:
             return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+}
+
+export function cahngeUserRoleReducer(state = {}, action) {
+    switch (action.type) {
+        case CHANGE_USER_ROLE_REQUEST:
+            return { loading: true };
+        case CHANGE_USER_ROLE_SUCCESS:
+            return { loading: false, success: true };
+        case CHANGE_USER_ROLE_FAIL:
+            return { loading: false, error: action.payload };
+        case CHANGE_USER_ROLE_RESET:
+            return {};
         default:
             return state;
     }

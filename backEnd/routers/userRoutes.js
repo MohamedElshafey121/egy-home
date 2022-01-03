@@ -23,6 +23,18 @@ router
   )
   .patch(authController.protect, userController.updateUserProfile);
 
+router.patch(
+  "/:userId/roles",
+  authController.protect,
+  userController.changeUserRole
+);
+
+router.patch(
+  "/:userId/categories",
+  authController.protect,
+  userController.assignCategoryToUser
+);
+
 router.route("/:id").get(authController.protect, userController.getUser);
 
 router.get(

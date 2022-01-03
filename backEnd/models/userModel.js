@@ -84,6 +84,10 @@ const userSchema = new mongoose.Schema(
     passwordResetToken: String,
     passwordResetExpires: Date,
     address: [addressSchema],
+    categories: {
+      type: mongoose.Types.ObjectId,
+      ref: "Category",
+    },
   },
   {
     timestamps: true,
@@ -164,6 +168,15 @@ userSchema.methods.createPasswordResetToken = async function () {
 
   return resetToken;
 };
+
+userSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "categories",
+    select: "name",
+  });
+
+  next();
+});
 
 const User = mongoose.model("User", userSchema);
 
