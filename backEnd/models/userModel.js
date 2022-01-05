@@ -130,7 +130,7 @@ userSchema.pre("save", function (next) {
 // })
 
 //INSTSNCE METHODS
-//check if the password user enters  i correct
+//check if the password user enters  is correct
 userSchema.methods.correctPassword = async function (
   candidatePassword,
   userPassword

@@ -2,8 +2,6 @@
 import React, { useEffect,useState } from 'react';
 
 //third party
-import classnames from 'classnames';
-import PropType from 'prop-types';
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from 'react-router-dom';
 
@@ -19,9 +17,20 @@ import {
     createBrandHnadler,    
 }from '../../store/brand'
 
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
 
 
-export default function BrandAdd ({history}) {
+
+export default function BrandAdd ( { history } ) {
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
     //size manage script
     useEffect( () => {
         window.stroyka.containerQuery();
@@ -69,10 +78,10 @@ export default function BrandAdd ({history}) {
 
     const main = (
         <>
-            <Card title="Basic information">
+            <Card title={messages.basicInformation}>
                 <div className="mb-4">
                     <label htmlFor="form-category/name" className="form-label">
-                        Name <span>*</span>
+                        {messages.name} <span>*</span>
                     </label>
                     <input
                         type="text"
@@ -84,7 +93,7 @@ export default function BrandAdd ({history}) {
                     />
                 </div>
                 <div className="mb-4">
-                    <label for="formFile-1" class="form-label">Image <span>*</span> </label>
+                    <label for="formFile-1" class="form-label">{messages.image} <span>*</span> </label>
                     <input
                         ref={fileRef}
                         type="file"
@@ -99,7 +108,7 @@ export default function BrandAdd ({history}) {
                 </div>
                 <div className="mb-4">
                     <label htmlFor="form-category/description" className="form-label">
-                        Description
+                        {messages.description}
                     </label>
                      <textarea
                         id="form-category/description"
@@ -116,7 +125,7 @@ export default function BrandAdd ({history}) {
 
     const sidebar = (
         <>
-            <Card title="Image" className="w-100">
+            <Card title={messages.image} className="w-100">
                 <div className="border p-4 d-flex justify-content-center">
                     <div className="max-w-20x">
                         {
@@ -128,8 +137,8 @@ export default function BrandAdd ({history}) {
                     </div>
                 </div>
                 <div className="mt-4 mb-n2">
-                    {photo && ( <Link onClick={e => clickFileInput( e )} className="me-3 pe-2">Replace image</Link> )}
-                    {photo && ( <Link onClick={e => removeSelectedImage( e )} className="text-danger me-3 pe-2">Remove image</Link> )}
+                    {photo && ( <Link onClick={e => clickFileInput( e )} className="me-3 pe-2">{messages.replaceImage}</Link> )}
+                    {photo && ( <Link onClick={e => removeSelectedImage( e )} className="text-danger me-3 pe-2">{messages.removeImage}</Link> )}
                 </div>
             </Card>
         </>
@@ -141,19 +150,19 @@ export default function BrandAdd ({history}) {
                 <div className="mx-sm-2 px-2 px-sm-3 px-xxl-4 pb-6">
                     <div className="container container--max--xl">
                         <PageHeader
-                            title="Add Brand"
+                            title={messages.addBrand}
                             actions={[
                                 // <a key="duplicate" href="#" className="btn btn-secondary me-3">
                                 //     Duplicate
                                 // </a>,
                                 <Link key="save" onClick={e=>submitHandler(e)} className="btn btn-primary">
-                                    Save
+                                    {messages.save}
                                 </Link>,
                             ]}
                             breadcrumb={[
-                                {title: 'Dashboard', url: '/dashboard'},
-                                {title: 'Categories', url: '/dashboard/categories'},
-                                {title: 'Add Category', url: ''},
+                                {title: messages.dashboard, url: '/dashboard'},
+                                {title: messages.brands, url: '/dashboard/brands'},
+                                {title: messages.addBrand, url: ''},
                             ]}
                         />
                         <div

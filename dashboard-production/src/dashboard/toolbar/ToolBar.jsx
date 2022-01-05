@@ -13,6 +13,7 @@ import { dashboardSidebarMobileOpen, dashboardSidebarMobileClose } from './../..
 import {
     logout
 } from '../../store/authentication'
+import {localeChange} from '../../store/locale'
 import { Link } from 'react-router-dom';
 
 
@@ -27,6 +28,9 @@ function ToolBar ( props ) {
         dashboardSidebarMobileClose
     } = props;
 
+    const locale = useSelector( state => state.locale )
+        
+
     //check for user
     useEffect( () => {
         if ( !userInfo ) {
@@ -38,6 +42,11 @@ function ToolBar ( props ) {
     const handleLogout = ( e ) => {
         e.preventDefault();
         dispatch( logout() )
+    }
+
+    const changeLocaleHandler = ( e, newLocale ) => {
+        e.preventDefault();
+        dispatch(localeChange(newLocale))
     }
 
     const user =userInfo && (
@@ -59,11 +68,7 @@ function ToolBar ( props ) {
                 </span>
             </button>
             <ul className="dropdown-menu w-100" aria-labelledby="dropdownMenuButton">
-                <li><a className="dropdown-item" href="#">Profile</a></li>
-                <li><a className="dropdown-item" href="app-inbox-list.html">Inbox</a></li>
-                <li><a className="dropdown-item" href="app-settings-toc.html">Settings</a></li>
-                <li><hr className="dropdown-divider" /></li>
-                <li><Link onClick={e => handleLogout( e )} className="dropdown-item" >Sign Out</Link></li>
+               <li><Link onClick={e => handleLogout( e )} className="dropdown-item" >Sign Out</Link></li>
             </ul>
         </div>
     );
@@ -89,9 +94,43 @@ function ToolBar ( props ) {
                         </svg>
                     </button>
                 </div>
-
-                {/* Notification Start */}
+                {/* Language Start */}
                 <div className="sa-toolbar__item dropdown">
+                    <button
+                        className="sa-toolbar__button"
+                        type="button"
+                        id="dropdownMenuButton3"
+                        data-bs-toggle="dropdown"
+                        data-bs-reference="parent"
+                        data-bs-offset="0,1"
+                        aria-expanded="false"
+                    >
+                        {locale==='ar'?'AR':'EN'}
+                    </button>
+                    <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton3">
+                        {locale==='en' &&(<li>
+                            <Link
+                                className="dropdown-item d-flex align-items-center"
+                                onClick={e => changeLocaleHandler( e, 'ar' )}
+                            >
+                                <span className="ps-2">Arabic</span>
+                            </Link>
+                        </li>)}
+                        {(locale==='ar') &&(<li>
+                            <Link
+                                className="dropdown-item d-flex align-items-center"
+                                onClick={e => changeLocaleHandler( e, 'en' )}
+                            >
+                                <span className="ps-2">English</span>
+                            </Link>
+                        </li>)}
+                    </ul>
+                </div>
+
+                {/* Language End */}
+                
+                {/* Notification Start */}
+                {/* <div className="sa-toolbar__item dropdown">
                     <button
                         className="sa-toolbar__button"
                         type="button"
@@ -109,10 +148,9 @@ function ToolBar ( props ) {
                         <span className="sa-toolbar__button-indicator">3</span>
                     </button>
 
-                    {/* Notification box */}
                     <NotificationBox/>
                     
-                </div>
+                </div> */}
                 {/* Notification end */}
                 {user}
 

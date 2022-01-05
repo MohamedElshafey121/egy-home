@@ -20,17 +20,18 @@ const reviewSchema = mongoose.Schema(
 const SpecificationSchema = new mongoose.Schema({
   price: {
     type: String,
-    required: [true, "You Must provide a price"],
+    // required: [true, "You Must provide a price"],
     min: [1, "invalid price value"],
   },
   size: {
     type: String,
-    required: [true, "Size Must be Provided"],
+    // required: [true, "Size Must be Provided"],
   },
   color: {
     type: String,
     // required: [true, "Color Must be Provided"],
   },
+  shape: String,
   photo: {
     type: String,
     // required: [true, "you must provide a photo"],
@@ -74,8 +75,13 @@ const ProductSchem = new mongoose.Schema(
       required: [true, "You Should specify product Main Photo"],
     },
     price: {
+      //current Price
       type: Number,
       required: [true, "You Should specify product price"],
+      min: [1, "invalid price value"],
+    },
+    oldPrice: {
+      type: Number,
       min: [1, "invalid price value"],
     },
     size: {
@@ -86,6 +92,7 @@ const ProductSchem = new mongoose.Schema(
       type: String,
       // required: [true, "You Should specify product color or shape"],
     },
+    shape: String,
     reviews: [reviewSchema],
     Specifications: [SpecificationSchema],
     supplier: {
@@ -105,11 +112,11 @@ const ProductSchem = new mongoose.Schema(
       enum: ["published", "hidden"],
       required: [true, "You Should identify Visibility status of product"],
     },
-    sku: {
-      type: String,
-      required: [true, "Sku is required"],
-      unique: [true, "this SKU already exist"],
-    },
+    // sku: {
+    //   type: String,
+    //   required: [true, "Sku is required"],
+    //   unique: [true, "this SKU already exist"],
+    // },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",

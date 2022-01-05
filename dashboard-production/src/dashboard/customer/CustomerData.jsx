@@ -28,11 +28,23 @@ import {
     handleGetAllCategories,
 } from "../../store/category"
 
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
 
 
 
 export default function CustomerData ({match}) {
     const userId = match.params.id;
+
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
 
     //states
     const[changRoleOpen,setChangRoleOpen]=useState(false)
@@ -175,16 +187,16 @@ export default function CustomerData ({match}) {
 
             <div className="card mt-5">
                 <div className="card-body px-5 py-4 d-flex align-items-center justify-content-between">
-                    <h2 className="mb-0 fs-exact-18 me-4">Orders</h2>
+                    <h2 className="mb-0 fs-exact-18 me-4">{messages.orders}</h2>
                     {
                         ( orders && orders.length > 0 )
                             ? ( <div className="text-muted fs-exact-14 text-end">
-                                Total spent {
+                                {messages.totalSpent} {
                                     orders.reduce( ( acc, item ) => acc + item.totalPrice, 0 )
-                                } EGP on {orders.length} orders
+                                } {messages.EGP} {messages.on} {orders.length} orders
                             </div> )
                             : ( <div className="text-muted fs-exact-14 text-end">
-                                No orders yet
+                                {messages.noOrdersyet}
                             </div> )
                     }
                 </div>
@@ -200,15 +212,15 @@ export default function CustomerData ({match}) {
                                         </td>
                                         <td>{new Date( order.createdAt ).toDateString()}</td>
                                         <td>{order.status}</td>
-                                        <td>{order.orderItems.length} items</td>
-                                        <td> {order.totalPrice} EGP </td>
+                                        <td>{order.orderItems.length} {messages.orderItems}</td>
+                                        <td> {order.totalPrice} {messages.EGP} </td>
                                     </tr>
                                 )
                             }
                             ) : (
                                     <tr>
                                         <td>
-                                            This Customer Has No orders
+                                            {messages.thisCustomerHasNoOrders}
                                             </td>
                                         </tr>
                              )}
@@ -227,11 +239,11 @@ export default function CustomerData ({match}) {
 
             <div className="card mt-5">
                 <div className="card-body px-5 py-4 d-flex align-items-center justify-content-between">
-                    <h2 className="mb-0 fs-exact-18 me-4">Addresses</h2>
+                    <h2 className="mb-0 fs-exact-18 me-4">{messages.addresses}</h2>
                     {
                         ( addresses && addresses.length < 1 ) && (
                             <div className="text-muted fs-exact-14">
-                                <span>Not Have addresses yet</span>
+                                <span>{messages.notHaveAddressesyet}</span>
                             </div>
                         )
                     }
@@ -269,12 +281,12 @@ export default function CustomerData ({match}) {
         <div className="card-body d-flex flex-column align-items-center">
             <div className="w-100">
                 <dl className="list-unstyled m-0 mt-4">
-                    <dt className="fs-exact-14 fw-medium mb-5" >Change Role</dt>
+                    <dt className="fs-exact-14 fw-medium mb-5" >{messages.changeRole}</dt>
                     <form>
                         <div className='form-group'>
-                            <label for='user-role'>User Role</label>
+                            <label for='user-role'>{messages.userRole}</label>
                             <select className='form-control' onChange={(e)=>setRoleId(e.target.value)}>
-                                <option selected disabled> Select Role</option>
+                                <option selected disabled> {messages.selectRole}</option>
                                 {roles.map( ( role ) => (
                                     <option key={role._id} value={role._id}> { role.name}</option>
                                 ))}
@@ -282,11 +294,11 @@ export default function CustomerData ({match}) {
                         </div>
 
                         <div className='form-group mt-3'>
-                            <button className='btn btn-primary' onClick={ changeRole}>save</button>
+                            <button className='btn btn-primary' onClick={ changeRole}>{messages.save}</button>
                             <button
                                 className='btn btn-secondary m-3'
                                 onClick={e=>setChangRoleOpen(false)}
-                            >Cancel</button>
+                            >{messages.cancel}</button>
                         </div>
                     </form>
                 </dl>
@@ -299,12 +311,12 @@ export default function CustomerData ({match}) {
         <div className="card-body d-flex flex-column align-items-center">
             <div className="w-100">
                 <dl className="list-unstyled m-0 mt-4">
-                    <dt className="fs-exact-14 fw-medium mb-5" >Change Category</dt>
+                    <dt className="fs-exact-14 fw-medium mb-5" >{messages.changeCategory}</dt>
                     <form>
                         <div className='form-group'>
-                            <label for='user-role'>Categories</label>
+                            <label for='user-role'>{ messages.categories}</label>
                             <select className='form-control' onChange={e=>setCategoryId(e.target.value)}>
-                                <option selected disabled> Select Category</option>
+                                <option selected disabled> {messages.categorySelect}</option>
                                 {categories.map( ( category,categoryIdx ) => (
                                     <option value={category._id} key={categoryIdx}>{ category.name}</option>
                                 ))}
@@ -315,11 +327,11 @@ export default function CustomerData ({match}) {
                             <button
                                 className='btn btn-primary'
                                 onClick={changeCategory}
-                            >save</button>
+                            >{messages.save}</button>
                             <button
                                 className='btn btn-secondary m-3'
                                 onClick={()=>setChangCategoryOpen(false)}
-                            >Cancel</button>
+                            >{messages.cancel}</button>
                         </div>
                     </form>
                 </dl>
@@ -355,20 +367,20 @@ export default function CustomerData ({match}) {
                             {
                                 ( orders && orders.length > 0 ) ? (
                                     <>
-                                        <dt className="fs-exact-14 fw-medium">Last Order</dt>
+                                        <dt className="fs-exact-14 fw-medium">{messages.lastOrder}</dt>
                                         <dd className="fs-exact-13 text-muted mb-0 mt-1"> {new Date( orders[0].createdAt ).toDateString()} – <a href={url.order( { _id: 1 } )}>#{orders[0]._id}</a></dd>
                                     </>
                                 ) : (
-                                    <dt className="fs-exact-14 fw-medium">No Orders Yet</dt>
+                                    <dt className="fs-exact-14 fw-medium">{messages.noOrdersyet}</dt>
                                 )
                             }
                         </dl>
                         {
                             ( orders && orders.length > 0 ) && (
                                 <dl className="list-unstyled m-0 mt-4">
-                                    <dt className="fs-exact-14 fw-medium">Average Order Value</dt>
+                                    <dt className="fs-exact-14 fw-medium">{messages.averageOrderValue}</dt>
                                     <dd className="fs-exact-13 text-muted mb-0 mt-1">
-                                        {orders.reduce( ( acc, item ) => acc + item.totalPrice, 0 ) / orders.length} Egp
+                                        {orders.reduce( ( acc, item ) => acc + item.totalPrice, 0 ) / orders.length} {messages.EGP}
                                     </dd>
                                 </dl>
                             )
@@ -376,40 +388,40 @@ export default function CustomerData ({match}) {
                         {
                             user && (
                                 <dl className="list-unstyled m-0 mt-4">
-                                    <dt className="fs-exact-14 fw-medium">Registered</dt>
+                                    <dt className="fs-exact-14 fw-medium">{messages.registered}</dt>
                                     <dd className="fs-exact-13 text-muted mb-0 mt-1">{new Date( user.createdAt ).toDateString()}</dd>
                                 </dl>
                             )
                         }
                         <dl className="list-unstyled m-0 mt-4">
-                            <dt className="fs-exact-14 fw-medium">Email Marketing</dt>
-                            <dd className="fs-exact-13 text-muted mb-0 mt-1">Subscribed</dd>
+                            <dt className="fs-exact-14 fw-medium">{messages.emailMarketing}</dt>
+                            <dd className="fs-exact-13 text-muted mb-0 mt-1">{messages.subscribed}</dd>
                         </dl>
 
                         {/* User Role */}
                        { <dl className="list-unstyled m-0 mt-4">
-                            <dt className="fs-exact-14 fw-medium d-block w-50" style={{ float: 'left', }}>Role</dt>
+                            <dt className="fs-exact-14 fw-medium d-block w-50" style={{ float: 'left', }}>{messages.role}</dt>
                            {(user._id!==userInfo._id)&&( <dt className="fs-exact-14 fw-normal d-block w-50" style={{ float: 'left', textAlign: 'right' }}>
                                 <button
                                     className='btn btn-secondary'
                                     style={{ backgroundColor: '#fff', color: 'blue', border: 'none', fontWeight: 'normal' }}
                                     onClick={handleOpenRoleChange}
                                     disabled={changRoleOpen}
-                                >Change</button>
+                                >{messages.update}</button>
                             </dt>)}
                             <dd className="fs-exact-13 text-muted mb-0 mt-1">{user.role}</dd>
                         </dl>}
 
                         {/* Assign Category */}
                         <dl className="list-unstyled m-0 mt-4">
-                            <dt className="fs-exact-14 fw-medium d-block w-50" style={{ float: 'left', }}>Category</dt>
+                            <dt className="fs-exact-14 fw-medium d-block w-50" style={{ float: 'left', }}>{messages.category}</dt>
                             {(user._id!==userInfo._id)&&(<dt className="fs-exact-14 fw-normal d-block w-50" style={{ float: 'left', textAlign: 'right' }}>
                                 <button
                                     className='btn btn-secondary'
                                     style={{ backgroundColor: '#fff', color: 'blue', border: 'none', fontWeight: 'normal' }}
                                     onClick={handleOpenCategoryChange}
                                     disabled={changCategoryOpen}
-                                >Change</button>
+                                >{messages.update}</button>
                             </dt>)}
                             <dd className="fs-exact-13 text-muted mb-0 mt-1">
                                 {
@@ -454,8 +466,8 @@ export default function CustomerData ({match}) {
                             //     </a>,
                             // ]}
                             breadcrumb={[
-                                { title: 'Dashboard', url: '/dashboard'  },
-                                { title: 'Customers', url: '/dashboard/customers-list'  },
+                                { title: messages.dashboard, url: '/dashboard'  },
+                                { title: messages.customers, url: '/dashboard/customers-list'  },
                                 { title: `${user?user.name:''}`, url: ''  }
                             ]}
                         />

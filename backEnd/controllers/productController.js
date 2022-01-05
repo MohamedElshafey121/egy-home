@@ -136,9 +136,10 @@ exports.createProduct = catchAsync(async (req, res, next) => {
     photo,
     shortDescription,
     price,
+    oldPrice,
     size,
     color,
-    // Specifications,
+    shape,
     visibility,
     sku,
     category,
@@ -165,9 +166,11 @@ exports.createProduct = catchAsync(async (req, res, next) => {
     price,
     size,
     color,
+    shape,
     Specifications,
     visibility,
     sku,
+    oldPrice,
     category,
     subCategory,
     brand,
@@ -258,8 +261,6 @@ exports.getAllProducts = catchAsync(async (req, res, next) => {
   const count = await countdocs;
   const products = await features.query;
   const page = req.query.page;
-
-  console.log("count => ", count);
 
   if (req.query.category) {
     console.log("req.query.category: ", req.query.category);
@@ -397,6 +398,7 @@ exports.addProductSpecification = catchAsync(async (req, res, next) => {
     size: req.body.size,
     color: req.body.color,
     photo: req.body.photo,
+    shape: req.body.shape,
   };
 
   product.Specifications.push(specification);
@@ -473,6 +475,7 @@ exports.updateProductSpecification = catchAsync(async (req, res, next) => {
     size: req.body.size || spec.size,
     color: req.body.color || spec.color,
     photo: req.body.photo || spec.photo,
+    shape: req.body.shape || spec.shape,
   };
 
   const newProduct = await Product.findOneAndUpdate(

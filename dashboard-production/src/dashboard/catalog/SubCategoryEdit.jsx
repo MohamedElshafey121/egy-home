@@ -20,9 +20,21 @@ import './../utils/containerQry'
 import { handleGetAllCategories } from "../../store/category";
 import { getOneSubcategory,updateOneCategory } from "../../store/subCategory";
 
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
 
 
-export default function SubCategoryEdit ({match,history}) {
+
+export default function SubCategoryEdit ( { match, history } ) {
+    
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
     const fileRef = React.createRef();
     const subCategoryId = match.params.id;
 
@@ -91,12 +103,12 @@ export default function SubCategoryEdit ({match,history}) {
     };
     
     
-    const main = subCategory &&(
+    const main = subCategory && (
         <>
-            <Card title="Basic information">
+            <Card title={messages.basicInformation}>
                 <div className="mb-4">
                     <label htmlFor="form-category/name" className="form-label">
-                        Name
+                        {messages.name}
                     </label>
                     <input
                         type="text"
@@ -104,105 +116,49 @@ export default function SubCategoryEdit ({match,history}) {
                         id="form-category/name"
                         defaultValue={subCategory.name}
                         value={name}
-                        onChange={e=>setName(e.target.value)}
+                        onChange={e => setName( e.target.value )}
                     />
-                     {updateSubcategoryError &&
-                      JSON.parse(updateSubcategoryError).name &&
-                      (JSON.parse(updateSubcategoryError).name.toLowerCase().trim() ===
-                      "SubCategory should have a name".toLowerCase().trim() ? (
-                       <div id="form-product/slug-help" className="form-text text-danger">* يجب تحديد اسم الفئة *</div>
-                      ) : JSON.parse(updateSubcategoryError)
-                          .name.toLowerCase()
-                          .trim() ===
-                        "This Name is Not Valid".toLowerCase().trim() ? (
-                       <div id="form-product/slug-help" className="form-text text-danger">* الفئة موجودة بالفعل *</div>
-                      ) : (
-                       <div id="form-product/slug-help" className="form-text text-danger">
-                          * طول الفئة يجب الا يقل عن 3 حروف *
-                        </div>
-                      ))}
+                    {updateSubcategoryError &&
+                        JSON.parse( updateSubcategoryError ).name &&
+                        ( JSON.parse( updateSubcategoryError ).name.toLowerCase().trim() ===
+                            "SubCategory should have a name".toLowerCase().trim() ? (
+                            <div id="form-product/slug-help" className="form-text text-danger">* يجب تحديد اسم الفئة *</div>
+                        ) : JSON.parse( updateSubcategoryError )
+                            .name.toLowerCase()
+                            .trim() ===
+                            "This Name is Not Valid".toLowerCase().trim() ? (
+                            <div id="form-product/slug-help" className="form-text text-danger">* الفئة موجودة بالفعل *</div>
+                        ) : (
+                            <div id="form-product/slug-help" className="form-text text-danger">
+                                * طول الفئة يجب الا يقل عن 3 حروف *
+                            </div>
+                        ) )}
                 </div>
                 <div className="mb-4">
-                    <label for="formFile-1" class="form-label">Image</label>
+                    <label for="formFile-1" class="form-label">{messages.image}</label>
                     <input
                         ref={fileRef}
                         type="file"
                         class="form-control"
                         id="formFile-1"
-                        onChange={e=>setPhoto(e.target.files[0])}
+                        onChange={e => setPhoto( e.target.files[0] )}
                     />
-                     {updateSubcategoryError && JSON.parse(updateSubcategoryError).photo && (
-                     <div id="form-product/slug-help" className="form-text text-danger">* يجب تحديد صورة *</div>
+                    {updateSubcategoryError && JSON.parse( updateSubcategoryError ).photo && (
+                        <div id="form-product/slug-help" className="form-text text-danger">* يجب تحديد صورة *</div>
                     )}
                 </div>
                 
                 <div className="mb-4">
-                    <label htmlFor="form-category/slug" className="form-label">
-                        Slug
-                    </label>
-                    <div className="input-group input-group--sa-slug">
-                        <span className="input-group-text" id="form-category/slug-addon">
-                            https://example.com/catalog/
-                        </span>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="form-category/slug"
-                            aria-describedby="form-category/slug-addon form-category/slug-help"
-                            defaultValue={subCategory.slug}
-                             value={slug}
-                            onChange={e=>setSlug(e.target.value)}
-                        />
-                    </div>
-                    <div id="form-category/slug-help" className="form-text">
-                        Unique human-readable category identifier. No longer than 255 characters.
-                    </div>
-                </div>
-                <div className="mb-4">
                     <label htmlFor="form-category/description" className="form-label">
-                        Description
+                        {messages.description}
                     </label>
                     <textarea
                         id="form-category/description"
                         className="sa-quill-control form-control"
                         rows={8}
                         defaultValue={subCategory.description}
-                         value={description}
-                        onChange={e=>setDescription(e.target.value)}
-                    />
-                </div>
-            </Card>
-
-            <Card
-                title="Search engine optimization"
-                help="Provide information that will help improve the snippet and bring your category to the top of search engines."
-                className="mt-5"
-            >
-                <div className="mb-4">
-                    <label htmlFor="form-category/seo-title" className="form-label">
-                        Page title
-                    </label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="form-category/seo-title"
-                        defaultValue={subCategory.pageTitle}
-                        value={pageTitle}
-                        onChange={e=>setPageTitle(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="form-category/seo-description" className="form-label">
-                        Meta description
-                    </label>
-                    <textarea
-                        id="form-category/seo-description"
-                        className="form-control"
-                        rows={4}
-                        defaultValue={subCategory.metaDescription}
-                        value={metaDescription}
-                        onChange={e => setMetaDescription( e.target.value )}
-                        
+                        value={description}
+                        onChange={e => setDescription( e.target.value )}
                     />
                 </div>
             </Card>
@@ -212,29 +168,30 @@ export default function SubCategoryEdit ({match,history}) {
     const sidebar = (
         <>
             {(categories && subCategory) && (
-                <Card title="Parent category" className="w-100 mt-5">
+                <Card title={messages.parentCategory} className="w-100 mt-5">
                     <select className="sa-select2 form-select" onChange={e=>setCategory(e.target.value)} value={subCategory.category}>
                         {categories.map( ( category, categoryIdx ) => (
                             <option key={categoryIdx} value={category._id}>{category.name}</option>
                         ) )}
                     </select>
                     <div className="form-text">
-                        Select a category that will be the parent of the current one.
+                        {messages.categorySelectMsg}
                     </div>
                 </Card>
             )}
             {
                 subCategory && (
-                    <Card title="Image" className="w-100 mt-5">
+                    <Card title={messages.image} className="w-100 mt-5">
                 <div className="border p-4 d-flex justify-content-center">
                     <div className="max-w-20x">
-                        <img src={`/uploads/imgs/subcategories/${ subCategory.photo }`} size={16 * 20} className="w-100 h-auto" />
+                        {(subCategory.photo && !photo)&& <img src={`/uploads/imgs/subcategories/${ subCategory.photo }`} size={16 * 20} className="w-100 h-auto" alt="" />}
+                        {photo && <img src={URL.createObjectURL(photo)} size={16 * 20} className="w-100 h-auto" alt="" />}
                     </div>
                 </div>
                 <div className="mt-4 mb-n2">
-                    {photo && (<Link onClick={e=>clickFileInput(e)} className="me-3 pe-2">Replace image</Link>) }
-                    {!photo && (<Link onClick={e=>clickFileInput(e)} className="me-3 pe-2">Change image</Link>) }
-                    {photo && ( <Link onClick={e => removeSelectedImage( e )} className="text-danger me-3 pe-2">Remove image</Link> )}
+                    {photo && (<Link onClick={e=>clickFileInput(e)} className="me-3 pe-2">{messages.replaceImage}</Link>) }
+                    {!photo && (<Link onClick={e=>clickFileInput(e)} className="me-3 pe-2">{messages.changeImage}</Link>) }
+                    {photo && ( <Link onClick={e => removeSelectedImage( e )} className="text-danger me-3 pe-2">{messages.removeImage}</Link> )}
                 
                 </div>
             </Card>
@@ -258,19 +215,19 @@ export default function SubCategoryEdit ({match,history}) {
                 <div className="mx-sm-2 px-2 px-sm-3 px-xxl-4 pb-6">
                     <div className="container container--max--xl">
                         <PageHeader
-                            title="Edit Sub Category"
+                            title={messages.editSubcategory}
                             actions={[
                                 // <a key="duplicate" href="#" className="btn btn-secondary me-3">
                                 //     Duplicate
                                 // </a>,
                                 <Link key="save" onClick={e=>submitHandler(e)} className={buttonClasses}>
-                                    Save
+                                    {messages.save}
                                 </Link>,
                             ]}
                             breadcrumb={[
-                                {title: 'Dashboard', url: '/dashboard'},
-                                {title: 'Categories', url: '/dashboard/subcategories'},
-                                {title: 'Edit Category', url: ''},
+                                {title: messages.dashboard, url: '/dashboard'},
+                                {title: messages.subCategories, url: '/dashboard/subcategories'},
+                                {title: messages.editCategory, url: ''},
                             ]}
                         />
                         <div

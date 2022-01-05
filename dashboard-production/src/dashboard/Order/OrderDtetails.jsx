@@ -16,24 +16,37 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import classNames from 'classnames'
 
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
+
 //application
 import { getOrder,updateOrder,adminUpdateOrderReset } from "../../store/order";
 
-const messages = {
-    orderUnderReview: "طلبك تحت المراجعة ",
-    orderUnderReviewMsg: " طلبك تحت المراجعة وسيتم  إرسال بريد الكترونى فى حال التأكيد او الرفض",
-    orderCompelete: "تم التسليك",
-    orderCompeleteMsg: "",
-    orderRefused: "تم رفض الطلب",
-    orderRefusedMsg: "لقد قام أحد المسئولين برفض طلبك لعدم وجود بيانات كافيه عن عنوان التوصيل او أسباب آخرى",
-    orderCanceled: "تم الإلغاء",
-    orderCanceledMsg: "لقم قمت بإلغاء الطلب ",
-    orderOnWay: "جارى الشحن",
-    orderOnWayMsg: "مندوبنا فى الطريق اليك ",
-}
+// const messages = {
+    // orderUnderReview: "طلبك تحت المراجعة ",
+    // orderUnderReviewMsg: " طلبك تحت المراجعة وسيتم  إرسال بريد الكترونى فى حال التأكيد او الرفض",
+    // orderCompelete: "تم التسليك",
+    // orderCompeleteMsg: "",
+    // orderRefused: "تم رفض الطلب",
+    // orderRefusedMsg: "لقد قام أحد المسئولين برفض طلبك لعدم وجود بيانات كافيه عن عنوان التوصيل او أسباب آخرى",
+    // orderCanceled: "تم الإلغاء",
+    // orderCanceledMsg: "لقم قمت بإلغاء الطلب ",
+    // orderOnWay: "جارى الشحن",
+    // orderOnWayMsg: "مندوبنا فى الطريق اليك ",
+// }
 
 export default function OrderDetails ({match}) {
     const orderId = match.params.id;
+
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
 
     const[orderNotes,setOrderNotes]=useState()
     const order = useSelector( ( state ) => state.order );
@@ -159,20 +172,20 @@ export default function OrderDetails ({match}) {
         <React.Fragment>
             <tbody className="sa-table__group">
                 <tr>
-                    <td colSpan={3}>Subtotal</td>
+                    <td colSpan={3}>{messages.subtotal}</td>
                     <td className="text-end"><Price value={userOrder.itemsPrice} /></td>
                 </tr>
                 <tr>
                     <td colSpan={3}>
-                        Shipping
-                        <div className="text-muted fs-exact-13">via Egy-Home</div>
+                        {messages.shipping}
+                        <div className="text-muted fs-exact-13">{messages.via} Egy-Home</div>
                     </td>
                     <td className="text-end"><Price value={userOrder.shippingPrice} /></td>
                 </tr>
             </tbody>
             <tbody>
                 <tr>
-                    <td colSpan={3}>Total</td>
+                    <td colSpan={3}>{messages.totalPrice}</td>
                     <td className="text-end"><Price value={userOrder.totalPrice} /></td>
                 </tr>
             </tbody>
@@ -226,10 +239,10 @@ export default function OrderDetails ({match}) {
                 {userOrder.status === 'ordered' && (
                     <React.Fragment>
                         <button key="onhold" className="btn btn-primary me-3" onClick={e=>setOrderAsOnHold(e)} >
-                            Accept
+                            {messages.acceptOrder}
                         </button>
                         <button key="refuse" className="btn btn-secondary me-3" onClick={e=>setOrderAsRefused(e)} >
-                            Refuse
+                            {messages.refuseOrder}
                         </button>
                     </React.Fragment>
                 
@@ -238,10 +251,10 @@ export default function OrderDetails ({match}) {
                 {userOrder.status === 'onhold' && (
                     <React.Fragment>
                         <button key="completed" className="btn btn-primary me-3" onClick={e=>setOrderAsCompleted(e)}  >
-                            Completed
+                            {messages.orderCompelete}
                         </button>
                         <button key="canceled" className="btn btn-secondary me-3" onClick={e=>setOrderAsCanceled(e)} >
-                            Cancele
+                            {messages.cancelOrder}
                         </button>
                     </React.Fragment>
                 
@@ -256,7 +269,7 @@ export default function OrderDetails ({match}) {
                 <textarea
                     className="sa-card-area__area"
                     rows={2}
-                    placeholder="Notes about order"
+                    placeholder={messages.orderNotes}
                     onChange={e => setOrderNotes( e.target.value )}
                     value={orderNotes}
                     defaultValue={(userOrder && userOrder.adminNotes)&&userOrder.adminNotes}
@@ -283,7 +296,7 @@ export default function OrderDetails ({match}) {
 
             <div className="card mt-5">
                 <div className="card-body px-5 py-4 d-flex align-items-center justify-content-between">
-                    <h2 className="mb-0 fs-exact-18 me-4">Items</h2>
+                    <h2 className="mb-0 fs-exact-18 me-4">{messages.orderItems}</h2>
                     <div className="text-muted fs-exact-14">
                         {/* <a href="#">Edit items</a> */}
                     </div>
@@ -310,7 +323,7 @@ export default function OrderDetails ({match}) {
     const sidebarCustomer = ( ( userOrder && userOrder.user ) && (
         <div className="card">
             <div className="card-body d-flex align-items-center justify-content-between pb-0 pt-4">
-                <h2 className="fs-exact-16 mb-0">Customer</h2>
+                <h2 className="fs-exact-16 mb-0">{messages.customer}</h2>
                 {/* <a href="#" className="fs-exact-14">Edit</a> */}
             </div>
             <div className="card-body d-flex align-items-center pt-4">
@@ -333,7 +346,7 @@ export default function OrderDetails ({match}) {
     const sidebarContactPerson = ( ( userOrder && userOrder.user ) && (
         <div className="card mt-5">
                 <div className="card-body d-flex align-items-center justify-content-between pb-0 pt-4">
-                    <h2 className="fs-exact-16 mb-0">Contact person</h2>
+                    <h2 className="fs-exact-16 mb-0">{messages.contactPerson}</h2>
                     {/* <a href="#" className="fs-exact-14">Edit</a> */}
                 </div>
                 <div className="card-body pt-4 fs-exact-14">
@@ -353,7 +366,7 @@ export default function OrderDetails ({match}) {
     const SidebarShippingAddress = ( userOrder && (
         <div className="card mt-5">
             <div className="card-body d-flex align-items-center justify-content-between pb-0 pt-4">
-                <h2 className="fs-exact-16 mb-0">Shipping Address</h2>
+                <h2 className="fs-exact-16 mb-0">{messages.shippingAddress}</h2>
                 {/* <a href="#" className="fs-exact-14">Edit</a> */}
             </div>
             <div className="card-body pt-4 fs-exact-14">
@@ -372,7 +385,7 @@ export default function OrderDetails ({match}) {
         userOrder.shippingAddress.orderNotes && (
             <div className="card mt-5">
             <div className="card-body d-flex align-items-center justify-content-between pb-0 pt-4">
-                <h2 className="fs-exact-16 mb-0">Shipping Address Notes</h2>
+                <h2 className="fs-exact-16 mb-0">{messages.shippingAddressNotes}</h2>
             </div>
             <div className="card-body pt-4 fs-exact-14">
                 {userOrder.shippingAddress.orderNotes} 
@@ -418,7 +431,7 @@ export default function OrderDetails ({match}) {
                             title={userOrder&&userOrder._id?`Order #${userOrder._id}`:''}
                             actions={[
                                 <Link to={`/dashboard/orders-invoice/${userOrder&&userOrder._id?userOrder._id:''}`} key="invoice" className="btn btn-secondary me-3">
-                                    invoice
+                                    {messages.invoice}
                                 </Link>,
                                 <button
                                     key="refuse"
@@ -429,7 +442,7 @@ export default function OrderDetails ({match}) {
                                         'd-none':userOrder&&(userOrder.status === 'completed' || userOrder.status === 'refused' || userOrder.status === 'canceled')
                                     })}
                                 >
-                                    update
+                                    {messages.update}
                                 </button>,
                             ]}
                             breadcrumb={[
@@ -445,7 +458,7 @@ export default function OrderDetails ({match}) {
                                     <div className="sa-page-meta__item"> {( userOrder && userOrder.createdAt ) && (
                                         new Date(userOrder.createdAt).toDateString()
                                     )} </div>
-                                    <div className="sa-page-meta__item">{ userOrder &&(userOrder.orderItems.length)} items</div>
+                                    <div className="sa-page-meta__item">{ userOrder &&(userOrder.orderItems.length)} {messages.orderItems}</div>
                                     <div className="sa-page-meta__item">{userOrder && (
                                         <Price value={userOrder.totalPrice}/>
                                     )}</div>

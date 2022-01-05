@@ -1,6 +1,7 @@
-import { LOCALE_CHANGE } from './localeActionTypes';
+import { LOCALE_CHANGE } from "./localeActionTypes";
 
-const initialState = 'en';
+// const initialState = "en";
+const initialState = "ar";
 
 export default function localeReducer(state = initialState, action) {
     if (action.type === LOCALE_CHANGE) {

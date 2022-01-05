@@ -13,13 +13,27 @@ import {
 }from '../../store/subCategory'
 import BlockLoader from '../../components/blocks/BlockLoader';
 
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
+
+
 function useQuery () {
     // return new URLSearchParams(location.search)
     return new URLSearchParams(useLocation().search)
 }
 
 
-export default function SubCategoriesList ({history}) {
+export default function SubCategoriesList ( { history } ) {
+    
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
 
     const query = useQuery();
     const name = query.get( 'name' ) || ''
@@ -100,10 +114,10 @@ export default function SubCategoriesList ({history}) {
                         <th className="w-min" data-orderable="false" style={{ position: 'relative' }}>
                             <input type="checkbox" className="form-check-input m-0 fs-exact-16 d-block" aria-label="..." />
                         </th>
-                        <th className="min-w-15x" style={{ paddingLeft: "30px" }}>Name</th>
+                        <th className="min-w-15x" style={{ paddingLeft: "30px" }}>{messages.name}</th>
                         {/* <th>Items</th> */}
-                        <th>Parent Category</th>
-                        <th>Created At</th>
+                        <th>{messages.parentCategory}</th>
+                        <th>{messages.createdAt}</th>
                         <th className="w-min" data-orderable="false" />
                     </tr>
                 </thead>
@@ -124,13 +138,7 @@ export default function SubCategoriesList ({history}) {
                                         </Link>
                                         <div>
                                             <Link to={url.subcategoryDashboard( category )} className="text-reset">{category.name}</Link>
-                                            <ul className="sa-meta__list">
-                                                {category.slug && (
-                                                    <li className="sa-meta__item">
-                                                        Slug: <span title="Click to copy product ID" className="st-copy">{category.slug}</span>
-                                                    </li>
-                                                )}
-                                            </ul>
+                                            
                                         </div>
                                     </div>
                                 </td>
@@ -160,7 +168,7 @@ export default function SubCategoriesList ({history}) {
             {/* put pagination here */}
             <Pagination current={currentPage} total={Math.ceil(count / limit) } onPageChange={handleStepsPushHandler} />
             <div class="flex-grow-1"></div>
-            <div class="sa-inbox-toolbar__text">7 of 512</div>
+            <div class="sa-inbox-toolbar__text">7 {messages.of} 512</div>
            {/* Add Limit box here */}
             <div class="me-n2"></div>
         </div>
@@ -171,7 +179,7 @@ export default function SubCategoriesList ({history}) {
             <div className="p-4">
                 <input
                     type="text"
-                    placeholder="Start typing to search for categories"
+                    placeholder={messages.searchCategoryMsg}
                     className="form-control form-control--search mx-auto"
                     id="table-search"
                     onChange={e => searchByNameHandler( e.target.value )}
@@ -195,18 +203,18 @@ export default function SubCategoriesList ({history}) {
                 <div className="mx-sm-2 px-2 px-sm-3 px-xxl-4 pb-6">
                     <div className="container">
                         <PageHeader
-                            title=" Sub Categories"
+                            title={messages.subCategories}
                             actions={[
                                 <Link key="reset" style={{display:!query.toString().trim()&&'none'}} to='/dashboard/subcategories' className="btn btn-secondary me-3">
-                                Reset Filters
+                                {messages.resetFilters}
                             </Link>,
                                 <Link key="new_category" to="/dashboard/subcategories-add" className="btn btn-primary">
-                                    New Sub category
+                                    {messages.newSubCategory}
                                 </Link>,
                             ]}
                             breadcrumb={[
-                                {title: 'Dashboard', url: '/dashboard'},
-                                {title: 'sub Categories', url: ''},
+                                {title: messages.dashboard, url: '/dashboard'},
+                                {title: messages.subCategories, url: ''},
                             ]}
                         />
 

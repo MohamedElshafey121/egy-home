@@ -7,6 +7,11 @@ import PageHeader from '../shared/PageHeader'
 import Pagination from '../../components/shared/Pagination'
 import BlockLoader from '../../components/blocks/BlockLoader'
 
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
+
 //application
 import {
     handleGetAllCategories,
@@ -18,7 +23,16 @@ function useQuery () {
     // return new URLSearchParams(location.search)
     return new URLSearchParams(useLocation().search)
 }
-export default function CategoriesList ({history}) {
+export default function CategoriesList ( { history } ) {
+    
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
+
     //query
     const query = useQuery();
     const name = query.get( 'name' ) || ''
@@ -97,9 +111,9 @@ export default function CategoriesList ({history}) {
                         <th className="w-min" data-orderable="false" style={{ position: 'relative' }}>
                             <input type="checkbox" className="form-check-input m-0 fs-exact-16 d-block" aria-label="..." />
                         </th>
-                        <th className="min-w-15x" style={{ paddingLeft: "30px" }}>Name</th>
-                        <th>Items</th>
-                        <th>created At</th>
+                        <th className="min-w-15x" style={{ paddingLeft: "30px" }}>{messages.name}</th>
+                        <th>{messages.items}</th>
+                        <th>{messages.createdAt}</th>
                         <th className="w-min" data-orderable="false" />
                     </tr>
                 </thead>
@@ -118,13 +132,7 @@ export default function CategoriesList ({history}) {
                                     </Link>
                                     <div>
                                         <Link to={url.categoryDashboard( category )} className="text-reset">{category.name}</Link>
-                                        <ul className="sa-meta__list">
-                                            {category.slug && (
-                                                <li className="sa-meta__item">
-                                                    Slug: <span title="Click to copy product ID" className="st-copy">{category.slug}</span>
-                                                </li>
-                                            )}
-                                        </ul>
+                                        
                                     </div>
                                 </div>
                             </td>
@@ -164,18 +172,18 @@ export default function CategoriesList ({history}) {
                 <div className="mx-sm-2 px-2 px-sm-3 px-xxl-4 pb-6">
                     <div className="container">
                         <PageHeader
-                            title="Categories"
+                            title={messages.categories}
                             actions={[
                                 <Link key="reset" style={{display:!query.toString().trim()&&'none'}} to='/dashboard/categories' className="btn btn-secondary me-3">
-                                Reset Filters
+                                {messages.resetFilters}
                             </Link>,
                                 <Link key="new_category" to="/dashboard/categories-add" className="btn btn-primary">
-                                    New category
+                                    {messages.AddNewCategory}
                                 </Link>,
                             ]}
                             breadcrumb={[
-                                {title: 'Dashboard', url: '/dashboard'},
-                                {title: 'Categories', url: ''},
+                                {title: `${messages.dashboard}`, url: '/dashboard'},
+                                {title: messages.categories, url: ''},
                             ]}
                         />
 
@@ -184,7 +192,7 @@ export default function CategoriesList ({history}) {
                                 <input
                                     onKeyUp={e=>searchByNameHandler(e.target.value)}
                                     type="text"
-                                    placeholder="Start typing to search for categories"
+                                    placeholder={messages.searchCategoryMsg}
                                     className="form-control form-control--search mx-auto"
                                     id="table-search"
                                 />

@@ -21,14 +21,27 @@ import effectLayutSidebar from '../utils/layoutSidebar'
 
 
 //application
-import {getAllUsers} from '../../store/user'
+import { getAllUsers } from '../../store/user'
+
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
 
 function useQuery () {
     // return new URLSearchParams(location.search)
     return new URLSearchParams(useLocation().search)
 }
 
-export default function CustomerListTwo ({history}) {
+export default function CustomerListTwo ( { history } ) {
+    
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
     const query = useQuery();
     const name = query.get( 'name' ) || ''
     const limit = 20;
@@ -230,13 +243,13 @@ export default function CustomerListTwo ({history}) {
                             {/* <span>
                                 <ArrowRoundedUp13x8Svg  />
                             </span> */}
-                            user
+                            {messages.user}
                             {/* <span>
                                 <ArrowRoundedDown12x7Svg  />
                             </span> */}
                         </th>
-                        <th>Email</th>
-                        <th>Role</th>
+                        <th>{messages.email}</th>
+                        <th>{messages.role}</th>
                         <th className="w-min" data-orderable="false" />
                     </tr>
                 </thead>
@@ -258,7 +271,7 @@ export default function CustomerListTwo ({history}) {
                                          <div className="sa-meta mt-0">
                                             <ul className="sa-meta__list">
                                                 <li className="sa-meta__item">
-                                                    Registered: <span title="Click to copy product ID" className="st-copy">{new Date(customer.createdAt).toDateString()} {customer.createdAt} </span>
+                                                    {messages.registered}: <span title="Click to copy product ID" className="st-copy">{new Date(customer.createdAt).toDateString()} {customer.createdAt} </span>
                                                 </li>
                                                
                                             </ul>
@@ -290,7 +303,7 @@ export default function CustomerListTwo ({history}) {
             {/* put pagination here */}
             <Pagination current={currentPage} total={Math.ceil(count / limit) } onPageChange={handleStepsPushHandler} />
             <div class="flex-grow-1"></div>
-            <div class="sa-inbox-toolbar__text">7 of 512</div>
+            <div class="sa-inbox-toolbar__text">7 {messages.of} 512</div>
            {/* Add Limit box here */}
             <div class="me-n2"></div>
         </div>
@@ -312,7 +325,7 @@ export default function CustomerListTwo ({history}) {
                     <div className="col">
                         <input
                             type="text"
-                            placeholder="Start typing to search for products"
+                            placeholder={messages.searchCategoryMsg}
                             className="form-control form-control--search mx-auto"
                             id="table-search"
                             onKeyUp={e=>searchByNameHandler(e.target.value)}
@@ -336,18 +349,18 @@ export default function CustomerListTwo ({history}) {
             <div id="top" className="sa-app__body">
                 <div className="mx-xxl-3 px-4 px-sm-5">
                     <PageHeader
-                        title="Customers"
+                        title={messages.customers}
                         actions={[
                             // <a key="import" href="#" className="btn btn-secondary me-3">
                             //     Import
                             // </a>,
-                            <Link key="new_product" to='/dashboard/products-add' className="btn btn-primary">
-                                New product
-                            </Link>,
+                            // <Link key="new_product" to='/dashboard/products-add' className="btn btn-primary">
+                            //     New product
+                            // </Link>,
                         ]}
                         breadcrumb={[
-                            { title: 'Dashboard', url: '/dashboard' },
-                            { title: 'Customers', url: '' },
+                            { title: messages.dashboard, url: '/dashboard' },
+                            { title: messages.customers, url: '' },
                         ]}
                     />
                 </div>

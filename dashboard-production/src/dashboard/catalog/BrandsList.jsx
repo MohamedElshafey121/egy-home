@@ -14,12 +14,26 @@ import {
 } from "../../store/brand";
 
 
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
+
 function useQuery () {
     // return new URLSearchParams(location.search)
     return new URLSearchParams(useLocation().search)
 }
 
-export default function BrandsList ({history}) {
+export default function BrandsList ( { history } ) {
+    
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
+
      //query
     const query = useQuery();
     const name = query.get( 'name' ) || ''
@@ -101,8 +115,8 @@ export default function BrandsList ({history}) {
                         <th className="w-min" data-orderable="false" style={{ position: 'relative' }}>
                             <input type="checkbox" className="form-check-input m-0 fs-exact-16 d-block" aria-label="..." />
                         </th>
-                        <th className="min-w-15x" style={{ paddingLeft: "30px" }}>Name</th>
-                        <th>created At</th>
+                        <th className="min-w-15x" style={{ paddingLeft: "30px" }}>{messages.name}</th>
+                        <th>{messages.createdAt}</th>
                         <th className="w-min" data-orderable="false" />
                     </tr>
                 </thead>
@@ -146,7 +160,7 @@ export default function BrandsList ({history}) {
             {/* put pagination here */}
             <Pagination current={currentPage} total={Math.ceil(count / limit) } onPageChange={handleStepsPushHandler} />
             <div class="flex-grow-1"></div>
-            <div class="sa-inbox-toolbar__text">7 of 512</div>
+            <div class="sa-inbox-toolbar__text">7 {messages.of} 512</div>
            {/* Add Limit box here */}
             <div class="me-n2"></div>
         </div>
@@ -158,15 +172,15 @@ export default function BrandsList ({history}) {
                 <div className="mx-sm-2 px-2 px-sm-3 px-xxl-4 pb-6">
                     <div className="container">
                         <PageHeader
-                            title="Brands"
+                            title={messages.brands}
                             actions={[
                                 <Link key="new_category" to="/dashboard/brand-add" className="btn btn-primary">
-                                    New brand
+                                    {messages.newBrand}
                                 </Link>,
                             ]}
                             breadcrumb={[
-                                {title: 'Dashboard', url: '/dashboard'},
-                                {title: 'Brands', url: ''},
+                                {title: messages.dashboard, url: '/dashboard'},
+                                {title: messages.brands, url: ''},
                             ]}
                         />
 
@@ -175,7 +189,7 @@ export default function BrandsList ({history}) {
                                 <input
                                     onKeyUp={e=>searchByNameHandler(e.target.value)}
                                     type="text"
-                                    placeholder="Start typing to search for brands"
+                                    placeholder={messages.searchCategoryMsg}
                                     className="form-control form-control--search mx-auto"
                                     id="table-search"
                                 />

@@ -27,10 +27,21 @@ import {
 
 import { getAllBrands } from "../../store/brand";
 
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
 
 
 export default function ProductAdd ({history}) {
     // const [photosArray, setPhotosArray] = useState();
+
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
 
     //store
     const allCategories = useSelector( state => state.allCategories )
@@ -53,13 +64,12 @@ export default function ProductAdd ({history}) {
     const [specifications,setspecifications] = useState([]);
     //states
     const [name, setName] = useState();
-    const [slug, setSlug] = useState();
-    const [sku, setSKU] = useState();
     const [description, setDescription] = useState( '' )
     const[shortDescription,setShortDescription]=useState()
-    const[price,setPrice]=useState()
-    // const[oldPrice,setOldPrice]=useState()
-    const[size,setSize]=useState()
+    const [price, setPrice] = useState()
+    const[oldPrice,setOldPrice]=useState()
+    const [size, setSize] = useState()
+    const[shape,setShape]=useState()
     const [photo, setPhoto] = useState(  )
     const [photoName, setPhotoName] = useState( '' )
     const[visibility,setVisibility]=useState()//["published", "hidden"]
@@ -77,11 +87,6 @@ export default function ProductAdd ({history}) {
     //load site scripts
     useEffect( () => {
         window.stroyka.containerQuery();
-
-        // $( ".sa-select2" ).select2( {
-        //     width: "100%",
-        // } );
-
     }, [loading,loadingBrands] );
 
     //load Categories
@@ -110,18 +115,7 @@ export default function ProductAdd ({history}) {
         }
     }, [dispatch, brands] );
 
-    // function removeImageHnadler ( name ) {
-
-    //     let newimages;
-    //     if ( photosArray.length > 1 ) {
-    //         newimages = photosArray.filter( ( img ) => ( img.name !== name ) );
-    //         return setPhotosArray([...newimages])
-    //     }
-
-    //     return setPhotosArray();
-    // }
-
-   
+    
     const submitHandlerAdd = ( e ) => {
         e.preventDefault();
         const productForm = new FormData();
@@ -129,9 +123,10 @@ export default function ProductAdd ({history}) {
         if(name) productForm.append( 'name', name );
         if ( description && description.trim() ) productForm.append( 'description', description );
         if ( shortDescription ) productForm.append( 'shortDescription', shortDescription )
-        if ( sku ) productForm.append( 'sku', sku );
         if ( price ) productForm.append( 'price', Number( price ) );
+        if ( oldPrice ) productForm.append( 'oldPrice', Number( oldPrice ) );
         if ( size ) productForm.append( 'size', size );
+        if ( shape ) productForm.append( 'shape', shape );
         if ( color ) productForm.append( 'color', color );
         if ( category ) productForm.append( 'category', category );
         if ( subCategory ) productForm.append( 'subCategory', subCategory );
@@ -205,6 +200,14 @@ export default function ProductAdd ({history}) {
         values[id].size= e.target.value;
         setspecifications(values)
     }
+
+        //Specifications handle shapr
+    function addSpecificationShape ( e ) {
+        const values = specifications;
+        const id = e.target.id;
+        values[id].shape= e.target.value;
+        setspecifications(values)
+    }
     
     //Remove Specification from specifications list(array)
     function removeSpecification ( event ) {
@@ -220,22 +223,13 @@ export default function ProductAdd ({history}) {
         setimages( [...newImages] );
     }
 
-   
-    const product = {
-        sku: 'SCREW150',
-        name: 'Brandix Screwdriver SCREW150',
-        slug: 'brandix-screwdriver-screw150',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ornare, mi in ornare elementum, libero nibh lacinia urna, quis convallis lorem erat at purus. Maecenas eu varius nisi.',
-        price: 1499,
-        quantity: 18,
-    };
-
+  
     const main = (
         <>
-            <Card title="Basic information">
+            <Card title={ messages.basicInformation}>
                 <div className="mb-4">
                     <label htmlFor="form-product/name" className="form-label">
-                        Name *
+                        {messages.name} *
                     </label>
                     <input type="text" className="form-control" id="form-product/name" value={name} onChange={e => setName( e.target.value )} />
                      {addProductError &&
@@ -256,7 +250,7 @@ export default function ProductAdd ({history}) {
                     </div> */}
                 </div>
                 <div className="mb-4">
-                    <label for="formFile-1" class="form-label">Image</label>
+                    <label for="formFile-1" class="form-label">{messages.image}</label>
                     <input
                         ref={fileRef}
                         type="file"
@@ -273,7 +267,7 @@ export default function ProductAdd ({history}) {
                 </div>
 
                 <div className="mb-4">
-                    <label class="form-label">Color</label>
+                    <label class="form-label">{messages.color}</label>
                     <ReactSelect setValue={setColor} value={color} />
                     {addProductError &&
               addProductError.match(/color/) &&
@@ -281,30 +275,34 @@ export default function ProductAdd ({history}) {
                 <div id="form-product/slug-help" className="form-text text-danger">* يجب اختيار لون المنتج *</div>
               )}
                 </div>
-                
+
                 <div className="mb-4">
-                    <label htmlFor="form-product/slug" className="form-label">
-                        Slug
+                    <label htmlFor="form-product/size" className="form-label">
+                        {messages.size} 
                     </label>
-                    <div className="input-group input-group--sa-slug">
-                        <span className="input-group-text" id="form-product/slug-addon">
-                            https://example.com/products/
-                        </span>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="form-product/slug"
-                            aria-describedby="form-product/slug-addon form-product/slug-help"
-                            defaultValue={product.slug}
-                        />
-                    </div>
-                    <div id="form-product/slug-help" className="form-text">
-                        Unique human-readable product identifier. No longer than 255 characters.
-                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="form-product/size"
+                        value={size}
+                        onChange={e => setSize( e.target.value )} />
                 </div>
-                <div className="mb-4">
+
+                 <div className="mb-4">
+                    <label htmlFor="form-product/shape" className="form-label">
+                        {messages.shape} 
+                    </label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="form-product/shape"
+                        value={shape}
+                        onChange={e => setShape( e.target.value )} />
+                </div>
+                
+                               <div className="mb-4">
                     <label htmlFor="form-product/description" className="form-label">
-                        Description
+                        {messages.description}
                     </label>
                     <ReactQuill
                         style={{ height: '200px', marginBottom: '70px' }}
@@ -347,7 +345,7 @@ export default function ProductAdd ({history}) {
                 
                 <div>
                     <label htmlFor="form-product/short-description" className="form-label">
-                        Short description
+                        {messages.shortDescription}
                     </label>
                     <textarea
                         id="form-product/short-description"
@@ -370,11 +368,11 @@ export default function ProductAdd ({history}) {
                 </div>
             </Card>
 
-            <Card title="Pricing" className="mt-5">
+            <Card title={messages.pricing} className="mt-5">
                 <div className="row g-4">
                     <div className="col">
                         <label htmlFor="form-product/price" className="form-label">
-                            Price
+                            {messages.price}
                         </label>
                         <input type="number" className="form-control" id="form-product/price" defaultValue={price} onChange={e => setPrice( e.target.value )} />
                         {addProductError &&
@@ -385,19 +383,23 @@ export default function ProductAdd ({history}) {
                     </div>
                   )}
                     </div>
-                    {/* <div className="col">
+                    <div className="col">
                         <label htmlFor="form-product/old-price" className="form-label">
-                            Old price
+                            {messages.oldPrice}
                         </label>
-                        <input type="number" className="form-control" id="form-product/old-price" defaultValue={oldPrice} />
-                    </div> */}
+                        <input
+                            type="number"
+                            className="form-control"
+                            id="form-product/old-price"
+                            value={oldPrice}
+                            onChange={e=>setOldPrice(e.target.value)}
+                        />
+                    </div>
                 </div>
-                {/* <div className="mt-4 mb-n2">
-                    <a href="#">Schedule discount</a>
-                </div> */}
+               
             </Card>
 
-            <Card title="Inventory" className="mt-5">
+            {/* <Card title="Inventory" className="mt-5">
                 <div className="mb-4">
                     <label htmlFor="form-product/sku" className="form-label">
                         SKU (كود التخزين التعريفي)
@@ -418,10 +420,10 @@ export default function ProductAdd ({history}) {
                     </label>
                     <input type="number" className="form-control" id="form-product/quantity" defaultValue={product.quantity} />
                 </div>
-            </Card>
+            </Card> */}
 
             <Card
-                title="Features and other images"
+                title={messages.otherShapes}
                 className="mt-5"
                 body={
                     <div className="mt-n5">
@@ -440,10 +442,11 @@ export default function ProductAdd ({history}) {
                             <table className="sa-table">
                                 <thead>
                                     <tr>
-                                        <th className="w-min">Image</th>
-                                        <th className="min-w-10x">color</th>
-                                        <th className="min-w-10x">size</th>
-                                        <th className="w-min">Price</th>
+                                        <th className="w-min">{messages.image}</th>
+                                        <th className="min-w-10x">{messages.color}</th>
+                                        <th className="min-w-10x">{messages.shape}</th>
+                                        <th className="min-w-10x">{messages.size}</th>
+                                        <th className="w-min">{messages.price}</th>
                                         <th className="w-min" />
                                     </tr>
                                 </thead>
@@ -457,6 +460,15 @@ export default function ProductAdd ({history}) {
                                             </td>
                                             <td>
                                                 <ReactSelect addSpecificationColor={addSpecificationColor} Id={imageIdx} />
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    className="form-control form-control-sm"
+                                                    onChange={addSpecificationShape}
+                                                    id={imageIdx}
+                                                    value={specifiaction.shape}
+                                                />
                                             </td>
                                             <td>
                                                 <input
@@ -509,7 +521,7 @@ export default function ProductAdd ({history}) {
                                 </React.Fragment>
                         )}
                         <div className="px-5 py-4 my-2">
-                            <Link onClick={clickSpecificationFileInput}>Add Features</Link>
+                            <Link onClick={clickSpecificationFileInput}>{messages.addFeatures}</Link>
                         </div>
                     </div>
                 }
@@ -520,7 +532,7 @@ export default function ProductAdd ({history}) {
     const sidebar = (
         <>
             {photo && (
-                <Card title="Image" className="w-100  mb-5">
+                <Card title={messages.image} className="w-100  mb-5">
                     <div className="border p-4 d-flex justify-content-center ">
                         <div className="max-w-20x">
                             {/* {
@@ -532,28 +544,28 @@ export default function ProductAdd ({history}) {
                         </div>
                     </div>
                     <div className="mt-4 mb-n2">
-                        <Link onClick={e => clickFileInput( e )} className="me-3 pe-2">Replace image</Link>
-                        <Link onClick={e => removeSelectedImage( e )} className="text-danger me-3 pe-2">Remove image</Link>
+                        <Link onClick={e => clickFileInput( e )} className="me-3 pe-2">{messages.replaceImage}</Link>
+                        <Link onClick={e => removeSelectedImage( e )} className="text-danger me-3 pe-2">{messages.removeImage}</Link>
                     </div>
                 </Card>
             
             )}
-            <Card title="Visibility" className="w-100">
+            <Card title={messages.visibility} className="w-100">
                 <div className="mb-4">
                     <label className="form-check">
                         <input type="radio" value='published' onChange={e => setVisibility( e.target.value )} className="form-check-input" name="status" defaultChecked />
-                        <span className="form-check-label">Published</span>
+                        <span className="form-check-label">{messages.puplished}</span>
                     </label>
                     <label className="form-check mb-0">
                         <input type="radio" value='hidden' onChange={e => setVisibility( e.target.value )} className="form-check-input" name="status" />
-                        <span className="form-check-label">Hidden</span>
+                        <span className="form-check-label">{messages.hidden}</span>
                     </label>
                    
                 </div>
             </Card>
             {
                 categories && (
-                    <Card title="Category" className="w-100 mt-5">
+                    <Card title={messages.category} className="w-100 mt-5">
                         <select
                             className="sa-select2 form-select"
                             onChange={( e ) => {
@@ -561,7 +573,7 @@ export default function ProductAdd ({history}) {
                                 setCategory( e.target.value );
                             }}
                         >
-                            <option selected disabled>Select Category</option>
+                            <option selected disabled>{messages.category}</option>
                             {categories.map( ( cat, categoryIdx ) => (
                                 <option key={categoryIdx} value={cat._id}>{cat.name}</option>
                             ) )}
@@ -571,14 +583,9 @@ export default function ProductAdd ({history}) {
                             JSON.parse( addProductError ).category && (
                                 <div id="form-product/slug-help" className="form-text text-danger">* يجب تحديد الفئة الرئيسية *</div>
                             )}
-                        {/* {addProductError &&
-                  addProductError.match(/Category/) &&
-                  JSON.parse(addProductError).Category && (
-                    <div id="form-product/slug-help" className="form-text text-danger">* يجب تحديد الفئة الرئيسية *</div>
-                  )} */}
 
                         <div className="mt-4 mb-n2">
-                            <Link to='/dashboard/categories-add'>Add new category</Link>
+                            <Link to='/dashboard/categories-add'>{messages.AddNewCategory}</Link>
                         </div>
                     </Card>
 
@@ -587,9 +594,9 @@ export default function ProductAdd ({history}) {
 
             {
                 SubCategories && (
-                    <Card title="Sub Category" className="w-100 mt-5">
+                    <Card title={messages.subCategory} className="w-100 mt-5">
                         <select className="sa-select2 form-select" onChange={e => setSubCategory( e.target.value )}>
-                            <option selected disabled>Select SubCategory</option>
+                            <option selected disabled>{messages.subCategory}</option>
                             {SubCategories.map( ( subCat, subcategoryIdx ) => (
                                 <option key={subcategoryIdx} value={subCat._id}> {subCat.name} </option>
                             ) )}
@@ -600,7 +607,7 @@ export default function ProductAdd ({history}) {
                                 <div id="form-product/slug-help" className="form-text text-danger">* يجب تحديد الفئة الفرعية *</div>
                             )}
                         <div className="mt-4 mb-n2">
-                            <Link to='/dashboard/subcategories-add'>Add new Sub category</Link>
+                            <Link to='/dashboard/subcategories-add'>{messages.subCategory}</Link>
                         </div>
                     </Card>
             
@@ -608,16 +615,16 @@ export default function ProductAdd ({history}) {
             }
             
             {brands && (
-                <Card title="Brand" className="w-100 mt-5">
+                <Card title={messages.brand} className="w-100 mt-5">
                     <select className="sa-select2 form-select" value={brand} onChange={e => setBrand( e.target.value )}>
-                        <option selected disabled>Select Brand</option>
+                        <option selected disabled>{messages.brand}</option>
                         {brands.map( ( brand, brandIdx ) => (
                             <option key={brandIdx} value={brand._id}>{brand.name}</option>
                         ) )}
                     </select>
 
                     <div className="mt-4 mb-n2">
-                        <Link to='/dashboard/brand-add'>Add new Brand</Link>
+                        <Link to='/dashboard/brand-add'>{messages.addNewBrand}</Link>
                     </div>
                 </Card>
 
@@ -660,19 +667,19 @@ export default function ProductAdd ({history}) {
                 <div className="mx-sm-2 px-2 px-sm-3 px-xxl-4 pb-6">
                     <div className="container">
                         <PageHeader
-                            title="Add Product"
+                            title={messages.addProduct}
                             actions={[
                                 // <a key="duplicate" href="#" className="btn btn-secondary me-3">
                                 //     Duplicate
                                 // </a>,
                                 <Link key="save" onClick={e => submitHandlerAdd( e )} className="btn btn-primary">
-                                    Save
+                                    {messages.save}
                                 </Link>,
                             ]}
                             breadcrumb={[
-                                { title: 'Dashboard', url: '/dashboard' },
-                                { title: 'Products', url: '/dashboard/products-list' },
-                                { title: 'Edit Product', url: '' },
+                                { title: `${messages.dashboard}`, url: '/dashboard' },
+                                { title: `${messages.products}`, url: '/dashboard/products-list' },
+                                { title: `${messages.editProduct}`, url: '' },
                             ]}
                         />
                         <div

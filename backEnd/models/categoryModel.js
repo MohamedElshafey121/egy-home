@@ -8,10 +8,7 @@ const categorySchema = new mongoose.Schema(
       unique: [true, "This Name is Not Valid"],
       minLength: [3, "name length should be more than 3 letters"],
     },
-    // createdAt: {
-    //     type: Date,
-    //     default: Date.now()
-    // },
+
     photo: {
       type: String,
       required: [true, "Category Must have a photo"],
@@ -33,15 +30,9 @@ const categorySchema = new mongoose.Schema(
     },
     metaDescription: {
       type: String,
-      required: [true, "seo description is required"],
+      // required: [true, "seo description is required"],
       minLength: [20, "seo length should be at least 20 letter"],
     },
-    //property for future work
-    // showInMain: {
-    //     type: Boolean,
-    //     default: false,
-    //     required:true
-    // }
   },
   { timestamps: true }
 );

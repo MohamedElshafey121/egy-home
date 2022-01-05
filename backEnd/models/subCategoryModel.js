@@ -16,7 +16,7 @@ const subCategorySchema = new mongoose.Schema(
     // },
     photo: {
       type: String,
-      required: [true, "Category Must have a name"],
+      // required: [true, "Category Must have a name"],
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,
@@ -25,8 +25,8 @@ const subCategorySchema = new mongoose.Schema(
     },
     slug: {
       type: String,
-      unique: [true, "slug name should be unique"],
-      required: [true, "slug is required"],
+      // unique: [true, "slug name should be unique"],
+      // required: [true, "slug is required"],
     },
     description: String,
     pageTitle: {
@@ -34,7 +34,7 @@ const subCategorySchema = new mongoose.Schema(
     },
     metaDescription: {
       type: String,
-      required: [true, "seo description is required"],
+      // required: [true, "seo description is required"],
     },
   },
   {

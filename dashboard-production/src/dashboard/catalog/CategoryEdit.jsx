@@ -17,12 +17,25 @@ import ReactQuill from 'react-quill'
 //application
 import './../utils/containerQry'
 
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
+
 //actions
 import { getOneCategory, updateOneCategory } from "../../store/category";
 
 
 export default function CategoryEdit ( { history,match } ) {
     const categoryId = match.params.id;
+
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
    
     //store
     const getCategory = useSelector( state => state.getCategory )
@@ -98,33 +111,33 @@ export default function CategoryEdit ( { history,match } ) {
     
     const main = ( category && category.name ) && (
         <>
-            <Card title="Basic information">
+            <Card title={messages.basicInformation}>
                 <div className="mb-4">
                     <label htmlFor="form-category/name" className="form-label">
-                        Name
+                        {messages.name}
                     </label>
                     <input type="text" className="form-control" id="form-category/name" defaultValue={category.name}
                         value={name}
                         onChange={e => setName( e.target.value )}
                     />
                     {updateCategoryError &&
-                      JSON.parse(updateCategoryError).name &&
-                      (JSON.parse(updateCategoryError).name.toLowerCase().trim() ===
-                      "category should have a name" ? (
-                        <div id="form-product/slug-help" className="form-text text-danger">* يجب تحديد الاسم *</div>
-                      ) : JSON.parse(updateCategoryError).name.toLowerCase().trim() ===
-                        "name is already exist".toLowerCase() ? (
-                        <div id="form-product/slug-help" className="form-text text-danger">
-                          * هذه الفئة موجودة بالفعل *
-                        </div>
-                      ) : (
-                        <div id="form-product/slug-help" className="form-text text-danger">
-                          * اسم الفئة يجب الا يقل عن 3 حروف *
-                        </div>
-                      ))}
+                        JSON.parse( updateCategoryError ).name &&
+                        ( JSON.parse( updateCategoryError ).name.toLowerCase().trim() ===
+                            "category should have a name" ? (
+                            <div id="form-product/slug-help" className="form-text text-danger">* يجب تحديد الاسم *</div>
+                        ) : JSON.parse( updateCategoryError ).name.toLowerCase().trim() ===
+                            "name is already exist".toLowerCase() ? (
+                            <div id="form-product/slug-help" className="form-text text-danger">
+                                * هذه الفئة موجودة بالفعل *
+                            </div>
+                        ) : (
+                            <div id="form-product/slug-help" className="form-text text-danger">
+                                * اسم الفئة يجب الا يقل عن 3 حروف *
+                            </div>
+                        ) )}
                 </div>
                 <div className="mb-4">
-                    <label for="formFile-1" class="form-label">Image</label>
+                    <label for="formFile-1" class="form-label">{messages.image}</label>
                     <input
                         ref={fileRef}
                         type="file"
@@ -136,106 +149,43 @@ export default function CategoryEdit ( { history,match } ) {
                             setPhotoName( e.target.value )
                         }}
                     />
-                    {updateCategoryError && JSON.parse(updateCategoryError).photo && (
-                       <div id="form-product/slug-help" className="form-text text-danger">* يجب تحديد صورة المنتج *</div>
+                    {updateCategoryError && JSON.parse( updateCategoryError ).photo && (
+                        <div id="form-product/slug-help" className="form-text text-danger">* يجب تحديد صورة المنتج *</div>
                     )}
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="form-category/slug" className="form-label">
-                        Slug
-                    </label>
-                    <div className="input-group input-group--sa-slug">
-                        <span className="input-group-text" id="form-category/slug-addon">
-                            https://example.com/catalog/
-                        </span>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="form-category/slug"
-                            aria-describedby="form-category/slug-addon form-category/slug-help"
-                            defaultValue={category.slug}
-                            value={slug}
-                            onChange={e => setSlug( e.target.value )}
-                        />
-                    </div>
-                    <div id="form-category/slug-help" className="form-text">
-                        Unique human-readable category identifier. No longer than 255 characters.
-                    </div>
-                </div>
-                <div className="mb-4">
                     <label htmlFor="form-category/description" className="form-label">
-                        Description
+                        {messages.description}
                     </label>
                     <ReactQuill
                         theme='snow'
+                        style={{height:'120px',marginBottom:"70px"}}
                         // defaultValue={category.description}
-                        value={description?description:category.description}
+                        value={description ? description : category.description}
                         onChange={setDescription}
                     />
                 </div>
             </Card>
 
-            <Card
-                title="Search engine optimization"
-                help="Provide information that will help improve the snippet and bring your category to the top of search engines."
-                className="mt-5"
-            >
-                <div className="mb-4">
-                    <label htmlFor="form-category/seo-title" className="form-label">
-                        Page title
-                    </label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="form-category/seo-title"
-                        defaultValue={category.pageTitle}
-                        value={pageTitle}
-                        onChange={e => setPageTitle( e.target.value )}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="form-category/seo-description" className="form-label">
-                        Meta description
-                    </label>
-                    <textarea
-                        id="form-category/seo-description"
-                        className="form-control"
-                        rows={5}
-                        defaultValue={category.metaDescription}
-                        value={metaDescription}
-                        onChange={e => setMetaDescription( e.target.value )}
-                    />
-                     {updateCategoryError &&
-                      JSON.parse(updateCategoryError).metaDescription &&
-                      (JSON.parse(updateCategoryError).metaDescription.toLowerCase().trim() ===
-                      "seo description is required" ? (
-                        <div id="form-product/slug-help" className="form-text text-danger">* يجب تحديد الاسم *</div>
-                      ) : (
-                        <div id="form-product/slug-help" className="form-text text-danger">
-                          * اسم الفئة يجب الا يقل عن 20 حروف *
-                        </div>
-                      ))}
-                </div>
-            </Card>
         </>
     );
 
-    const sidebar = category && (
+    const sidebar = ( category ) && (
         <>
-            <Card title="Image" className="w-100 mt-5">
+            <Card title={messages.image} className="w-100 mt-5">
                 <div className="border p-4 d-flex justify-content-center">
                     <div className="max-w-20x">
                         {photo
-                            ? <img src={URL.createObjectURL( photo )} className="w-100 h-auto" alt=""/>
-                            : <img src={`/uploads/imgs/categories/${ category.photo }`} size={16 * 20} className="w-100 h-auto" alt=""/>
+                            ? <img src={URL.createObjectURL( photo )} className="w-100 h-auto" alt="" />
+                            : < img src={`/uploads/imgs/categories/${ category.photo }`} size={16 * 20} className="w-100 h-auto" alt="" />
                         }
                     </div>
                 </div>
                 <div className="mt-4 mb-n2">
                     
-                    {photo && (<Link onClick={e=>clickFileInput(e)} className="me-3 pe-2">Replace image</Link>) }
-                    {!photo && (<Link onClick={e=>clickFileInput(e)} className="me-3 pe-2">Change image</Link>) }
-                    {photo && ( <Link onClick={e => removeSelectedImage( e )} className="text-danger me-3 pe-2">Remove image</Link> )}
+                    {photo && ( <Link onClick={e => clickFileInput( e )} className="me-3 pe-2">{messages.replaceImage}</Link> )}
+                    {!photo && ( <Link onClick={e => clickFileInput( e )} className="me-3 pe-2">{messages.changeImage}</Link> )}
+                    {photo && ( <Link onClick={e => removeSelectedImage( e )} className="text-danger me-3 pe-2">{messages.removeImage}</Link> )}
                 </div>
             </Card>
         </>
@@ -251,19 +201,19 @@ export default function CategoryEdit ( { history,match } ) {
                 <div className="mx-sm-2 px-2 px-sm-3 px-xxl-4 pb-6">
                     <div className="container container--max--xl">
                         <PageHeader
-                            title="Edit Category"
+                            title={messages.editCategory}
                             actions={[
                                 // <a key="duplicate" href="#" className="btn btn-secondary me-3">
                                 //     Duplicate
                                 // </a>,
                                 <Link key="save" onClick={e=>submitHandler(e)} className={buttonClasses}>
-                                    Update
+                                    {messages.update}
                                 </Link>,
                             ]}
                             breadcrumb={[
-                                {title: 'Dashboard', url: '/dashboard'},
-                                {title: 'Categories', url: '/dashboard/categories'},
-                                {title: 'Edit Category', url: ''},
+                                {title: messages.dashboard, url: '/dashboard'},
+                                {title: messages.categories, url: '/dashboard/categories'},
+                                {title: messages.editCategory, url: ''},
                             ]}
                         />
                         <div

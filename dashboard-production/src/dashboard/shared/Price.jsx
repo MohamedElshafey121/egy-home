@@ -15,9 +15,9 @@ function Price ( props ) {
 
     return (
         <div className="sa-price">
-            <span className="sa-price__symbol">$</span>
             <span className="sa-price__integer">{sign + integer}</span>
             <span className="sa-price__decimal">.{decimal}</span>
+            <span className="sa-price__symbol"> ج.م </span>
         </div>
     );
 }

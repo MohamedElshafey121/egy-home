@@ -27,6 +27,10 @@ import { handleGetAllCategories } from "../../store/category"
 import { getAllBrands } from "../../store/brand";
 import { ArrowRoundedUp13x8Svg,ArrowRoundedDown12x7Svg } from '../../svg';
 
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
 
 function useQuery () {
     // return new URLSearchParams(location.search)
@@ -34,6 +38,15 @@ function useQuery () {
 }
 
 function ProductListCatalog ( { history } ) {
+
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
+    
     const limit = 20;
     // const sort = '-createdAt';
     const query = useQuery();
@@ -364,7 +377,7 @@ function ProductListCatalog ( { history } ) {
     const sidebar = (
         <>
             <div className="sa-layout__sidebar-header">
-                <div className="sa-layout__sidebar-title">Filters</div>
+                <div className="sa-layout__sidebar-title">{messages.filters}</div>
                 <button
                     type="button"
                     className="sa-close sa-layout__sidebar-close"
@@ -450,15 +463,15 @@ function ProductListCatalog ( { history } ) {
                             {/* <span>
                                 <ArrowRoundedUp13x8Svg  />
                             </span> */}
-                            Product
+                            {messages.product}
                             {/* <span>
                                 <ArrowRoundedDown12x7Svg  />
                             </span> */}
                         </th>
-                        <th>Parent Category</th>
-                        <th>Child Category</th>
-                        <th>Brand</th>
-                        <th>Price</th>
+                        <th>{messages.category}</th>
+                        <th>{messages.subCategory}</th>
+                        <th>{messages.brand}</th>
+                        <th>{messages.price}</th>
                         <th className="w-min" data-orderable="false" />
                     </tr>
                 </thead>
@@ -545,7 +558,7 @@ function ProductListCatalog ( { history } ) {
                     <div className="col">
                         <input
                             type="text"
-                            placeholder="Start typing to search for products"
+                            placeholder={messages.searchProductMsg}
                             className="form-control form-control--search mx-auto"
                             id="table-search"
                             onKeyUp={e=>searchByNameHandler(e.target.value)}
@@ -569,18 +582,18 @@ function ProductListCatalog ( { history } ) {
             <div id="top" className="sa-app__body">
                 <div className="mx-xxl-3 px-4 px-sm-5">
                     <PageHeader
-                        title="Products"
+                        title={messages.products}
                         actions={[
                             <Link key="reset" style={{display:!query.toString().trim()&&'none'}} to='/dashboard/products-list' className="btn btn-secondary me-3">
-                                Reset Filters
+                                {messages.resetFilters}
                             </Link>,
                             <Link key="new_product" to='/dashboard/products-add' className="btn btn-primary">
-                                New product
+                                {messages.newProduct}
                             </Link>,
                         ]}
                         breadcrumb={[
-                            { title: 'Dashboard', url: '/dashboard' },
-                            { title: 'Products', url: '' },
+                            { title: `${messages.dashboard}`, url: '/dashboard' },
+                            { title: `${messages.products}`, url: '' },
                         ]}
                     />
                 </div>

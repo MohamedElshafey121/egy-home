@@ -8,12 +8,25 @@ import Pagination from '../../components/shared/Pagination'
 import { useSelector, useDispatch } from 'react-redux'
 import { getOrderslist } from '../../store/order'
 
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
 
 function useQuery () {
     // return new URLSearchParams(location.search)
     return new URLSearchParams(useLocation().search)
 }
 export default function OrderList ( { history } ) {
+
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
+
      //query
     const query = useQuery();
     const name = query.get( 'name' ) || ''
@@ -73,13 +86,13 @@ export default function OrderList ( { history } ) {
                         <th className="w-min" data-orderable="false" style={{position:'relative'}}>
                             <input type="checkbox" className="form-check-input m-0 fs-exact-16 d-block" aria-label="..." />
                         </th>
-                        <th style={{ paddingLeft: "30px" }}>Number</th>
-                        <th>Date</th>
-                        <th>Customer</th>
-                        <th>Paid</th>
-                        <th>Status</th>
-                        <th>Items</th>
-                        <th>Total</th>
+                        <th style={{ paddingLeft: "30px" }}>{messages.orderNumber}</th>
+                        <th>{messages.orderDate}</th>
+                        <th>{messages.customer}</th>
+                        <th>{messages.paid}</th>
+                        <th>{messages.orderStatus}</th>
+                        <th>{messages.itemsNumber}</th>
+                        <th>{messages.totalPrice}</th>
                         <th className="w-min" data-orderable="false" />
                     </tr>
                 </thead>
@@ -112,7 +125,7 @@ export default function OrderList ( { history } ) {
                                     </div>
                                 </div>
                             </td>
-                            <td>{order.orderItems.length} items</td>
+                            <td>{order.orderItems.length} {messages.orderItems}</td>
                             <td><Price value={order.totalPrice} /></td>
                             <td><MoreButton id={`order-context-menu-${ orderIdx }`} orderId={order._id} /></td>
                         </tr>
@@ -127,7 +140,7 @@ export default function OrderList ( { history } ) {
             {/* put pagination here */}
             <Pagination current={2} total={3} />
             <div class="flex-grow-1"></div>
-            <div class="sa-inbox-toolbar__text">7 of 512</div>
+            <div class="sa-inbox-toolbar__text">7 {messages.of} 512</div>
            {/* Add Limit box here */}
             <div class="me-n2"></div>
         </div>
@@ -139,15 +152,15 @@ export default function OrderList ( { history } ) {
                 <div className="mx-sm-2 px-2 px-sm-3 px-xxl-4 pb-6">
                     <div className="container">
                         <PageHeader
-                            title="Orders"
+                            title={messages.orders}
                             actions={[
-                                <Link key="new_order" to='/dashboard/orders/213' className="btn btn-primary">
-                                    New order
-                                </Link>,
+                                // <Link key="new_order" to='/dashboard/orders/213' className="btn btn-primary">
+                                //     New order
+                                // </Link>,
                             ]}
                             breadcrumb={[
-                                {title: 'Dashboard', url: '/dashboard/'},
-                                {title: 'Orders', url: ''},
+                                {title: messages.dashboard, url: '/dashboard/'},
+                                {title: messages.orders, url: ''},
                             ]}
                         />
 

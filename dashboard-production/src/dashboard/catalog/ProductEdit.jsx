@@ -32,19 +32,22 @@ import {
 } from '../../store/product';
 import { getAllBrands } from "../../store/brand";
 
-// import {
-//     handleAddProductSpecification,
-//     ADD_PRODUCT_SPECIFICATION_RESET,
-//     handleUpdateProductSpecification,
-//     handleGetOneProductSpecification,
-//     GET_ONE_PRODUCT_SPECIFICATION_RESET,
-//     GET_ONE_PRODUCT_SUCCESS,
-//     UPDATE_PRODUCT_SPECIFICATION_RESET,
-//     GET_ONE_PRODUCT_SPECIFICATION_REQUEST
-// } from '../action/product'
+
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
 
 
-export default function ProductEdit ( { match,history } ) {
+export default function ProductEdit ( { match, history } ) {
+    
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
+
     const productId = match.params.id;
     const fileRef = React.createRef();
     const specificationRef = React.createRef();
@@ -83,8 +86,9 @@ export default function ProductEdit ( { match,history } ) {
     const [description, setDescription] = useState( '' )
     const[shortDescription,setShortDescription]=useState()
     const[price,setPrice]=useState()
-    // const[oldPrice,setOldPrice]=useState()
-    const[size,setSize]=useState()
+    const[oldPrice,setOldPrice]=useState()
+    const [size, setSize] = useState()
+    const[shape,setShape]=useState()
     const [photo, setPhoto] = useState(  )
     const [photoName, setPhotoName] = useState( '' )
     const[visibility,setVisibility]=useState()//["published", "hidden"]
@@ -97,6 +101,7 @@ export default function ProductEdit ( { match,history } ) {
     //specification state
     const [specificationPhoto, setSpecificationPhoto] = useState();
     const [specificationSize, setSpecificationSize] = useState();
+    const [specificationShape, setSpecificationShape] = useState();
     const [specificationColor, setSpecificationColor] = useState();
     const [specificationPrice, setSpecificationPrice] = useState();
     
@@ -168,6 +173,7 @@ export default function ProductEdit ( { match,history } ) {
             setSpecificationPhoto()
             setSpecificationPrice()
             setSpecificationSize()
+            setSpecificationShape()
             dispatch( handleGetOneProduct( productId ) )
             dispatch(resetAddSpecification())
         }
@@ -191,6 +197,7 @@ export default function ProductEdit ( { match,history } ) {
     if(specificationPhoto) specificationForm.append("photo", specificationPhoto);
     if (specificationPrice) specificationForm.append("price", specificationPrice);
     if (specificationSize) specificationForm.append("size", specificationSize);
+    if (specificationShape) specificationForm.append("shape", specificationShape);
     if (specificationColor) specificationForm.append("color", specificationColor);
 
     dispatch(handleAddProductSpecification(product._id, specificationForm));
@@ -201,6 +208,7 @@ export default function ProductEdit ( { match,history } ) {
         setSpecificationPhoto()
         setSpecificationPrice()
         setSpecificationSize()
+        setSpecificationShape()
     }
 
     const updateSpecificationSubmitHandler = ( e,specificationId ) => {
@@ -246,8 +254,10 @@ export default function ProductEdit ( { match,history } ) {
         if ( shortDescription ) productForm.append( 'shortDescription', shortDescription )
         if ( sku ) productForm.append( 'sku', sku );
         if ( price ) productForm.append( 'price', Number( price ) );
+        if ( oldPrice ) productForm.append( 'oldPrice', Number( oldPrice ) );
         if ( size ) productForm.append( 'size', size );
         if ( color ) productForm.append( 'color', color );
+        if ( shape ) productForm.append( 'shape', shape );
         if ( category ) productForm.append( 'category', category );
         if ( subCategory ) productForm.append( 'subCategory', subCategory );
         if ( brand ) productForm.append( 'brand', brand );
@@ -260,25 +270,9 @@ export default function ProductEdit ( { match,history } ) {
    
     const imageSize = 16 * 2.5;
 
-    const images = [
-        'images/products/product-16-1.jpg',
-        'images/products/product-16-2.jpg',
-        'images/products/product-16-3.jpg',
-        'images/products/product-16-4.jpg',
-    ];
-
-    // const product = {
-    //     sku: 'SCREW150',
-    //     name: 'Brandix Screwdriver SCREW150',
-    //     slug: 'brandix-screwdriver-screw150',
-    //     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ornare, mi in ornare elementum, libero nibh lacinia urna, quis convallis lorem erat at purus. Maecenas eu varius nisi.',
-    //     price: 1499,
-    //     quantity: 18,
-    // };
-
     const productSpecifications = ( product && product.Specifications ) && (
         <Card
-            title="Images"
+            title={messages.otherShapes}
             className="mt-5"
             body={
                 <div className="mt-n5">
@@ -295,10 +289,11 @@ export default function ProductEdit ( { match,history } ) {
                         <table className="sa-table">
                             <thead>
                                 <tr>
-                                    <th className="w-min">Image</th>
-                                    <th className="min-w-10x">color</th>
-                                    <th className="min-w-10x">size</th>
-                                    <th className="w-min">Price</th>
+                                    <th className="w-min">{messages.image}</th>
+                                    <th className="min-w-10x">{messages.color}</th>
+                                    <th className="min-w-10x">{messages.shape}</th>
+                                    <th className="min-w-10x">{messages.size}</th>
+                                    <th className="w-min">{messages.price}</th>
                                     <th className="w-min" />
                                     <th className="w-min" />
                                 </tr>
@@ -318,8 +313,16 @@ export default function ProductEdit ( { match,history } ) {
                                             <input
                                                 type="text"
                                                 className="form-control form-control-sm"
+                                                defaultValue={featurs.shape}
+                                                id={imageIdx}
+                                                disabled
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                className="form-control form-control-sm"
                                                 defaultValue={featurs.size}
-                                                // onChange={addSpecificationSize}
                                                 id={imageIdx}
                                                 disabled
                                             />
@@ -406,6 +409,15 @@ export default function ProductEdit ( { match,history } ) {
                                                 <input
                                                     type="text"
                                                     className="form-control form-control-sm"
+                                                    value={specificationShape}
+                                                    onChange={e => setSpecificationShape( e.target.value )}
+                                                />
+                                            </td>
+
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    className="form-control form-control-sm"
                                                     value={specificationSize}
                                                     onChange={e => setSpecificationSize( e.target.value )}
                                                 />
@@ -481,12 +493,12 @@ export default function ProductEdit ( { match,history } ) {
         />
     );
 
-    const main =(product &&product.name)&& (
+    const main = ( product && product.name ) && (
         <>
-            <Card title="Basic information">
+            <Card title={messages.basicInformation}>
                 <div className="mb-4">
                     <label htmlFor="form-product/name" className="form-label">
-                        Name
+                        {messages.name}
                     </label>
                     <input
                         type="text"
@@ -497,69 +509,74 @@ export default function ProductEdit ( { match,history } ) {
                         value={name}
                     />
                     {updateProductError &&
-              updateProductError.match(/name/) &&
-              JSON.parse(updateProductError).name &&
-              (JSON.parse(updateProductError).name.toLowerCase().trim() ===
-              "product name is required" ? (
-                  <div id="form-product/slug-help" className="form-text text-danger">
-                        * يجب تحديد الاسم *
-                    </div>
-                    ) : (
-                             <div id="form-product/slug-help" className="form-text text-danger">
-                  * اسم المنتج يجب الا يقل عن 10 حروف *
-                    </div>
-              ))}
+                        updateProductError.match( /name/ ) &&
+                        JSON.parse( updateProductError ).name &&
+                        ( JSON.parse( updateProductError ).name.toLowerCase().trim() ===
+                            "product name is required" ? (
+                            <div id="form-product/slug-help" className="form-text text-danger">
+                                * يجب تحديد الاسم *
+                            </div>
+                        ) : (
+                            <div id="form-product/slug-help" className="form-text text-danger">
+                                * اسم المنتج يجب الا يقل عن 10 حروف *
+                            </div>
+                        ) )}
                 </div>
                 <div className="mb-4">
-                    <label for="formFile-1" class="form-label">Image</label>
+                    <label for="formFile-1" class="form-label">{messages.image}</label>
                     <input
                         ref={fileRef}
                         type="file"
                         class="form-control"
                         id="formFile-1"
                         value={photoName}
-                        onChange={e => { setPhoto( e.target.files[0] );setPhotoName(e.target.value)}}
+                        onChange={e => { setPhoto( e.target.files[0] ); setPhotoName( e.target.value ) }}
                     />
                     {updateProductError &&
-              updateProductError.match(/photo/) &&
-              JSON.parse(updateProductError).photo && (
-                <div id="form-product/slug-help" className="form-text text-danger">* يجب اختيار صورة المنتج *</div>
-              )}
-                </div>
-                 <div className="mb-4">
-                    <label class="form-label">Color</label>
-                    <ReactSelect setValue={setColor} value={color?color: product.color} />
-                    {updateProductError &&
-              updateProductError.match(/color/) &&
-              JSON.parse(updateProductError).color && (
-                <div id="form-product/slug-help" className="form-text text-danger">* يجب اختيار لون المنتج *</div>
-              )}
+                        updateProductError.match( /photo/ ) &&
+                        JSON.parse( updateProductError ).photo && (
+                            <div id="form-product/slug-help" className="form-text text-danger">* يجب اختيار صورة المنتج *</div>
+                        )}
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="form-product/slug" className="form-label">
-                        Slug
-                    </label>
-                    <div className="input-group input-group--sa-slug">
-                        <span className="input-group-text" id="form-product/slug-addon">
-                            https://example.com/products/
-                        </span>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="form-product/slug"
-                            aria-describedby="form-product/slug-addon form-product/slug-help"
-                            defaultValue={product.slug}
-                            value={slug}
-                            onChange={e=>setSlug(e.target.value)}
-                        />
-                    </div>
-                    <div id="form-product/slug-help" className="form-text">
-                        Unique human-readable product identifier. No longer than 255 characters.
-                    </div>
+                    <label class="form-label">{messages.color}</label>
+                    <ReactSelect setValue={setColor} value={color ? color : product.color} />
+                    {updateProductError &&
+                        updateProductError.match( /color/ ) &&
+                        JSON.parse( updateProductError ).color && (
+                            <div id="form-product/slug-help" className="form-text text-danger">* يجب اختيار لون المنتج *</div>
+                        )}
                 </div>
+                <div className="mb-4">
+                    <label htmlFor="form-product/size" className="form-label">
+                        {messages.size}
+                    </label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="form-product/size"
+                        defaultValue={product.size&&product.size}
+                        value={size}
+                        onChange={e => setSize( e.target.value )} />
+                </div>
+
+                <div className="mb-4">
+                    <label htmlFor="form-product/shape" className="form-label">
+                        {messages.shape}
+                    </label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="form-product/shape"
+                        defaultValue={product.shape&&product.shape}
+                        value={shape}
+                        onChange={e => setShape( e.target.value )} />
+                </div>
+                
+               
                 <div className="mb-4">
                     <label htmlFor="form-product/description" className="form-label">
-                        Description
+                        {messages.description}
                     </label>
                     <ReactQuill
                         style={{ height: '200px', marginBottom: '70px' }}
@@ -584,24 +601,24 @@ export default function ProductEdit ( { match,history } ) {
                                 ["clean"], // remove formatting button
                             ],
                         }}
-                        value={description?description:product.description}
-                    onChange={setDescription}
+                        value={description ? description : product.description}
+                        onChange={setDescription}
                     />
                     {updateProductError &&
-              updateProductError.match(/description/) &&
-              JSON.parse(updateProductError).description &&
-              (JSON.parse(updateProductError).description.toLowerCase().trim() ===
-              "product description must be provided" ? (
-               <div id="form-product/slug-help" className="form-text text-danger">* يجب إضافة وصف للمنتج *</div>
-              ) : (
-               <div id="form-product/slug-help" className="form-text text-danger">
-                  * وصف المنتج يجب الا يقل عن 30 حرف *
-                </div>
-              ))}
+                        updateProductError.match( /description/ ) &&
+                        JSON.parse( updateProductError ).description &&
+                        ( JSON.parse( updateProductError ).description.toLowerCase().trim() ===
+                            "product description must be provided" ? (
+                            <div id="form-product/slug-help" className="form-text text-danger">* يجب إضافة وصف للمنتج *</div>
+                        ) : (
+                            <div id="form-product/slug-help" className="form-text text-danger">
+                                * وصف المنتج يجب الا يقل عن 30 حرف *
+                            </div>
+                        ) )}
                 </div>
                 <div>
                     <label htmlFor="form-product/short-description" className="form-label">
-                        Short description
+                        {messages.shortDescription}
                     </label>
                     <textarea
                         id="form-product/short-description"
@@ -609,27 +626,27 @@ export default function ProductEdit ( { match,history } ) {
                         rows={5}
                         defaultValue={product.shortDescription}
                         value={shortDescription}
-                        onChange={e=>setShortDescription(e.target.value)}
+                        onChange={e => setShortDescription( e.target.value )}
                     />
                     {updateProductError &&
-              updateProductError.match(/shortDescription/) &&
-              JSON.parse(updateProductError).shortDescription &&
-              (JSON.parse(updateProductError).shortDescription.toLowerCase().trim() ===
-              "product short description must be provided" ? (
-               <div id="form-product/slug-help" className="form-text text-danger">* يجب إضافة وصف للمنتج *</div>
-              ) : (
-               <div id="form-product/slug-help" className="form-text text-danger">
-                  * وصف المنتج يجب الا يقل عن 30 حرف *
-                </div>
-              ))}
+                        updateProductError.match( /shortDescription/ ) &&
+                        JSON.parse( updateProductError ).shortDescription &&
+                        ( JSON.parse( updateProductError ).shortDescription.toLowerCase().trim() ===
+                            "product short description must be provided" ? (
+                            <div id="form-product/slug-help" className="form-text text-danger">* يجب إضافة وصف للمنتج *</div>
+                        ) : (
+                            <div id="form-product/slug-help" className="form-text text-danger">
+                                * وصف المنتج يجب الا يقل عن 30 حرف *
+                            </div>
+                        ) )}
                 </div>
             </Card>
 
-            <Card title="Pricing" className="mt-5">
+            <Card title={messages.pricing} className="mt-5">
                 <div className="row g-4">
                     <div className="col">
                         <label htmlFor="form-product/price" className="form-label">
-                            Price
+                            {messages.price}
                         </label>
                         <input
                             type="number"
@@ -639,83 +656,36 @@ export default function ProductEdit ( { match,history } ) {
                             value={price}
                             onChange={e => setPrice( e.target.value )} />
                         {updateProductError &&
-                  updateProductError.match(/price/) &&
-                  JSON.parse(updateProductError).price && (
-                     <div id="form-product/slug-help" className="form-text text-danger">
-                      * {JSON.parse(updateProductError).price} *
+                            updateProductError.match( /price/ ) &&
+                            JSON.parse( updateProductError ).price && (
+                                <div id="form-product/slug-help" className="form-text text-danger">
+                                    * {JSON.parse( updateProductError ).price} *
+                                </div>
+                            )}
                     </div>
-                  )}
-                    </div>
-                    {/* <div className="col">
+                    <div className="col">
                         <label htmlFor="form-product/old-price" className="form-label">
-                            Old price
+                            {messages.oldPrice}
                         </label>
-                        <input type="number" className="form-control" id="form-product/old-price"  defaultValue={product.price}/>
-                    </div> */}
+                        <input
+                            type="number"
+                            className="form-control"
+                            id="form-product/old-price"
+                            defaultValue={product.oldPrice && product.oldPrice}
+                            value={oldPrice}
+                            onChange={e => setOldPrice( e.target.value )} />
+                    </div>
                 </div>
-                <div className="mt-4 mb-n2">
-                    <a href="#">Schedule discount</a>
-                </div>
+              
             </Card>
-
-            <Card title="Inventory" className="mt-5">
-                <div className="mb-4">
-                    <label htmlFor="form-product/sku" className="form-label">
-                        SKU
-                    </label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="form-product/sku"
-                        defaultValue={product.sku}
-                        value={sku}
-                        onChange={e=>setSKU(e.target.value)}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="form-product/quantity" className="form-label">
-                        Stock quantity
-                    </label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        id="form-product/quantity"
-                        defaultValue={product.countInStock}
-                    />
-                </div>
-            </Card>
-
-            {productSpecifications}
-
             
-            <Card
-                title="Search engine optimization"
-                help="Provide information that will help improve the snippet and bring your product to the top of search engines."
-                className="mt-5"
-            >
-                <div className="mb-4">
-                    <label htmlFor="form-product/seo-title" className="form-label">
-                        Page title
-                    </label>
-                    <input type="text" className="form-control" id="form-product/seo-title" />
-                </div>
-                <div>
-                    <label htmlFor="form-product/seo-description" className="form-label">
-                        Meta description
-                    </label>
-                    <textarea
-                        id="form-product/seo-description"
-                        className="form-control"
-                        rows={2}
-                    />
-                </div>
-            </Card>
+            {productSpecifications}
         </>
     );
 
     const sidebar =(product &&product.name)&& (
         <>
-                <Card title="Image" className="w-100  mb-5">
+                <Card title={messages.image} className="w-100  mb-5">
                 <div className="border p-4 d-flex justify-content-center ">
                     <div className="max-w-20x">
                          {photo
@@ -732,7 +702,7 @@ export default function ProductEdit ( { match,history } ) {
                 </div>
             </Card>
         
-            <Card title="Visibility" className="w-100">
+            <Card title={messages.visibility} className="w-100">
                 <div className="mb-4">
                     <label className="form-check">
                         <input
@@ -743,7 +713,7 @@ export default function ProductEdit ( { match,history } ) {
                             defaultChecked={product.visibility === 'published'}
                             onChange={e=>setVisibility(e.target.value)}
                         />
-                        <span className="form-check-label">Published</span>
+                        <span className="form-check-label">{messages.puplished}</span>
                     </label>
                     <label className="form-check mb-0">
                         <input
@@ -754,12 +724,12 @@ export default function ProductEdit ( { match,history } ) {
                             defaultChecked={product.visibility === 'hidden'}
                             onChange={e=>setVisibility(e.target.value)}
                         />
-                        <span className="form-check-label">Hidden</span>
+                        <span className="form-check-label">{messages.hidden}</span>
                     </label>
                 </div>
             </Card>
             {categories && (
-                <Card title="Categories" className="w-100 mt-5">
+                <Card title={messages.category} className="w-100 mt-5">
                 <select
                     defaultValue={product.category}
                     className="sa-select2 form-select"
@@ -774,7 +744,7 @@ export default function ProductEdit ( { match,history } ) {
                 </select>
 
                 <div className="mt-4 mb-n2">
-                    <Link to='/dashboard/categories-add'>Add new category</Link>
+                    <Link to='/dashboard/categories-add'>{messages.AddNewCategory}</Link>
                 </div>
             </Card>
             
@@ -782,13 +752,13 @@ export default function ProductEdit ( { match,history } ) {
 
             {
                 SubCategories && (
-                    <Card title="Sub Category" className="w-100 mt-5">
+                    <Card title={messages.subCategory} className="w-100 mt-5">
                         <select
                             defaultValue={product.subCategory}
                             className="sa-select2 form-select"
                             onChange={e => setSubCategory( e.target.value )}
                         >
-                            <option selected disabled>Select SubCategory</option>
+                            <option selected disabled>{messages.subCategory}</option>
                             {SubCategories.map( ( subCat, subcategoryIdx ) => (
                                 <option key={subcategoryIdx} value={subCat._id}> {subCat.name} </option>
                             ) )}
@@ -800,7 +770,7 @@ export default function ProductEdit ( { match,history } ) {
                             )}
 
                         <div className="mt-4 mb-n2">
-                            <Link to='/dashboard/subcategories-add'>Add new Sub category</Link>
+                            <Link to='/dashboard/subcategories-add'>{messages.AddNewSubCategory}</Link>
                         </div>
                     </Card>
             
@@ -808,16 +778,16 @@ export default function ProductEdit ( { match,history } ) {
             }
 
             {brands && (
-                <Card title="Brand" className="w-100 mt-5">
+                <Card title={messages.brand} className="w-100 mt-5">
                 <select className="sa-select2 form-select"  value={brand?brand:product.brand} onChange={e=>setBrand(e.target.value)}>
-                        <option selected disabled>Select Brand</option>
+                        <option selected disabled>{messages.brand}</option>
                         {brands.map( ( brand, brandIdx ) => (
                             <option key={brandIdx} value={brand._id}>{ brand.name}</option>
                         ))}
                 </select>
 
                 <div className="mt-4 mb-n2">
-                    <Link to='/dashboard/brand-add'>Add new Brand</Link>
+                    <Link to='/dashboard/brand-add'>{messages.addNewBrand}</Link>
                 </div>
             </Card>
 
@@ -860,19 +830,19 @@ export default function ProductEdit ( { match,history } ) {
                 <div className="mx-sm-2 px-2 px-sm-3 px-xxl-4 pb-6">
                     <div className="container">
                         <PageHeader
-                            title="Edit Product"
+                            title={messages.editProduct}
                             actions={[
                                 // <a key="duplicate" href="#" className="btn btn-secondary me-3">
                                 //     Duplicate
                                 // </a>,
                                 <Link key="Edit" onClick={e => submitHandlerAdd( e )} className="btn btn-primary">
-                                    Save
+                                    {messages.save}
                                 </Link>,
                             ]}
                             breadcrumb={[
-                                { title: 'Dashboard', url: '/dashboard' },
-                                { title: 'Products', url: '/dashboard/products-list' },
-                                { title: 'Edit Product', url: '' },
+                                { title: `${messages.dashboard}`, url: '/dashboard' },
+                                { title: `${messages.products}`, url: '/dashboard/products-list' },
+                                { title: `${messages.editProduct}`, url: '' },
                             ]}
                         />
                         <div
