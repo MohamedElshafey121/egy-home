@@ -7,25 +7,6 @@ const { ACLMiddleware } = require("../controllers/roleController");
 const productController = require("../controllers/productController");
 const AppError = require("../utils/appError");
 
-// const acl = {
-//     'admin': ['updateProduct'],
-//     'user': ['updateProduct'],
-
-// }
-
-// function aclAuth ( permission ) {
-//     return ( req, res, next )=> {
-//         const role = req.user.role;
-//         const perms = acl[role];
-//         if ( !perms.includes( permission ) ) {
-//             console.log('not allowed')
-//             return next(new AppError(`You aren't allowed`,403))
-//         }
-//         console.log('allowed')
-//     next();
-// }
-// }
-
 router
   .route("/category/:id")
   .get(
@@ -67,7 +48,7 @@ router
     authController.protect,
     ACLMiddleware("updateProduct"),
     productController.uploadProductImage,
-    productController.resizeproductImages,
+    productController.resizenewProductImages,
     productController.updateProduct
   )
   .delete(

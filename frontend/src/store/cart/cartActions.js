@@ -79,13 +79,15 @@ export function addToUserCart(id, properites) {
             let price = null;
             let photo = null;
 
-            if (properites.shape) {
-                if (product.color.trim() === properites.shape.trim()) {
-                    price = product.price;
-                    photo = product.photo;
-                } else {
-                    const selected = product.Specifications.find((el) => el.color.trim() === properites.shape.trim());
-                    price = selected.price;
+            if (
+                (properites.shape && properites.shape !== product.shape) ||
+                (properites.color && properites.color !== product.color)
+            ) {
+                const selected = product.Specifications.find(
+                    (el) => el.shape === properites.shape || el.color === properites.color
+                );
+                if (selected) {
+                    price = selected.price ? selected.price : null;
                     photo = selected.photo;
                 }
             }
@@ -107,7 +109,9 @@ export function addToUserCart(id, properites) {
                     price: price ? price : product.price,
                     photo: photo ? photo : product.photo,
                     qty: properites.qty,
-                    shape: properites.shape ? properites.shape : product.color,
+                    shape: properites.shape,
+                    color: properites.color,
+                    size: properites.size,
                 },
                 config
             );
@@ -264,16 +268,20 @@ export function addToCart(id, properites) {
         let price = null;
         let photo = null;
 
-        if (properites.shape) {
-            if (product.color.trim() === properites.shape.trim()) {
-                price = product.price;
-                photo = product.photo;
-            } else {
-                const selected = product.Specifications.find((el) => el.color.trim() === properites.shape.trim());
-                price = selected.price;
+        if (
+            (properites.shape && properites.shape !== product.shape) ||
+            (properites.color && properites.color !== product.color)
+        ) {
+            const selected = product.Specifications.find(
+                (el) => el.shape === properites.shape || el.color === properites.color
+            );
+            if (selected) {
+                price = selected.price ? selected.price : null;
                 photo = selected.photo;
             }
         }
+
+        toast.success("تم إضافة المنتج بنجاح إلى العربة", { theme: "colored" });
 
         dispatch({
             type: CART_ADD_ITEM,
@@ -283,7 +291,9 @@ export function addToCart(id, properites) {
                 price: price ? price : product.price,
                 photo: photo ? photo : product.photo,
                 qty: properites.qty,
-                shape: properites.shape ? properites.shape : product.color,
+                shape: properites.shape,
+                color: properites.color,
+                size: properites.size,
             },
         });
 
@@ -292,7 +302,7 @@ export function addToCart(id, properites) {
 }
 
 export function removeFromCart(id) {
-    return (dispatch, getState) => {
+    return async (dispatch, getState) => {
         dispatch({
             type: CART_REMOVE_ITEM,
             payload: id,

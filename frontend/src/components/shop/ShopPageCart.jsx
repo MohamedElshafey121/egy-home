@@ -12,7 +12,6 @@ import AsyncAction from '../shared/AsyncAction';
 import Currency from '../shared/Currency';
 import InputNumber from '../shared/InputNumber';
 import PageHeader from '../shared/PageHeader';
-import { cartRemoveItem, cartUpdateQuantities } from '../../store/oldCart';
 import { Cross12Svg } from '../../svg';
 import { url } from '../../services/utils';
 

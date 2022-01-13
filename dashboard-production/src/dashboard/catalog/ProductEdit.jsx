@@ -89,7 +89,8 @@ export default function ProductEdit ( { match, history } ) {
     const[oldPrice,setOldPrice]=useState()
     const [size, setSize] = useState()
     const[shape,setShape]=useState()
-    const [photo, setPhoto] = useState(  )
+    const [photo, setPhoto] = useState()
+    const[extraPhotos,setExtraPhotos]=useState([])
     const [photoName, setPhotoName] = useState( '' )
     const[visibility,setVisibility]=useState()//["published", "hidden"]
     const[color,setColor]=useState()
@@ -101,7 +102,6 @@ export default function ProductEdit ( { match, history } ) {
     //specification state
     const [specificationPhoto, setSpecificationPhoto] = useState();
     const [specificationSize, setSpecificationSize] = useState();
-    const [specificationShape, setSpecificationShape] = useState();
     const [specificationColor, setSpecificationColor] = useState();
     const [specificationPrice, setSpecificationPrice] = useState();
     
@@ -173,7 +173,6 @@ export default function ProductEdit ( { match, history } ) {
             setSpecificationPhoto()
             setSpecificationPrice()
             setSpecificationSize()
-            setSpecificationShape()
             dispatch( handleGetOneProduct( productId ) )
             dispatch(resetAddSpecification())
         }
@@ -197,7 +196,6 @@ export default function ProductEdit ( { match, history } ) {
     if(specificationPhoto) specificationForm.append("photo", specificationPhoto);
     if (specificationPrice) specificationForm.append("price", specificationPrice);
     if (specificationSize) specificationForm.append("size", specificationSize);
-    if (specificationShape) specificationForm.append("shape", specificationShape);
     if (specificationColor) specificationForm.append("color", specificationColor);
 
     dispatch(handleAddProductSpecification(product._id, specificationForm));
@@ -208,7 +206,6 @@ export default function ProductEdit ( { match, history } ) {
         setSpecificationPhoto()
         setSpecificationPrice()
         setSpecificationSize()
-        setSpecificationShape()
     }
 
     const updateSpecificationSubmitHandler = ( e,specificationId ) => {
@@ -265,6 +262,11 @@ export default function ProductEdit ( { match, history } ) {
         if ( photo ) {
             productForm.append( 'photo', photo );
         }
+          if ( extraPhotos.length ) {
+            extraPhotos.forEach( ( image ) => {
+                productForm.append('extraPhotos',image)
+            })
+        }
         dispatch( handleUpdateProduct(productId,productForm) )
     };
    
@@ -291,7 +293,6 @@ export default function ProductEdit ( { match, history } ) {
                                 <tr>
                                     <th className="w-min">{messages.image}</th>
                                     <th className="min-w-10x">{messages.color}</th>
-                                    <th className="min-w-10x">{messages.shape}</th>
                                     <th className="min-w-10x">{messages.size}</th>
                                     <th className="w-min">{messages.price}</th>
                                     <th className="w-min" />
@@ -405,15 +406,6 @@ export default function ProductEdit ( { match, history } ) {
                                                 <ReactSelect setValue={setSpecificationColor} value={specificationColor} />
 
                                             </td>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    className="form-control form-control-sm"
-                                                    value={specificationShape}
-                                                    onChange={e => setSpecificationShape( e.target.value )}
-                                                />
-                                            </td>
-
                                             <td>
                                                 <input
                                                     type="text"
@@ -538,6 +530,17 @@ export default function ProductEdit ( { match, history } ) {
                             <div id="form-product/slug-help" className="form-text text-danger">* يجب اختيار صورة المنتج *</div>
                         )}
                 </div>
+                  <div className="mb-4">
+                    <label for="formFile-other" class="form-label">{locale==='ar'?"صور إضافية":"extra images"}</label>
+                    <input
+                        type="file"
+                        class="form-control"
+                        id="formFile-other"
+                        onChange={e => { setExtraPhotos( [...e.target.files] ) }}
+                        multiple
+                    />
+                </div>
+
                 <div className="mb-4">
                     <label class="form-label">{messages.color}</label>
                     <ReactSelect setValue={setColor} value={color ? color : product.color} />
@@ -558,19 +561,6 @@ export default function ProductEdit ( { match, history } ) {
                         defaultValue={product.size&&product.size}
                         value={size}
                         onChange={e => setSize( e.target.value )} />
-                </div>
-
-                <div className="mb-4">
-                    <label htmlFor="form-product/shape" className="form-label">
-                        {messages.shape}
-                    </label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="form-product/shape"
-                        defaultValue={product.shape&&product.shape}
-                        value={shape}
-                        onChange={e => setShape( e.target.value )} />
                 </div>
                 
                
@@ -728,8 +718,36 @@ export default function ProductEdit ( { match, history } ) {
                     </label>
                 </div>
             </Card>
+            
+            <Card title={messages.visibility} className="w-100 mt-5">
+                <div className="mb-4">
+                    <label className="form-check">
+                        <input
+                            type="radio"
+                            value='published'
+                            className="form-check-input"
+                            name="shape"
+                            defaultChecked={product.shape === 'color'}
+                            onChange={e=>setShape(e.target.value)}
+                        />
+                        <span className="form-check-label">{locale==='ar'?"سادة":"color"}</span>
+                    </label>
+                    <label className="form-check mb-0">
+                        <input
+                            type="radio"
+                            className="form-check-input"
+                            value='shape'
+                            name="shape"
+                            defaultChecked={product.visibility === 'color'}
+                            onChange={e=>setShape(e.target.value)}
+                        />
+                        <span className="form-check-label">{locale==='ar'?"منقوش":"shape"}</span>
+                    </label>
+                </div>
+            </Card>
+
             {categories && (
-                <Card title={messages.category} className="w-100 mt-5">
+                <Card title={locale==='ar'?'الشكل':'shape'}  className="w-100 mt-5">
                 <select
                     defaultValue={product.category}
                     className="sa-select2 form-select"

@@ -18,7 +18,6 @@ import Currency from './Currency';
 import InputNumber from './InputNumber';
 import ProductGallery from './ProductGallery';
 import Rating from './Rating';
-import { cartAddItem } from '../../store/oldCart';
 import { compareAddItem } from '../../store/compare';
 import { Wishlist16Svg, Compare16Svg } from '../../svg';
 import { wishlistAddItem } from '../../store/wishlist';
@@ -34,7 +33,12 @@ class Product extends Component {
 
         this.state = {
             quantity: 1,
-            messages:message_ar
+            messages: message_ar,
+            selectedImage: this.props.product.photo,
+            selectedShape: this.props.product.shape ? this.props.product.shape : '',
+            selectedSize: this.props.product.size ? this.props.product.size : '',
+            selectedColor: '',
+            choosedPhoto:''
         };
     }
 
@@ -42,15 +46,41 @@ class Product extends Component {
         this.setState({messages: this.props.locale === 'ar' ? message_ar : message_en || message_ar })
     }
 
+
     images = [];
     getAllImages () {
         this.images = [];
         const { product } = this.props;
+        //1)add product main photo
         this.images.push( product.photo );
+
+        //2)add product extra photos
+        if ( product.extraPhotos ) {
+            product.extraPhotos.forEach( ( photo ) => {
+                this.images.push( photo );
+            })
+        }
+        //3)add specification photos
         product.Specifications.forEach( feature => {
             this.images.push( feature.photo )
         } );
     };
+
+    imagesWithColors = [];
+    getAllImagesWithColors () {
+        this.imagesWithColors = [];
+        const { product } = this.props;
+
+        //1)add product main photo and color
+        this.imagesWithColors.push( {photo:product.photo,color:product.color} );
+
+       
+        //2)add specification photos and colors
+        product.Specifications.forEach( feature => {
+            this.imagesWithColors.push( {photo:feature.photo,color:feature.color} )
+        } );
+    };
+
 
     colors = [];
     getAllcolors () {
@@ -58,19 +88,69 @@ class Product extends Component {
         const { product } = this.props;
         this.colors.push( product.color );
         product.Specifications.forEach( feature => {
-            this.colors.push( feature.color )
+            if ( feature.color ) {
+                this.colors.push( feature.color )
+            }
         } );
     };
 
-    //add to cart handler
-    addTocartHandler = ( product, shape = '', qty = 1 ) => {
+   
+
+    // getcurrentShape () {
+    //     const { selectedImage } = this.state;
+    //     const { product } = this.props
+    //     let selectedSpec;
+
+    //     if ( selectedImage !== product.photo ) {
+    //     selectedSpec = product.Specifications.find( spec => spec.photo === selectedImage );
+    //         if ( selectedSpec.shape && selectedSpec.shape !== this.state.selectedShape ) {
+    //             this.setState({selectedShape:selectedSpec.shape})
+    //         }
+    //     } else {
+    //         if ( product.shape && this.state.selectedShape !== product.shape ) {
+    //             this.setState({selectedShape:product.shape})
+    //         }
+    //     };
+    // };
+
+
+    setSelectedImageHandler= (image)=> {
+        this.setState( { selectedImage: image } )
+    }
+
+
+    // //add to cart handler
+    // addTocartHandler =  ( product, qty = 1 , shape = '',color='') => {
+    //     const { userInfo } = this.props;
+    //     shape = shape.trim() ? shape : product.shape&&product.shape;
+    //     color = color.trim() ? color : product.color && product.color;
+        
+    //     if ( userInfo ) {
+    //         return this.props.addToUserCart( product._id, { qty, shape,color } ) 
+    //     }
+        
+    //     return this.props.addToCart( product._id, { qty, shape,color } ) 
+    // };
+
+    addTocartHandler = ( product, qty = 1, shape = '', color = '' ) => {
         const { userInfo } = this.props;
-        shape = shape.trim() ? shape : product.color;
+        // shape = shape.trim() ? shape : product.color;
+        // shape = product.shape && product.shape
+        // color = product.color && product.color
+        
         if ( userInfo ) {
-            return this.props.addToUserCart( product._id, { qty, shape } ) 
+            return this.props.addToUserCart( product._id, {
+                qty,
+                shape:shape.trim()?shape:product.shape,
+                color:color.trim()?color:product.color
+            } )
         }
         
-        return this.props.addToCart( product._id, { qty, shape } ) 
+        return this.props.addToCart( product._id, {
+            qty,
+            shape: shape.trim() ? shape : product.shape,
+            color: color.trim() ? color : product.color
+        } );
     };
 
 
@@ -80,34 +160,39 @@ class Product extends Component {
 
     render () {
         this.getAllImages();
-        this.getAllcolors()
+        this.getAllcolors();
+        this.getAllImagesWithColors()
         const {
             product,
             layout,
             wishlistAddItem,
             compareAddItem,
-            cartAddItem,
+            
         } = this.props;
-        const { quantity,messages } = this.state;
+        const { quantity,messages,selectedShape,selectedColor,choosedPhoto } = this.state;
         let prices;
 
-        if ( product.compareAtPrice ) {
+        if ( product.oldPrice ) {
             prices = (
                 <React.Fragment>
                     <span className="product__new-price"><Currency value={product.price} /></span>
                     {' '}
-                    <span className="product__old-price"><Currency value={product.compareAtPrice} /></span>
+                    <span className="product__old-price"><Currency value={product.oldPrice} /></span>
                 </React.Fragment>
             );
         } else {
             prices = <Currency value={product.price} />;
-            // prices = <div>{product.price}</div>;
         }
 
         return (
             <div className={`product product--layout--${ layout }`}>
                 <div className="product__content">
-                    <ProductGallery layout={layout} images={this.images} />
+                    <ProductGallery
+                        layout={layout}
+                        images={this.images}
+                        selectedIndex='2'
+                        choosedPhoto={choosedPhoto}
+                    />
 
                     <div className="product__info">
                         <div className="product__wishlist-compare">
@@ -153,7 +238,7 @@ class Product extends Component {
                             </div>
                             <div className="product__rating-legend">
                                 {/* <Link to="/">{`${ product.numReviews } Reviews`}</Link> */}
-                                <span>{`${ product.numReviews } ${messages.reviews}`}</span>
+                                <span>{`${ product.numReviews } ${ messages.reviews }`}</span>
                                 {/* <Link to="/">Write A Review</Link> */}
                             </div>
                         </div>
@@ -173,10 +258,10 @@ class Product extends Component {
                                 {' '}
                                 <span className="text-success">{messages.inStock}</span>
                             </li>
-                            {(product.brand&&product.brand.name)&&(<li>
+                            {( product.brand && product.brand.name ) && ( <li>
                                 {messages.brand}:
                                 <Link to="/">{product.brand.name}</Link>
-                            </li>)}
+                            </li> )}
                             {/* <li>SKU: 83690/32</li> */}
                         </ul>
                     </div>
@@ -193,55 +278,91 @@ class Product extends Component {
                         </div>
 
                         <form className="product__options">
-                            {this.colors.length > 0 && (
+
+                            {((product.shape==='color' || !product.shape)&& this.colors.length > 0) && (
                                 <div className="form-group product__option">
-                                <div className="product__option-label">{messages.colors}</div>
-                                <div className="input-radio-color">
-                                    <div className="input-radio-color__list">
+                                    <div className="product__option-label">{messages.colors} { selectedColor&& `: ${selectedColor}` }</div>
+                                    <div className="input-radio-color mt-3">
+                                        <div className="input-radio-color__list">
                                             {this.colors.map( ( color ) => (
-                                            <label
-                                            className={`input-radio-color__item ` }
-                                            style={{ color: color }}
-                                            data-toggle="tooltip"
-                                            title={color}
-                                        >
-                                            <input type="radio" name="color" />
-                                            <span />
-                                        </label>
-                                        ))}
-                                        {/*                                         <label
-                                            className="input-radio-color__item input-radio-color__item--disabled"
-                                            style={{ color: '#4080ff' }}
-                                            data-toggle="tooltip"
-                                            title="Blue"
-                                        >
-                                            <input type="radio" name="color" disabled />
-                                            <span />
-                                        </label> */}
+                                                <label
+                                                    className={`input-radio-color__item `}
+                                                    style={{ color: color }}
+                                                    data-toggle="tooltip"
+                                                    title={color}
+                                                >
+                                                    <input
+                                                        type="radio"
+                                                        name="color"
+                                                        value={color}
+                                                        checked={selectedColor === color}
+                                                        onChange={e=>this.setState({selectedColor:e.target.value})}
+                                                    />
+                                                    <span />
+                                                </label>
+                                            ) )}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             
                             )}
-                            <div className="form-group product__option d-none">
-                                <div className="product__option-label">Material</div>
+
+
+                            {(product.shape==='shape'&& this.imagesWithColors.length > 0) && (
+                                <div className="form-group product__option">
+                                    <div className="product__option-label">{messages.colors} { selectedColor&& `: ${selectedColor}` }</div>
+                                    <div className="input-radio-color mt-3">
+                                        <div className="input-radio-color__list">
+                                            {this.imagesWithColors.map( ( image,imageIdx ) => (
+                                                <label
+                                                    className={`input-radio-color__item `}
+                                                    style={{
+                                                        backgroundImage: `url(/uploads/imgs/products/${ image.photo })`,
+                                                        backgroundSize:'cover',
+                                                        width: '40px',
+                                                        height: '40px',
+                                                        borderRadius: '50%',
+                                                        border: '2px solid #ddd',
+                                                        borderColor:selectedColor===image.color?`${image.color}`:'#ddd'
+                                                    }}
+                                                    data-toggle="tooltip"
+                                                    title={image.color}
+                                                >
+                                                     <input
+                                                        type="radio"
+                                                        name="shape"
+                                                        value={image.color}
+                                                        onClick={e=>this.setState({choosedPhoto:image.photo})}
+                                                        style={{borderColor:`${image.color}`}}
+                                                        checked={selectedColor === image.color}
+                                                        onChange={e=>this.setState({selectedColor:e.target.value})}
+                                                     />
+                                                    {/* <span >{imageIdx}</span> */}
+                                                 </label>
+                                            ) )}
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                            )}
+
+                            
+
+                            {/* Shape */}
+                            {/* {selectedShape&&(<div className="form-group product__option ">
+                                <div className="product__option-label">{messages.shape}</div>
                                 <div className="input-radio-label">
                                     <div className="input-radio-label__list">
                                         <label>
-                                            <input type="radio" name="material" />
-                                            <span>Metal</span>
-                                        </label>
-                                        <label>
-                                            <input type="radio" name="material" />
-                                            <span>Wood</span>
-                                        </label>
-                                        <label>
-                                            <input type="radio" name="material" disabled />
-                                            <span>Plastic</span>
+                                           <span>{selectedShape}</span>
                                         </label>
                                     </div>
                                 </div>
-                            </div>
+                            </div>)} */}
+                           
+                            {/* Size */}
+                           
+                            
                             <div className="form-group product__option">
                                 <label htmlFor="product-quantity" className="product__option-label">{messages.quantity}</label>
                                 <div className="product__actions">
@@ -258,7 +379,7 @@ class Product extends Component {
                                     </div>
                                     <div className="product__actions-item product__actions-item--addtocart">
                                         <AsyncAction
-                                            action={() => this.addTocartHandler( product, '', quantity )}
+                                            action={() => this.addTocartHandler( product, quantity,selectedShape,selectedColor )}
                                             render={( { run, loading } ) => (
                                                 <button
                                                     type="button"
@@ -329,7 +450,7 @@ class Product extends Component {
             </div>
         );
     }
-}
+};
 
 Product.propTypes = {
     /** product object */
@@ -352,7 +473,6 @@ const mapStateToProps = ( state ) => {
 };
 
 const mapDispatchToProps = {
-    cartAddItem,
     wishlistAddItem,
     compareAddItem,
     addToCart,

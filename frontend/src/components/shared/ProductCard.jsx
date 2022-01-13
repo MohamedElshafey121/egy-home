@@ -47,13 +47,16 @@ function ProductCard ( props ) {
 
     const dispatch = useDispatch();
     //add to cart handler
-    const addTocartHandler = ( product, shape = '', qty = 1 ) => {
-        shape = shape.trim() ? shape : product.color;
+    const addTocartHandler = ( product, qty = 1 , shape = '',color='') => {
+        // shape = shape.trim() ? shape : product.color;
+        shape = product.shape && product.shape
+        color = product.color && product.color
+        
         if ( userInfo ) {
-            return dispatch( addToUserCart( product._id, { qty, shape } ) )
+            return dispatch( addToUserCart( product._id, { qty, shape,color } ) )
         }
         
-        return dispatch( addToCart( product._id, { qty, shape } ) );
+        return dispatch( addToCart( product._id, { qty, shape,color } ) );
     };
 
 
@@ -70,15 +73,24 @@ function ProductCard ( props ) {
     let price;
     let features;
 
-    if ( product.badges&& product.badges.includes( 'sale' ) ) {
-        badges.push( <div key="sale" className="product-card__badge product-card__badge--sale">{messages.sale}</div> );
+    // if ( product.badges&& product.badges.includes( 'sale' ) ) {
+    //     badges.push( <div key="sale" className="product-card__badge product-card__badge--sale">{messages.sale}</div> );
+    // }
+    // if ( product.badges&& product.badges.includes( 'hot' ) ) {
+    //     badges.push( <div key="hot" className="product-card__badge product-card__badge--hot">{messages.hot}</div> );
+    // }
+    // if ( product.badges&& product.badges.includes( 'new' ) ) {
+    //     badges.push( <div key="new" className="product-card__badge product-card__badge--new">{messages.hot}</div> );
+    // }
+
+    if ( product.oldPrice ) {
+        badges.push( <div key="sale" className="product-card__badge product-card__badge--sale">{messages.sale}{' '}{ (((product.oldPrice-product.price)/product.price)*100).toFixed(0)} % </div> );
     }
-    if ( product.badges&& product.badges.includes( 'hot' ) ) {
-        badges.push( <div key="hot" className="product-card__badge product-card__badge--hot">{messages.hot}</div> );
+    if ( product.rating >4 ) {
+        badges.push( <div key="hot" className="product-card__badge product-card__badge--hot">{locale==='en'? messages.hot:'تقييم مرتفع'}</div> );
+        
     }
-    if ( product.badges&& product.badges.includes( 'new' ) ) {
-        badges.push( <div key="new" className="product-card__badge product-card__badge--new">{messages.hot}</div> );
-    }
+
 
     badges = badges.length ? <div className="product-card__badges-list">{badges}</div> : null;
 
@@ -92,12 +104,12 @@ function ProductCard ( props ) {
     //     );
     // }
 
-    if ( product.compareAtPrice ) {
+    if ( product.oldPrice ) {
         price = (
             <div className="product-card__prices">
                 <span className="product-card__new-price"><Currency value={product.price} /></span>
                 {' '}
-                <span className="product-card__old-price"><Currency value={product.compareAtPrice} /></span>
+                <span className="product-card__old-price"><Currency value={product.oldPrice} /></span>
             </div>
         );
     } else {
@@ -154,8 +166,8 @@ function ProductCard ( props ) {
                 {/* Faetures Start */}
                 
                 {layout==='grid-with-features'&& <ul className="product-card__features-list">
-                    <li > {`size , ${product.size} `}</li>
-                    <li > {`color , ${product.color} `}</li>
+                    {product.size&&<li > {`size , ${product.size} `}</li>}
+                    {product.color && <li > {`color , ${product.color} `}</li>}
                 </ul>}
                 {/* Faetures End */}
 

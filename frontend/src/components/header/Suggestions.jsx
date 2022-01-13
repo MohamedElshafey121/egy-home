@@ -11,7 +11,6 @@ import { useDispatch } from 'react-redux';
 import AsyncAction from '../shared/AsyncAction';
 import Currency from '../shared/Currency';
 import { Cart16Svg } from '../../svg';
-import { cartAddItem } from '../../store/oldCart';
 import { url } from '../../services/utils';
 import {
     addToCart,
@@ -24,7 +23,6 @@ function Suggestions ( props ) {
         context,
         className,
         products,
-        cartAddItem,
         userInfo
     } = props;
 
@@ -55,15 +53,15 @@ function Suggestions ( props ) {
                 {/* <div className="suggestions__item-meta">SKU: 83690/32</div> */}
             </div>
             <div className="suggestions__item-price">
-                {product.compareAtPrice && (
+                {product.oldPrice && (
                     <React.Fragment>
                         <span className="suggestions__item-price-new"><Currency value={product.price} /></span>
                         {' '}
-                        {/* <span className="suggestions__item-price-old"><Currency value={product.compareAtPrice} /></span> */}
+                        <span className="suggestions__item-price-old"><Currency value={product.oldPrice} /></span>
                     </React.Fragment>
                 )}
 
-                {!product.compareAtPrice && ( <Currency value={product.price} /> )}
+                {!product.oldPrice && ( <Currency value={product.price} /> )}
             </div>
             {context === 'header' && (
                 <div className="suggestions__item-actions">
@@ -96,11 +94,6 @@ function Suggestions ( props ) {
     );
 }
 
-// const mapStateToProps = () => ( {} );
-
-const mapDispatchToProps = {
-    cartAddItem,
-};
 
 const mapStateToProps = ( state ) => {
     const userLogin = state.userLogin;
@@ -112,5 +105,4 @@ const mapStateToProps = ( state ) => {
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps,
 )( Suggestions );

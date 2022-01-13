@@ -28,7 +28,7 @@ function ProductTabReviews ( { productId, reviews } ) {
     const [comment, setComment] = useState();
     const [page, setpage] = useState( 1 )
 
-    const alreadyReviewed=reviews.find( review => review.user === userInfo._id )
+    const alreadyReviewed=userInfo&& reviews.find( review => review.user === userInfo._id )
     
 
     const dispatch = useDispatch();

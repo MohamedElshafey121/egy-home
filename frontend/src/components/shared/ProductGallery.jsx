@@ -99,9 +99,8 @@ class ProductGallery extends Component {
         };
     }
 
-    componentDidMount() {
-        this.createGallery = import('../../photoswipe').then((module) => module.createGallery);
-
+    componentDidMount () {
+        this.createGallery = import( '../../photoswipe' ).then( ( module ) => module.createGallery );
         // this is necessary to reset the transition state, because sometimes
         // react-slick does not trigger an afterChange event after a beforeChange event
         setTimeout(() => {
@@ -160,14 +159,14 @@ class ProductGallery extends Component {
         this.openPhotoswipe(index);
     };
 
-    handleThumbnailClick = (index) => {
+    handleThumbnailClick = ( index ) => {
         const { transition } = this.state;
-
         if (transition) {
             return;
         }
 
-        this.setState(() => ({ currentIndex: index }));
+        this.setState( () => ( { currentIndex: index } ) );
+        
 
         if (this.slickFeaturedRef) {
             this.slickFeaturedRef.slickGoTo(this.getIndexDependOnDir(index));
@@ -179,13 +178,16 @@ class ProductGallery extends Component {
             currentIndex: this.getIndexDependOnDir(newIndex),
             transition: true,
         }));
+        
     };
 
     handleFeaturedAfterChange = (index) => {
         this.setState(() => ({
             currentIndex: this.getIndexDependOnDir(index),
             transition: false,
-        }));
+        } ) );
+        
+
     };
 
     handleZoomButtonClick = () => {
@@ -301,7 +303,8 @@ class ProductGallery extends Component {
             </div>
         ));
 
-        const thumbnails = images.map((image, index) => {
+        const thumbnails = images.map( ( image, index ) => {
+            
             const classes = classNames('product-gallery__carousel-item product-image', {
                 'product-gallery__carousel-item--active': index === currentIndex,
             });
@@ -310,7 +313,7 @@ class ProductGallery extends Component {
                 <button
                     type="button"
                     key={index}
-                    onClick={() => this.handleThumbnailClick(index)}
+                    onClick={() => { this.handleThumbnailClick( index )}}
                     className={classes}
                 >
                     <div className="product-image__body">

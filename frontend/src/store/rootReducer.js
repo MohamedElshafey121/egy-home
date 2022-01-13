@@ -1,7 +1,6 @@
 import { combineReducers } from "redux";
 
 // reducers
-// import cartReducer from './oldCart';
 import compareReducer from "./compare";
 import currencyReducer from "./currency";
 import localeReducer from "./locale";

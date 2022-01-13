@@ -69,11 +69,12 @@ export default function ProductAdd ({history}) {
     const [price, setPrice] = useState()
     const[oldPrice,setOldPrice]=useState()
     const [size, setSize] = useState()
-    const[shape,setShape]=useState()
-    const [photo, setPhoto] = useState(  )
+    const [photo, setPhoto] = useState()
+    const[extraPhotos,setExtraPhotos]=useState([])
     const [photoName, setPhotoName] = useState( '' )
     const[visibility,setVisibility]=useState()//["published", "hidden"]
-    const[color,setColor]=useState()
+    const [color, setColor] = useState()
+    const[shape,setShape]=useState('color')
     const[category,setCategory]=useState()
     const[subCategory,setSubCategory]=useState()
     const [brand, setBrand] = useState()
@@ -126,8 +127,8 @@ export default function ProductAdd ({history}) {
         if ( price ) productForm.append( 'price', Number( price ) );
         if ( oldPrice ) productForm.append( 'oldPrice', Number( oldPrice ) );
         if ( size ) productForm.append( 'size', size );
-        if ( shape ) productForm.append( 'shape', shape );
         if ( color ) productForm.append( 'color', color );
+        if(shape) productForm.append('shape',shape)
         if ( category ) productForm.append( 'category', category );
         if ( subCategory ) productForm.append( 'subCategory', subCategory );
         if ( brand ) productForm.append( 'brand', brand );
@@ -142,6 +143,12 @@ export default function ProductAdd ({history}) {
         if ( images.length > 0 ) { 
             images.forEach( ( image ) => {
                 productForm.append( 'images', image );
+            })
+        }
+
+        if ( extraPhotos.length ) {
+            extraPhotos.forEach( ( image ) => {
+                productForm.append('extraPhotos',image)
             })
         }
         dispatch( handleAddProduct( productForm ) )
@@ -201,13 +208,6 @@ export default function ProductAdd ({history}) {
         setspecifications(values)
     }
 
-        //Specifications handle shapr
-    function addSpecificationShape ( e ) {
-        const values = specifications;
-        const id = e.target.id;
-        values[id].shape= e.target.value;
-        setspecifications(values)
-    }
     
     //Remove Specification from specifications list(array)
     function removeSpecification ( event ) {
@@ -266,6 +266,17 @@ export default function ProductAdd ({history}) {
               )}
                 </div>
 
+                 <div className="mb-4">
+                    <label for="formFile-other" class="form-label">{locale==='ar'?"صور إضافية":"extra images"}</label>
+                    <input
+                        type="file"
+                        class="form-control"
+                        id="formFile-other"
+                        onChange={e => { setExtraPhotos( [...e.target.files] ) }}
+                        multiple
+                    />
+                </div>
+
                 <div className="mb-4">
                     <label class="form-label">{messages.color}</label>
                     <ReactSelect setValue={setColor} value={color} />
@@ -288,19 +299,7 @@ export default function ProductAdd ({history}) {
                         onChange={e => setSize( e.target.value )} />
                 </div>
 
-                 <div className="mb-4">
-                    <label htmlFor="form-product/shape" className="form-label">
-                        {messages.shape} 
-                    </label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="form-product/shape"
-                        value={shape}
-                        onChange={e => setShape( e.target.value )} />
-                </div>
-                
-                               <div className="mb-4">
+                <div className="mb-4">
                     <label htmlFor="form-product/description" className="form-label">
                         {messages.description}
                     </label>
@@ -444,7 +443,6 @@ export default function ProductAdd ({history}) {
                                     <tr>
                                         <th className="w-min">{messages.image}</th>
                                         <th className="min-w-10x">{messages.color}</th>
-                                        <th className="min-w-10x">{messages.shape}</th>
                                         <th className="min-w-10x">{messages.size}</th>
                                         <th className="w-min">{messages.price}</th>
                                         <th className="w-min" />
@@ -460,15 +458,6 @@ export default function ProductAdd ({history}) {
                                             </td>
                                             <td>
                                                 <ReactSelect addSpecificationColor={addSpecificationColor} Id={imageIdx} />
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    className="form-control form-control-sm"
-                                                    onChange={addSpecificationShape}
-                                                    id={imageIdx}
-                                                    value={specifiaction.shape}
-                                                />
                                             </td>
                                             <td>
                                                 <input
@@ -563,6 +552,21 @@ export default function ProductAdd ({history}) {
                    
                 </div>
             </Card>
+
+            <Card title={locale==='ar'?'الشكل':'shape'} className="w-100 mt-5">
+                <div className="mb-4">
+                    <label className="form-check">
+                        <input type="radio" value='color' onChange={e => setShape( e.target.value )} className="form-check-input" name="shape" defaultChecked />
+                        <span className="form-check-label">{locale==='ar'?"سادة":"color"}</span>
+                    </label>
+                    <label className="form-check mb-0">
+                        <input type="radio" value='shape' onChange={e => setShape( e.target.value )} className="form-check-input" name="shape" />
+                        <span className="form-check-label">{locale==='ar'?"منقوش":"shape"}</span>
+                    </label>
+                   
+                </div>
+            </Card>
+
             {
                 categories && (
                     <Card title={messages.category} className="w-100 mt-5">

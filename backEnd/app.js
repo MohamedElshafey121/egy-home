@@ -39,15 +39,6 @@ app.use((req, res, next) => {
   next();
 });
 
-//ROUTES
-/*
-app.get( '/query', ( req, res, next ) => {
-    console.log( req.query );
-    res.send( {
-        query: req.query
-    } );
-})
-*/
 app.use("/users", userRouter);
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
@@ -87,9 +78,6 @@ if (process.env.NODE_ENV === "production") {
     res.send("API is running....");
   });
 }
-
-// app.use( express.static( path.join( __dirname, 'uploads' ) ) );
-// app.use('/uploads', express.static(path.resolve(__dirname, './uploads/imgs')));
 
 //404 Error
 app.all("*", (req, res, next) => {

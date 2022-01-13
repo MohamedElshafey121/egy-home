@@ -43,8 +43,9 @@ const upload = multer({
 });
 
 exports.uploadProductImage = upload.fields([
-  { name: "images", maxCount: 6 },
+  { name: "images", maxCount: 15 },
   { name: "photo", maxCount: 1 },
+  { name: "extraPhotos", maxCount: 15 },
 ]);
 
 // exports.resizeproductImage = catchAsync(async (req, res, next) => {
@@ -73,10 +74,30 @@ exports.resizeproductImages = catchAsync(async (req, res, next) => {
     .toFile(`uploads/imgs/products/${req.body.photo}`);
 
   // 2) Images
+  req.body.extraPhotos = [];
+
+  if (req.files.extraPhotos) {
+    // console.log("extraPhotos Found");
+    await Promise.all(
+      req.files.extraPhotos.map(async (file, i) => {
+        const filename = `product-${Date.now()}-other${i + 1}.jpeg`;
+
+        await sharp(file.buffer)
+          .resize(2000, 1333)
+          .toFormat("jpeg")
+          .jpeg({ quality: 90 })
+          .toFile(`uploads/imgs/products/${filename}`);
+
+        req.body.extraPhotos.push(filename);
+      })
+    );
+  }
+
+  // 3) Images
   req.body.images = [];
 
   if (req.files.images) {
-    console.log("images Found");
+    // console.log("images Found");
     await Promise.all(
       req.files.images.map(async (file, i) => {
         const filename = `product-${Date.now()}-${i + 1}.jpeg`;
@@ -88,6 +109,39 @@ exports.resizeproductImages = catchAsync(async (req, res, next) => {
           .toFile(`uploads/imgs/products/${filename}`);
 
         req.body.images.push(filename);
+      })
+    );
+  }
+
+  next();
+});
+
+exports.resizenewProductImages = catchAsync(async (req, res, next) => {
+  // 1) Cover image
+  if (req.files.photo) {
+    req.body.photo = `product-${Date.now()}.jpeg`;
+    await sharp(req.files.photo[0].buffer)
+      .resize(700, 700)
+      .toFormat("jpeg")
+      .jpeg({ quality: 90 })
+      .toFile(`uploads/imgs/products/${req.body.photo}`);
+  }
+
+  // 2) Images
+
+  if (req.files.extraPhotos) {
+    req.body.extraPhotos = [];
+    await Promise.all(
+      req.files.extraPhotos.map(async (file, i) => {
+        const filename = `product-${Date.now()}-other${i + 1}.jpeg`;
+
+        await sharp(file.buffer)
+          .resize(2000, 1333)
+          .toFormat("jpeg")
+          .jpeg({ quality: 90 })
+          .toFile(`uploads/imgs/products/${filename}`);
+
+        req.body.extraPhotos.push(filename);
       })
     );
   }
@@ -118,16 +172,11 @@ exports.resizeProductSpecImgae = catchAsync(async (req, res, next) => {
  * @access   private
  */
 exports.createProduct = catchAsync(async (req, res, next) => {
-  // console.log(JSON.parse(req.body.Specifications));
-  // console.log("images => ", req.body.images);
-  // console.log("photo => ", req.body.photo);
-  // if (req.file) req.body.photo = req.file.filename;
   const Specifications = JSON.parse(req.body.Specifications);
   if (req.body.images) {
     req.body.images.forEach((image, imageIdx) => {
       Specifications[imageIdx].photo = image;
     });
-    console.log(Specifications);
   }
 
   const {
@@ -141,6 +190,7 @@ exports.createProduct = catchAsync(async (req, res, next) => {
     color,
     shape,
     visibility,
+    extraPhotos,
     sku,
     category,
     subCategory,
@@ -162,6 +212,7 @@ exports.createProduct = catchAsync(async (req, res, next) => {
     name,
     description,
     photo,
+    extraPhotos,
     shortDescription,
     price,
     size,
@@ -315,6 +366,7 @@ exports.GetProduct = catchAsync(async (req, res, next) => {
  */
 exports.updateProduct = catchAsync(async (req, res, next) => {
   if (req.file) req.body.photo = req.file.filename;
+  if (req.body.extraPhotos) console.log(req.body.extraPhotos);
 
   const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
     new: true,

@@ -10,7 +10,7 @@ function Currency(props) {
     const { symbol } = currency || currentCurrency;
 
     if ( value ) {
-        return <React.Fragment>{`${value.toFixed(2)} ج.م`}</React.Fragment>;
+        return <React.Fragment>{`${Number(value).toFixed(2)} ج.م`}</React.Fragment>;
     }
     
     return <React.Fragment></React.Fragment>;

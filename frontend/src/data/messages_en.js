@@ -110,6 +110,8 @@ const messages_en = {
     cancelOrderInstructions:
         "you can cancel order manual while it was in our stock. If our representative received order then you cannot cancel it manual. instead,You have to call customer service",
     orderDetails: "Order Details",
+    shape: "Shape",
+    shapes: "Shapes",
 };
 
 export default messages_en;

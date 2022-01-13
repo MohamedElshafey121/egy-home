@@ -45,16 +45,16 @@ function WidgetProducts(props) {
             );
         }
 
-        if (product.compareAtPrice) {
+        if (product.oldPrice) {
             price = (
                 <React.Fragment>
-                    <span className="widget-products__new-price"><Currency value={product.price} /></span>
+                    <span className="widget-products__new-price"><Currency value={Number(product.price)} /></span>
                     {' '}
-                    <span className="widget-products__old-price"><Currency value={product.compareAtPrice} /></span>
+                    <span className="widget-products__old-price"><Currency value={Number(product.oldPrice)} /></span>
                 </React.Fragment>
             );
         } else {
-            price = <Currency value={product.price} />;
+            price = <Currency value={Number(product.price)} />;
         }
 
         return (

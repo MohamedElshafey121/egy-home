@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import {
     CART_ADD_ITEM,
     CART_REMOVE_ITEM,
@@ -114,7 +115,6 @@ export function cartReducer(state = { cartItems: [], shippingAddress: {} }, acti
         case CART_ADD_ITEM:
             const item = action.payload;
 
-            //item.product===product._id
             const existItem = state.cartItems.find((el) => el.product === item.product);
 
             if (existItem) {

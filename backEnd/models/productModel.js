@@ -25,16 +25,13 @@ const SpecificationSchema = new mongoose.Schema({
   },
   size: {
     type: String,
-    // required: [true, "Size Must be Provided"],
   },
   color: {
     type: String,
-    // required: [true, "Color Must be Provided"],
+    required: [true, "You should specify color"],
   },
-  shape: String,
   photo: {
     type: String,
-    // required: [true, "you must provide a photo"],
   },
 });
 
@@ -43,10 +40,8 @@ const ProductSchem = new mongoose.Schema(
     name: {
       type: String,
       required: [true, "Product Name is required"],
-      // minLength: 15,
-      //  maxlength: [40, 'A product name must have less or equal then 40 characters'],
       minlength: [
-        10,
+        5,
         "A Product name must have more or equal then 10 characters",
       ],
     },
@@ -74,6 +69,7 @@ const ProductSchem = new mongoose.Schema(
       type: String,
       required: [true, "You Should specify product Main Photo"],
     },
+    extraPhotos: [String],
     price: {
       //current Price
       type: Number,
@@ -90,9 +86,8 @@ const ProductSchem = new mongoose.Schema(
     },
     color: {
       type: String,
-      // required: [true, "You Should specify product color or shape"],
+      required: [true, "You Should specify product color or shape"],
     },
-    shape: String,
     reviews: [reviewSchema],
     Specifications: [SpecificationSchema],
     supplier: {
@@ -112,7 +107,12 @@ const ProductSchem = new mongoose.Schema(
       enum: ["published", "hidden"],
       required: [true, "You Should identify Visibility status of product"],
     },
-    // sku: {
+    shape: {
+      type: String,
+      default: "color",
+      enum: ["color", "shape"],
+      required: [true, "You Should identify drawing status of product"],
+    }, // sku: {
     //   type: String,
     //   required: [true, "Sku is required"],
     //   unique: [true, "this SKU already exist"],
