@@ -164,6 +164,7 @@ class ProductGallery extends Component {
         if (transition) {
             return;
         }
+        //commit 
 
         this.setState( () => ( { currentIndex: index } ) );
         
