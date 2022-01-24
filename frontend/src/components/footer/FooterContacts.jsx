@@ -20,12 +20,12 @@ export default function FooterContacts() {
                 </li> */}
                 <li>
                     <i className="footer-contacts__icon far fa-envelope" />
-                    {theme.contacts.email}
+                    Egy-Home@gmail.com
                 </li>
-                <li>
+                {/* <li>
                     <i className="footer-contacts__icon fas fa-mobile-alt" />
                     {`${theme.contacts.phone}, ${theme.contacts.phone}`}
-                </li>
+                </li> */}
                 {/* <li>
                     <i className="footer-contacts__icon far fa-clock" />
                     Mon-Sat 10:00pm - 7:00pm

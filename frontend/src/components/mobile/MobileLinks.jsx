@@ -1,5 +1,6 @@
 // react
-import React from 'react';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 // third-party
 import PropTypes from 'prop-types';
@@ -15,8 +16,12 @@ import {
     logout
 } from '../../store/authentication'
 
+
+
 function MobileLinks(props) {
     const { links, level, onItemClick, logoutUser, userInfo, categories } = props;
+    const locale = useSelector( state => state.locale )
+    
 
     const handleItemClick = (item) => {
         if (onItemClick) {
@@ -119,7 +124,7 @@ function MobileLinks(props) {
                                             className="mobile-links__item-link"
                                             onClick={handleLogout}
                                         >
-                                            Logout
+                                            {locale==='ar'?"تسجيل الخروج":"Logout"}
                                         </button>
                                     </div>
                                 </div>

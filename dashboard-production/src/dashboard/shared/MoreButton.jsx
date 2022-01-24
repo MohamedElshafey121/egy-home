@@ -1,10 +1,21 @@
-import React from 'react'
+import React,{useState} from 'react'
 import {Link} from 'react-router-dom'
 
 import propTypes from 'prop-types'
 import { url } from '../../services/utils';
 
-function MoreButton ( { id, orderId, categoryId,subcategoryId ,brandId,customerId} ) {
+function MoreButton ( {
+    id,
+    orderId,
+    categoryId,
+    subcategoryId,
+    brandId,
+    customerId,
+    openDeleteAlertHandler,
+    setDeleteItemIdHandler,
+    setDeleteItemTypeHandler
+} ) {
+   
     let links;
     ( orderId ) && ( links = (
         <>
@@ -36,10 +47,21 @@ function MoreButton ( { id, orderId, categoryId,subcategoryId ,brandId,customerI
 
     ( brandId ) && ( links = (
         <>
-            <li><Link className="dropdown-item" to={url.brandDashboard( { _id: brandId } )}>Edit</Link></li>
+            {/* <li><Link className="dropdown-item" to={url.brandDashboard( { _id: brandId } )}>Edit</Link></li>
             <li><Link className="dropdown-item" to={url.brandDashboard( { _id: brandId } )}>View</Link></li>
-            <li><hr className="dropdown-divider" /></li>
-            <li><a className="dropdown-item text-danger" href="#">Delete</a></li>
+            <li><hr className="dropdown-divider" /></li> */}
+            <li><button
+                type="button"
+                className="dropdown-item text-danger"
+                data-toggle="modal" data-target="#exampleModal"
+                onClick={
+                    e => {
+                        openDeleteAlertHandler( true );
+                        setDeleteItemIdHandler( brandId )
+                        setDeleteItemTypeHandler('brand')
+                    }
+                }
+            >Delete</button></li>
         </>
     ) );
 
@@ -87,7 +109,8 @@ MoreButton.propTypes = {
     categoryId: propTypes.string,
     subcategoryId:propTypes.string,
     brandId:propTypes.string,
-    customerId:propTypes.string,
+    customerId: propTypes.string,
+    openDeleteAlertHandler:propTypes.func
 }
 
 export default MoreButton

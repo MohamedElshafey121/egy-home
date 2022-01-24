@@ -7,7 +7,6 @@ import { useSelector,useDispatch } from 'react-redux';
 
 // application
 import Megamenu from './Megamenu';
-import Menu from './Menu';
 import MenuNew from './MenuNew';
 import { ArrowRoundedRight6x9Svg } from '../../svg';
 
@@ -43,23 +42,29 @@ function getSubcategories ( categoryId, subCategories ) {
     return columns;
 }
 
+function getSubcategoriesSmallMenu ( categoryId, subCategories ) {
+    const subs = subCategories.filter( ( subCat ) => {
+        if ( subCat.category ) {
+            if ( categoryId === subCat.category._id ) return subCat;
+        }
+    } );
+
+    return subs;
+}
+
 // data stubs
 
 function DepartmentsLinksNew () {
     const allCategories = useSelector( state => state.allCategories )
-    const { loading, error, categories, page: currentPage, count } = allCategories;
+    const { categories } = allCategories;
 
      const allSubCategories = useSelector( state => state.allSubCategories )
-    const {  SubCategories,success:loaingSubcategoriesSuccess } = allSubCategories;
+    const {  SubCategories } = allSubCategories;
 
     const dispatch=useDispatch()
     useEffect( () => {
         dispatch( handleGetAllCategories({},10) )
     }, [dispatch] )
-
-    // function getSubCategoriesHandler ( categoryId ) {
-    //     dispatch(handleGetAllSubCategories({},1000, '', 1,categoryId))
-    // }
 
     //load subcategories
     useEffect( () => {
@@ -71,34 +76,39 @@ function DepartmentsLinksNew () {
         let arrow = null;
         let submenu = null;
         let itemClass = '';
-        // let subs=SubCategories?getSubcategories(category._id,SubCategories):null
-        let columns=SubCategories?getSubcategories(category._id,SubCategories):null
+        // links for large menu with photo
+        // let columns = SubCategories ? getSubcategories( category._id, SubCategories ) : null
+
+        //links for small menu
+        let smallMenuLinks = SubCategories ? getSubcategoriesSmallMenu( category._id, SubCategories ) : null;
 
         if (category.subCategories.length>0) {
             arrow = <ArrowRoundedRight6x9Svg className="departments__link-arrow" />;
         }
 
-        // if (subs &&subs.length>0 ) {
-        //     itemClass = 'departments__item--menu';
-        //     submenu = (
-        //         <div className="departments__menu">
-        //             <MenuNew items={subs} />
+
+        // This part is for small menu
+          if ( smallMenuLinks && smallMenuLinks.length > 0 ) {
+               itemClass = 'departments__item--menu';
+            submenu = (
+                <div className="departments__menu">
+                    <MenuNew items={smallMenuLinks} />
+                </div>
+            );
+        };
+
+        // this part is for large menu with photo
+        // if ( columns && columns.length > 0 ) {
+        //      submenu = (
+        //         <div className={`departments__megamenu departments__megamenu--xl`}>
+        //             <Megamenu menu={columns} location="department" image={category.photo} />
         //         </div>
         //     );
         // }
-
-        if ( columns && columns.length > 0 ) {
-             submenu = (
-                <div className={`departments__megamenu departments__megamenu--xl`}>
-                    <Megamenu menu={columns} location="department" image={category.photo} />
-                </div>
-            );
-        }
         
         
         return (
             <li key={index} className={`departments__item ${itemClass}`}>
-                {/* <Link onClick={e=>e.preventDefaut()} onMouseOver={e=>getSubCategoriesHandler(category._id)}> */}
                 <Link to={`/shop/catalog?c=${category._id}`}>
                     {category.name}
                     {arrow}

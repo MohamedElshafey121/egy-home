@@ -112,6 +112,8 @@ const messages_ar = {
     orderDetails: "تفاصيل الطلب",
     shape: "الشكل",
     shapes: "الأشكال",
+    contactUs: "تواصل معنا",
+    sellingPolices: "سياسة البيع",
 };
 
 export default messages_ar;

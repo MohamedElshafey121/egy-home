@@ -1,5 +1,5 @@
 // react
-import React from 'react';
+import React,{useEffect} from 'react';
 
 // third-party
 import classNames from 'classnames';
@@ -16,29 +16,18 @@ function MenuNew ( props ) {
         items,
         onClick,
     } = props;
-    // alert(items.length/5)
-    // if ( items.length / 5 > 1 ) {
-    //     const columns = [];
-    //     for (let index = 0; index < items.length; index+=5) {
-    //         columns.push([...items.slice(index,index+5)])
-    //     }
-        
-    //     console.log(columns)
-    // }
-
-    // alert( items.length );
-
-    const renderLink = (item, content) => {
+  
+    const renderLink = ( item, content ) => {
         let link;
 
-        if (item.url) {
+        if (item.name) {
             link = (
                 <AppLink
                     {...item.props}
-                    to={item.url}
+                    to={`/shop/catalog?s=${item._id}`}
                     onClick={() => onClick(item)}
                 >
-                    {content}
+                    {item.name}
                 </AppLink>
             );
         } else {

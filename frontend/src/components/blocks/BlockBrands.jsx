@@ -10,14 +10,12 @@ import StroykaSlick from '../shared/StroykaSlick';
 import {getHomePageBrands} from '../../store/homePage';
 
 
-// data stubs
-// import brands from '../../data/shopBrands';
-
 const slickSettings = {
     dots: false,
     arrows: false,
     infinite: true,
-    speed: 400,
+    auto:true,
+    speed: 200,
     slidesToShow: 6,
     slidesToScroll: 6,
     responsive: [
@@ -70,7 +68,7 @@ export default function BlockBrands () {
         </div>
     ));
 
-    if ( brands ) {
+    if ( brands && brands.length >0 ) {
         return (
             <div className="block block-brands">
                 <div className="container">

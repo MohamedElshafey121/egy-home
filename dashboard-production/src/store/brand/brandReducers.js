@@ -13,6 +13,10 @@ import {
     UPDATE_BRAND_SUCCESS,
     UPDATE_BRAND_FAIL,
     UPDATE_BRAND_RESET,
+    DELETE_BRAND_REQUEST,
+    DELETE_BRAND_SUCCESS,
+    DELETE_BRAND_FAIL,
+    DELETE_BRAND_RESET,
 } from "./brandActionTypes";
 
 function getBrandsReducer(state = { brands: null }, action) {
@@ -77,4 +81,19 @@ function updateBrandReducer(state = {}, action) {
     }
 }
 
-export { getBrandsReducer, createBrandReducer, getOneBrandReducer, updateBrandReducer };
+function deleteBrandReducer(state = {}, action) {
+    switch (action.type) {
+        case DELETE_BRAND_REQUEST:
+            return { loading: true };
+        case DELETE_BRAND_SUCCESS:
+            return { loading: false, success: true };
+        case DELETE_BRAND_FAIL:
+            return { loading: false, error: action.payload };
+        case DELETE_BRAND_RESET:
+            return {};
+        default:
+            return state;
+    }
+}
+
+export { getBrandsReducer, createBrandReducer, getOneBrandReducer, updateBrandReducer, deleteBrandReducer };

@@ -11,6 +11,7 @@ const {
   resizeImgae,
   getOneBrand,
   updateBrand,
+  deleteBrand,
 } = require("../controllers/brandController");
 
 router
@@ -33,6 +34,7 @@ router
     resizeImgae,
     ACLMiddleware("updateBrand"),
     updateBrand
-  );
+  )
+  .delete(authController.protect, ACLMiddleware("deleteBrand"), deleteBrand);
 
 module.exports = router;

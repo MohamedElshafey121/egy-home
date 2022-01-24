@@ -112,6 +112,8 @@ const messages_en = {
     orderDetails: "Order Details",
     shape: "Shape",
     shapes: "Shapes",
+    contactUs: "Contact Us",
+    sellingPolices: "Selling Polices",
 };
 
 export default messages_en;

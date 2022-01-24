@@ -5,7 +5,11 @@ const Brand = require("./brandModel");
 
 const reviewSchema = mongoose.Schema(
   {
-    name: { type: String, required: true },
+    name: {
+      type: String,
+      required: true,
+      unique: [true, "Product already exist"],
+    },
     rating: { type: Number, required: true },
     comment: { type: String, required: true },
     user: {
@@ -28,7 +32,7 @@ const SpecificationSchema = new mongoose.Schema({
   },
   color: {
     type: String,
-    required: [true, "You should specify color"],
+    //required: [true, "You should specify color"],
   },
   photo: {
     type: String,
@@ -86,7 +90,7 @@ const ProductSchem = new mongoose.Schema(
     },
     color: {
       type: String,
-      required: [true, "You Should specify product color or shape"],
+      //required: [true, "You Should specify product color or shape"],
     },
     reviews: [reviewSchema],
     Specifications: [SpecificationSchema],

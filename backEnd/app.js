@@ -14,6 +14,7 @@ const cartRouter = require("./routers/cartRoutes");
 const rolrRouter = require("./routers/roleRoutes");
 const permissionRouter = require("./routers/permissionRoutes");
 const brandRouters = require("./routers/brandRoutes");
+const sliderRouter = require("./routers/sliderRoutes");
 
 //Models
 // const Role = require( './models/RoleModel' );
@@ -47,6 +48,7 @@ app.use("/api/cart", cartRouter);
 app.use("/api/roles", rolrRouter);
 app.use("/api/permissions", permissionRouter);
 app.use("/api/brands", brandRouters);
+app.use("/api/sliders", sliderRouter);
 
 app.use("/api/config/paypal/clientid", (req, res) =>
   res.send(process.env.PAYPAL_CLIENT_ID)
@@ -81,7 +83,7 @@ if (process.env.NODE_ENV === "production") {
 
 //404 Error
 app.all("*", (req, res, next) => {
-  next(new AppError("Page Not Found: ", 400));
+  next(new AppError("Page Not Found: ", 404));
 });
 
 //Middleware for error handling

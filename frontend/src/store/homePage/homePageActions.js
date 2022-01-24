@@ -110,7 +110,7 @@ function getHomePageBrands() {
         try {
             dispatch({ type: GET_HOME_PAGE_BRANDS_REQUEST });
 
-            const { data } = await axios.get("/api/brands?limit=5");
+            const { data } = await axios.get("/api/brands?limit=20");
             dispatch({
                 type: GET_HOME_PAGE_BRANDS_SUCCESS,
                 payload: data.data.brands,

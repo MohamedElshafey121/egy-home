@@ -10,7 +10,10 @@ import { Link } from 'react-router-dom';
 import NavPanel from './NavPanel';
 import Search from './Search';
 import Topbar from './Topbar';
-import { LogoSvg } from '../../svg';
+import {
+    Fi24Hours48Svg,
+    LogoSvg
+} from '../../svg';
 
 function Header ( props ) {
 
@@ -19,19 +22,33 @@ function Header ( props ) {
             <div className="site-header__logo" >
                 {/* <Link to="/"><LogoSvg /></Link> */}
                 <Link to="/">
-                    <img src='/uploads/imgs/site/logo2_ar.png' style={{maxWidth:'150px'}} />
+                    <img src='/uploads/imgs/site/logo_alt_2.jpeg' style={{maxWidth:'150px'}} />
                 </Link>
             </div>
             <div className="site-header__search">
                 <Search context="header" />
             </div>
             <div className="site-header__phone">
-                <div className="site-header__phone-title">
+                {/* <div className="site-header__phone-title">
                     <FormattedMessage id="header.phoneLabel_ar" defaultMessage="خدمة العملاء" />
                 </div>
-                <div className="site-header__phone-number">
-                    <FormattedMessage id="header.phone_ar" defaultMessage=" 0101-098-1072" />
-                </div>
+                <div className="site-header__phone-number"> */}
+                    {/* <FormattedMessage id="header.phone_ar" defaultMessage=" 0101-098-1072" /> */}
+                    {/* <Fi24Hours48Svg/>
+                </div> */}
+                    <Link to='/site/contact-us'>
+                <div className="block-features__item">
+                        <div className="block-features__icon" style={{marginLeft:'8px'}}>
+                            <Fi24Hours48Svg />
+                        </div>
+                        <div className="block-features__content">
+                            {/* <div className="block-features__title">Support 24/7</div>
+                            <div className="block-features__subtitle">Call us anytime</div> */}
+                            <div className="block-features__title">خدمة العملاء</div>
+                            <div className="block-features__subtitle">تواصل الآن</div>
+                        </div>
+                    </div>
+                    </Link>
             </div>
         </div>
     );

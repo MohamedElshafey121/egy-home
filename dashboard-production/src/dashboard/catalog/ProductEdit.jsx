@@ -93,16 +93,18 @@ export default function ProductEdit ( { match, history } ) {
     const[extraPhotos,setExtraPhotos]=useState([])
     const [photoName, setPhotoName] = useState( '' )
     const[visibility,setVisibility]=useState()//["published", "hidden"]
-    const[color,setColor]=useState()
+    const [color, setColor] = useState()
+    const [colorError, setColorError] = useState( false )
     const[category,setCategory]=useState()
     const[subCategory,setSubCategory]=useState()
     const [brand, setBrand] = useState()
     // const [images, setimages] = useState( [] );
-
+    
     //specification state
     const [specificationPhoto, setSpecificationPhoto] = useState();
     const [specificationSize, setSpecificationSize] = useState();
     const [specificationColor, setSpecificationColor] = useState();
+    const[specificationColorError,setSpecificationColorError]=useState(false)
     const [specificationPrice, setSpecificationPrice] = useState();
     
      //load scripts
@@ -190,7 +192,18 @@ export default function ProductEdit ( { match, history } ) {
 
     
     const addSpecificationSubmitHandler = (e) => {
-    e.preventDefault();
+        e.preventDefault();
+        
+        if ( !product.color ) {
+            setColorError( true );
+            return;
+        }
+
+        if ( !specificationColor ) {
+            setSpecificationColorError( true );
+            return;
+        }
+        
     const specificationForm = new FormData();
       
     if(specificationPhoto) specificationForm.append("photo", specificationPhoto);
@@ -206,6 +219,7 @@ export default function ProductEdit ( { match, history } ) {
         setSpecificationPhoto()
         setSpecificationPrice()
         setSpecificationSize()
+        setSpecificationColor()
     }
 
     const updateSpecificationSubmitHandler = ( e,specificationId ) => {
@@ -220,6 +234,14 @@ export default function ProductEdit ( { match, history } ) {
 
         dispatch( handleUpdateProductSpecification( productId, specificationId, specificationForm ) );
         // dispatch({type:GET_ONE_PRODUCT_SPECIFICATION_RESET})
+    }
+
+     const setColorHandler = ( e ) => {
+        let value = e.target.value;
+        setColor( value )
+        if ( value.trim() && colorError ) {
+            setColorError(false)   
+        }
     }
 
 
@@ -241,11 +263,23 @@ export default function ProductEdit ( { match, history } ) {
         setPhotoName('')
     };
 
+    const setSpecificationColorHandler = ( e ) => {
+        let value = e.target.value;
+        setSpecificationColor( value );
+        if ( value.trim() && specificationColorError ) {
+            setSpecificationColorError(false)
+        }
+    }
+
 
     const submitHandlerAdd = ( e ) => {
         e.preventDefault();
+         if ( product.Specifications.length > 0 && !color ) {
+            setColorError(true)
+            return;
+        };
+
         const productForm = new FormData();
-        
         if(name) productForm.append( 'name', name );
         if ( description && description.trim() ) productForm.append( 'description', description );
         if ( shortDescription ) productForm.append( 'shortDescription', shortDescription )
@@ -308,9 +342,10 @@ export default function ProductEdit ( { match, history } ) {
                                             </div>
                                         </td>
                                         <td>
-                                            <ReactSelect value={featurs.color} id={imageIdx} isDisabled={ true}/>
+                                            {/* <ReactSelect value={featurs.color} id={imageIdx} isDisabled={ true}/> */}
+                                            <input type="text" value={featurs.color} id={imageIdx} isDisabled={ true}/>
                                         </td>
-                                        <td>
+                                        {/* <td>
                                             <input
                                                 type="text"
                                                 className="form-control form-control-sm"
@@ -318,7 +353,7 @@ export default function ProductEdit ( { match, history } ) {
                                                 id={imageIdx}
                                                 disabled
                                             />
-                                        </td>
+                                        </td> */}
                                         <td>
                                             <input
                                                 type="text"
@@ -349,6 +384,7 @@ export default function ProductEdit ( { match, history } ) {
                                                 data-bs-placement="right"
                                                 title="Delete Feature"
                                                 onClick={e => deleteSpecificationHandler( featurs._id )}
+                                                disabled={delteSpecLoading}
                                             >
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -403,8 +439,11 @@ export default function ProductEdit ( { match, history } ) {
                                                 </div>
                                             </td>
                                             <td>
-                                                <ReactSelect setValue={setSpecificationColor} value={specificationColor} />
-
+                                                {/* <ReactSelect setValue={setSpecificationColor} value={specificationColor} /> */}
+                                                <input type="text" onChange={e=>setSpecificationColorHandler(e)} value={specificationColor} />
+                                                {specificationColorError && (
+                                                    <span className="text-danger">{ locale==='ar'?"يجب تحديد اللون":"You should specify color"}</span>
+                                                )}
                                             </td>
                                             <td>
                                                 <input
@@ -543,12 +582,19 @@ export default function ProductEdit ( { match, history } ) {
 
                 <div className="mb-4">
                     <label class="form-label">{messages.color}</label>
-                    <ReactSelect setValue={setColor} value={color ? color : product.color} />
-                    {updateProductError &&
-                        updateProductError.match( /color/ ) &&
-                        JSON.parse( updateProductError ).color && (
-                            <div id="form-product/slug-help" className="form-text text-danger">* يجب اختيار لون المنتج *</div>
-                        )}
+                    {/* <ReactSelect setValue={setColor} value={color ? color : product.color} /> */}
+                     <input
+                        type="text"
+                        class="form-control"
+                        id="oProduct-color"
+                        onChange={e => { setColorHandler( e ) }}
+                        value={color}
+                        defaultValue={product.color && product.color}
+                    />
+                    {
+                     colorError && <div id="form-product/slug-help" className="form-text text-danger">* يجب اختيار لون المنتج *</div>
+                    } 
+                    
                 </div>
                 <div className="mb-4">
                     <label htmlFor="form-product/size" className="form-label">

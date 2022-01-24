@@ -16,6 +16,10 @@ import {
     UPDATE_BRAND_SUCCESS,
     UPDATE_BRAND_FAIL,
     UPDATE_BRAND_RESET,
+    DELETE_BRAND_REQUEST,
+    DELETE_BRAND_SUCCESS,
+    DELETE_BRAND_FAIL,
+    DELETE_BRAND_RESET,
 } from "./brandActionTypes";
 
 function getAllBrands(filterObj = {}, limit = 100, sort = "-createdAt", page = 1) {
@@ -171,4 +175,50 @@ function updateBrandReset() {
     return { type: UPDATE_BRAND_RESET };
 }
 
-export { getAllBrands, createBrandHnadler, createBrandReset, getOneBrand, updateBrandHnadler, updateBrandReset };
+function deleteOneBrand(brandId) {
+    return async (dispatch, getState) => {
+        try {
+            const {
+                userLogin: { userInfo },
+            } = getState();
+
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userInfo.token}`,
+                    "Content-Type": "application/json",
+                },
+            };
+
+            dispatch({ type: DELETE_BRAND_REQUEST });
+
+            await axios.delete(`/api/brands/${brandId}`, config);
+            dispatch({
+                type: DELETE_BRAND_SUCCESS,
+            });
+            toast.success("brand deleted successfully", { theme: "colored" });
+        } catch (error) {
+            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+
+            dispatch({
+                type: DELETE_BRAND_FAIL,
+                payload: message,
+            });
+            toast.error("Error deleting brand", { theme: "colored" });
+        }
+    };
+}
+
+function deleteBrandReset() {
+    return { type: DELETE_BRAND_RESET };
+}
+
+export {
+    getAllBrands,
+    createBrandHnadler,
+    createBrandReset,
+    getOneBrand,
+    updateBrandHnadler,
+    updateBrandReset,
+    deleteOneBrand,
+    deleteBrandReset,
+};

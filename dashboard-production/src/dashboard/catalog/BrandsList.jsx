@@ -3,6 +3,7 @@ import { Link,useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'
 import { url } from '../../services/utils';
 import MoreButton from "../shared/MoreButton";
+import DeleteAlert from '../shared/DeleteAlert'
 import PageHeader from '../shared/PageHeader'
 import Pagination from '../../components/shared/Pagination'
 import BlockLoader from '../../components/blocks/BlockLoader'
@@ -10,7 +11,8 @@ import BlockLoader from '../../components/blocks/BlockLoader'
 import {
     getAllBrands,
     createBrandReset,
-    updateBrandReset
+    updateBrandReset,
+    deleteBrandReset
 } from "../../store/brand";
 
 
@@ -28,6 +30,21 @@ export default function BrandsList ( { history } ) {
     
     const locale = useSelector( state => state.locale )
     const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    const [openDeleteAlert, setOpenDeleteAlert] = useState( false )
+     const [deleteItemType, setDeleteItemType] = useState( '' )
+    const[deleteItemId,setDeleteItemId]=useState('')
+    
+    const openDeleteAlertHandler = (status) => {
+        setOpenDeleteAlert(status)   
+    }
+
+    const setDeleteItemIdHandler = ( id ) => {
+        setDeleteItemId(id)
+    }
+
+    const setDeleteItemTypeHandler = (type) => {
+        setDeleteItemType(type)
+    }
     
     useEffect( () => {
         setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
@@ -50,16 +67,28 @@ export default function BrandsList ( { history } ) {
     const { success } = createBrand;
 
     const updateBrand = useSelector( ( state ) => state.updateBrand );
-    const { success:updateBrandSuccess } = updateBrand;
+    const { success: updateBrandSuccess } = updateBrand;
+    
+    const deleteBrand = useSelector( state => state.deleteBrand );
+    const { success: deleteBrandSuccess } = deleteBrand;
 
     
 
-    const dispatch=useDispatch()
+    const dispatch = useDispatch()
+    //load brands
     useEffect( () => {
         dispatch( getAllBrands(filterObj, limit, sort, page) )
         
     }, [ dispatch, name,page] )
 
+    //reset delete status
+    useEffect( () => {
+        if ( deleteBrandSuccess ) {
+            dispatch( deleteBrandReset() )
+            dispatch( getAllBrands( filterObj, limit, sort, page ) )
+
+        }
+    }, [deleteBrandSuccess] );
 
 
     //RESET CREATE
@@ -143,7 +172,12 @@ export default function BrandsList ( { history } ) {
                                 {new Date( brand.createdAt ).toDateString()}
                             </td>
                             <td>
-                                <MoreButton id={`category-context-menu-${ brandIdx }`} brandId={brand._id} />
+                                <MoreButton
+                                    id={`category-context-menu-${ brandIdx }`} brandId={brand._id}
+                                    openDeleteAlertHandler={openDeleteAlertHandler}
+                                    setDeleteItemIdHandler={setDeleteItemIdHandler}
+                                    setDeleteItemTypeHandler={setDeleteItemTypeHandler}
+                                />
                             </td>
                         </tr>
                     ) )}
@@ -166,8 +200,15 @@ export default function BrandsList ( { history } ) {
         </div>
     );
 
+
     return (
         <React.Fragment>
+            <DeleteAlert
+                openDeleteAlert={openDeleteAlert}
+                openDeleteAlertHandler={openDeleteAlertHandler}
+                deleteItemType={deleteItemType}
+                deleteItemId={deleteItemId}
+            />
             <div id="top" class="sa-app__body">
                 <div className="mx-sm-2 px-2 px-sm-3 px-xxl-4 pb-6">
                     <div className="container">

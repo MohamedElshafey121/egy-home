@@ -68,7 +68,7 @@ exports.resizeproductImages = catchAsync(async (req, res, next) => {
   // 1) Cover image
   req.body.photo = `product-${Date.now()}.jpeg`;
   await sharp(req.files.photo[0].buffer)
-    .resize(700, 700)
+    // .resize(700, 700)
     .toFormat("jpeg")
     .jpeg({ quality: 90 })
     .toFile(`uploads/imgs/products/${req.body.photo}`);
@@ -83,7 +83,7 @@ exports.resizeproductImages = catchAsync(async (req, res, next) => {
         const filename = `product-${Date.now()}-other${i + 1}.jpeg`;
 
         await sharp(file.buffer)
-          .resize(2000, 1333)
+          // .resize(2000, 1333)
           .toFormat("jpeg")
           .jpeg({ quality: 90 })
           .toFile(`uploads/imgs/products/${filename}`);
@@ -103,7 +103,7 @@ exports.resizeproductImages = catchAsync(async (req, res, next) => {
         const filename = `product-${Date.now()}-${i + 1}.jpeg`;
 
         await sharp(file.buffer)
-          .resize(2000, 1333)
+          // .resize(2000, 1333)
           .toFormat("jpeg")
           .jpeg({ quality: 90 })
           .toFile(`uploads/imgs/products/${filename}`);
@@ -121,7 +121,7 @@ exports.resizenewProductImages = catchAsync(async (req, res, next) => {
   if (req.files.photo) {
     req.body.photo = `product-${Date.now()}.jpeg`;
     await sharp(req.files.photo[0].buffer)
-      .resize(700, 700)
+      // .resize(700, 700)
       .toFormat("jpeg")
       .jpeg({ quality: 90 })
       .toFile(`uploads/imgs/products/${req.body.photo}`);
@@ -136,7 +136,7 @@ exports.resizenewProductImages = catchAsync(async (req, res, next) => {
         const filename = `product-${Date.now()}-other${i + 1}.jpeg`;
 
         await sharp(file.buffer)
-          .resize(2000, 1333)
+          // .resize(2000, 1333)
           .toFormat("jpeg")
           .jpeg({ quality: 90 })
           .toFile(`uploads/imgs/products/${filename}`);
@@ -156,7 +156,7 @@ exports.resizeProductSpecImgae = catchAsync(async (req, res, next) => {
 
   req.body.photo = `product-${req.params.id}-${Date.now()}.jpeg`;
   await sharp(req.file.buffer)
-    .resize(500, 500)
+    // .resize(500, 500)
     .toFormat("jpeg")
     .jpeg({ quality: 90 })
     .toFile(`uploads/imgs/products/${req.body.photo}`);

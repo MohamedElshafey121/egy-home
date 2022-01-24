@@ -76,9 +76,10 @@ function SitePageContactUs () {
 
                                         <div className="contact-us__address">
                                             <p>
-                                                {messages.email}: stroyka@example.com
+                                                {messages.email}: egyHome@gmail.com
                                                 <br />
-                                                {messages.PhoneNumber}: 01010-098-1072                                            </p>
+                                                
+                                            </p>
 
                                             <p>
 

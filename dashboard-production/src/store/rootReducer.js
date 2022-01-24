@@ -102,7 +102,15 @@ import {
 
 import { dashboardSidebarMobileReducer } from "./dashboard-sidebar";
 
-import { getBrandsReducer, createBrandReducer, updateBrandReducer, getOneBrandReducer } from "./brand";
+import {
+    getBrandsReducer,
+    createBrandReducer,
+    updateBrandReducer,
+    getOneBrandReducer,
+    deleteBrandReducer,
+} from "./brand";
+
+import { addSliderItemReducer, deleteSliderItemReducer } from "./slider";
 
 export default combineReducers({
     version: (state = version) => state,
@@ -167,6 +175,7 @@ export default combineReducers({
     allBrands: getBrandsReducer,
     createBrand: createBrandReducer,
     getBrand: getOneBrandReducer,
+    deleteBrand: deleteBrandReducer,
     updateBrand: updateBrandReducer,
     homePageCategories: homePgaeCategoriesReducer,
     homeNewArrival: homePageNewArrivalProductsReducer,
@@ -181,4 +190,6 @@ export default combineReducers({
     removePermissionFromRole: removePermissionFromRoleReducer,
     createRole: createRoleReducer,
     roleDescriptionUpdate: updateRoleDescriptionReducer,
+    addSlider: addSliderItemReducer,
+    deleteSlider: deleteSliderItemReducer,
 });

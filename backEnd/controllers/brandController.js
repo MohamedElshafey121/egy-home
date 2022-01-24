@@ -2,6 +2,7 @@ const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 
 const Brand = require("../models/brandModel");
+const Product = require("../models/productModel");
 const APIFeatures = require("../utils/apiFeatures");
 const factory = require("./handlerFactory");
 const sharp = require("sharp");
@@ -68,8 +69,46 @@ const getAllBrands = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * @desc  GET ONE BRAND
+ * @route GET /api/brands/:id
+ * @access public
+ */
 const getOneBrand = factory.getOne(Brand);
+/**
+ * @desc  UPDATE ONE BRAND
+ * @route PATCH /api/brands/:id
+ * @access public
+ */
 const updateBrand = factory.updateOne(Brand);
+
+/**
+ * @desc  DELETE ONE BRAND
+ * @route DELETE /api/brands/:id
+ * @access public
+ */
+const deleteBrand = catchAsync(async (req, res, next) => {
+  // 1)check if brand exist
+  const brand = await Brand.findById(req.params.id);
+  if (!brand) {
+    return next(new AppError("Brand not exist", 404));
+  }
+
+  // 2)get all products belong to this brand and set brand (undefined)[remove brand]
+  const products = await Product.find({ brand: brand._id });
+  if (products.length) {
+    products.forEach(async (product) => {
+      product.brand = undefined;
+      await product.save();
+    });
+  }
+
+  // 3)delete Brand
+  await Brand.deleteOne({ _id: brand._id });
+  res.status(204).json({
+    status: "deleted",
+  });
+});
 
 module.exports = {
   createNewBrand,
@@ -77,4 +116,5 @@ module.exports = {
   resizeImgae,
   getOneBrand,
   updateBrand,
+  deleteBrand,
 };

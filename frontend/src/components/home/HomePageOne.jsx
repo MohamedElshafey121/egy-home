@@ -5,9 +5,6 @@ import React, { useMemo,useEffect,useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSelector,useDispatch } from 'react-redux';
 
-// application
-import shopApi from '../../api/shop';
-import { useDeferredData, useProductColumns, useProductTabs } from '../../services/hooks';
 
 // blocks
 import BlockBanner from '../blocks/BlockBanner';
@@ -23,8 +20,6 @@ import BlockLoader from '../blocks/BlockLoader';
 
 
 // data stubs
-import categories from '../../data/shopBlockCategories';
-import posts from '../../data/blogPosts';
 import theme from '../../data/theme';
 
 //application store
@@ -41,7 +36,8 @@ function HomePageOne () {
     const { loading: loadingNewArrivals, products: newArrivals, error: newArrivalsError } = homeNewArrival
     
      const homeToprated = useSelector( state => state.homeToprated )
-    const{loading:loadingTopRated,products:topRated,error:topRatedError}=homeToprated
+    const { loading: loadingTopRated, products: topRated, error: topRatedError } = homeToprated
+    
     
 
     const dispatch = useDispatch()

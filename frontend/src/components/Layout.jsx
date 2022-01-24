@@ -1,6 +1,3 @@
-//style
-import  './../scss/style.rtl.scss'
-
 // react
 import React,{useEffect,useState} from 'react';
     
@@ -17,7 +14,6 @@ import Header from './header';
 import MobileHeader from './mobile/MobileHeader';
 import MobileMenu from './mobile/MobileMenu';
 import Quickview from './shared/Quickview';
-import {changeStyle} from '../store/style'
 
 // pages
 import HomePageOne from './home/HomePageOne';
@@ -47,37 +43,13 @@ import SitePageTypography from './site/SitePageTypography';
 // data stubs
 import theme from '../data/theme';
 
-function useQuery() {
-  // return new URLSearchParams(location.search)
-  return new URLSearchParams(useLocation().search);
-}
 
 function Layout ( props ) {
-    const query = useQuery();
-
-    const { match, style: { site },setFileSite,history } = props;
-
-    // const dispatch=useDispatch()
-    // useEffect( () => {
-    //     if ( !site ) {
-    //         dispatch( changeStyle( true ) )
-    //         setFileSite(true)
-    //     }
-        
-    // },[])
-     useEffect( () => {
-        if ( query.get( 'redirect' ) ) {
-            history.push('/dashboard')
-            window.location.reload(); 
-        }
-    }, [] );
-
     return (
         <React.Fragment>
             <Helmet>
                 <title>{theme.name}</title>
                 <meta name="description" content={theme.fullName} />
-                <link rel='stylesheet' href='./scss/style.scss' />
             </Helmet>
 
             <ToastContainer autoClose={5000} hideProgressBar />

@@ -30,6 +30,7 @@ import { getAllBrands } from "../../store/brand";
 //data stubs
 import message_ar from '../../data/messages_ar'
 import message_en from '../../data/messages_en'
+import classNames from 'classnames';
 
 
 export default function ProductAdd ({history}) {
@@ -52,7 +53,7 @@ export default function ProductAdd ({history}) {
     const { error: subCategoriesError, SubCategories } = allSubCategories;
 
     const addProduct = useSelector( state => state.addProduct );
-    let { success: AddProductSuccess, product: addedProduct, error: addProductError } = addProduct;
+    let { success: AddProductSuccess, loading:addProductLoading, error: addProductError } = addProduct;
 
     const allBrands = useSelector((state) => state.allBrands);
   const {
@@ -74,6 +75,7 @@ export default function ProductAdd ({history}) {
     const [photoName, setPhotoName] = useState( '' )
     const[visibility,setVisibility]=useState()//["published", "hidden"]
     const [color, setColor] = useState()
+    const [colorError,setColorError]=useState(false)
     const[shape,setShape]=useState('color')
     const[category,setCategory]=useState()
     const[subCategory,setSubCategory]=useState()
@@ -82,9 +84,7 @@ export default function ProductAdd ({history}) {
     
     const dispatch = useDispatch()
 
-    useEffect( () => {
-        console.log('color ',color)
-    },[color])
+   
     //load site scripts
     useEffect( () => {
         window.stroyka.containerQuery();
@@ -119,6 +119,17 @@ export default function ProductAdd ({history}) {
     
     const submitHandlerAdd = ( e ) => {
         e.preventDefault();
+
+        if ( specifications.length > 0 && !color ) {
+            specifications.forEach( ( spec ) => {
+                if ( !spec.color ) { spec.colorError = true };
+            } );
+            setColorError(true)
+            return;
+        }
+
+
+
         const productForm = new FormData();
         
         if(name) productForm.append( 'name', name );
@@ -175,6 +186,14 @@ export default function ProductAdd ({history}) {
         setPhotoName('')
     };
 
+    const setColorHandler = ( e ) => {
+        let value = e.target.value;
+        setColor( value )
+        if ( value.trim() && colorError ) {
+            setColorError(false)   
+        }
+    }
+
     //Features (Specifications)
     //Specifications handle photo
     function handleCreateSpecification ( e ) {
@@ -222,6 +241,8 @@ export default function ProductAdd ({history}) {
         newImages.splice( itemIdx, 1 );
         setimages( [...newImages] );
     }
+
+    
 
   
     const main = (
@@ -278,13 +299,19 @@ export default function ProductAdd ({history}) {
                 </div>
 
                 <div className="mb-4">
-                    <label class="form-label">{messages.color}</label>
-                    <ReactSelect setValue={setColor} value={color} />
-                    {addProductError &&
-              addProductError.match(/color/) &&
-              JSON.parse(addProductError).color && (
-                <div id="form-product/slug-help" className="form-text text-danger">* يجب اختيار لون المنتج *</div>
-              )}
+                    <label for="oProduct-color" class="form-label">{messages.color}</label>
+                    {/* <ReactSelect setValue={setColor} value={color} /> */}
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="oProduct-color"
+                        onChange={e => { setColorHandler( e ) }}
+                        value={color}
+                    />
+                    {
+                     colorError && <div id="form-product/slug-help" className="form-text text-danger">* يجب اختيار لون المنتج *</div>
+                    }                    
+                  
                 </div>
 
                 <div className="mb-4">
@@ -457,7 +484,14 @@ export default function ProductAdd ({history}) {
                                                 </div>
                                             </td>
                                             <td>
-                                                <ReactSelect addSpecificationColor={addSpecificationColor} Id={imageIdx} />
+                                                {/* <ReactSelect addSpecificationColor={addSpecificationColor} Id={imageIdx} /> */}
+                                                <input
+                                                    type="text"
+                                                    className="form-control form-control-sm"
+                                                    value={specifiaction.size}
+                                                    onChange={addSpecificationColor}
+                                                />
+                                                {(specifiaction.colorError) &&<span className="text-danger text-sm"> {locale==='ar'?"*يجب تحديد اللون *":"you should specify color "} </span>}
                                             </td>
                                             <td>
                                                 <input
@@ -676,7 +710,10 @@ export default function ProductAdd ({history}) {
                                 // <a key="duplicate" href="#" className="btn btn-secondary me-3">
                                 //     Duplicate
                                 // </a>,
-                                <Link key="save" onClick={e => submitHandlerAdd( e )} className="btn btn-primary">
+                                <Link
+                                    key="save"
+                                    onClick={e => submitHandlerAdd( e )}
+                                    className={classNames( "btn btn-primary ", { "disabled":addProductLoading} )} >
                                     {messages.save}
                                 </Link>,
                             ]}

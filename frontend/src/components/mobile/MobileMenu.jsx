@@ -21,51 +21,29 @@ import {
     getSearchCategories,
 } from "../../store/homePage"
 
+//data stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+
 
 function prepareCategories ( categories ) {
     const listcategory=[]
     for (const category of categories) {
-        listcategory.push( { type: "link",label:category.name,url:"/shop/category"})
+        listcategory.push( { type: "link",label:category.name,url:"/shop/category",url:`/shop/catalog?c=${category._id}`})
     }
 
     return listcategory;
 }
 
-const shopLinks = {
-    type: "link",
-    label: "Shop",
-    url: "/shop/catalog"
-};
-
-const accounLogin = {
-    type: "link",
-    label: "Login",
-    url: "/account/login"
-};
-    
-const accountlinks = {
-    type: "link",
-    label: "Account",
-    url: "/account/dashboard",
-    children: [
-        {
-            type: "link",
-            label: "Dashboard ",
-            url: "/account/dashboard",
-        },
-        { type: "link", label: "Edit Profile", url: "/account/profile" },
-        { type: "link", label: "Order History", url: "/account/orders" },
-        { type: "link", label: "Addresses", url: "/account/addresses" },
-    ],
-};
-
-const homeLink = {
-    type: "link",
-    label: "Home",
-    url: "/"
-};
 
 function MobileMenu ( props ) {
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
+    useEffect( () => {
+        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
+    }, [locale] )
+
     const searchCategories = useSelector( state => state.searchCategories )
     const { categories } = searchCategories;
 
@@ -83,16 +61,85 @@ function MobileMenu ( props ) {
     useEffect( () => {
         if ( !categories ) {
             dispatch( getSearchCategories() )
-        }
+        } 
     }, [dispatch, categories] );
 
+    const shopLinks = {
+    type: "link",
+    label: messages.shop,
+    url: "/shop/catalog"
+};
+
+const accounLogin = {
+    type: "link",
+    label: messages.login,
+    url: "/account/login"
+};
+    
+const accountlinks = {
+    type: "link",
+    label: messages.myAccount,
+    url: "/account/dashboard",
+    children: [
+        {
+            type: "link",
+            label: messages.dashboard,
+            url: "/account/dashboard",
+        },
+        { type: "link", label: messages.editProfile, url: "/account/profile" },
+        { type: "link", label: messages.orderHistory, url: "/account/orders" },
+        { type: "link", label: messages.addresses, url: "/account/addresses" },
+    ],
+    };
+    
+    let categoriesLinks=null;
+    if ( categories ) {
+        
+        categoriesLinks = {
+        type: "button",
+        label: "الاقسام",
+        url: "/shop/catalog",
+        children: prepareCategories( categories )
+        };
+    }
+
+const homeLink = {
+    type: "link",
+    label: messages.home,
+    url: "/"
+    };
+    
+    
     mobileMenuLinks.push( homeLink );
+    if ( categoriesLinks ) {
+        mobileMenuLinks.push(categoriesLinks)
+    }
     mobileMenuLinks.push( shopLinks );
-    if ( userInfo ) {
+    // else {
+    // }
+
+    mobileMenuLinks.push( {
+        type: "link",
+        label: messages.trackOrder,
+        url: "/shop/track-order"
+    } );
+
+    mobileMenuLinks.push( {
+        type: "link",
+        label: messages.contactUs,
+        url: "/site/contact-us"
+    } );
+
+    mobileMenuLinks.push( {
+        type: "link",
+        label: messages.sellingPolices,
+        url: "/site/about-us"
+    } );
+
+     if ( userInfo ) {
         mobileMenuLinks.push(accountlinks)
     };
-
-
+    
     
 
     const classes = classNames('mobilemenu', {
@@ -129,12 +176,12 @@ function MobileMenu ( props ) {
                     <div className="mobilemenu__title">
                         {
                             userInfo
-                                ? <span onClick={closeMobileMenu} style={{fontWeight:'normal'}}>
+                                ? <span onClick={closeMobileMenu} style={{ fontWeight: 'normal' }}>
                                     {userInfo.name}
                                 </span>
-                                : <Link to='/account/login' onClick={closeMobileMenu} style={{color:'#333'}}>
-                                    <i className="fa fa-user" style={{margin:'0 10px'}}></i>
-                                    Login
+                                : <Link to='/account/login' onClick={closeMobileMenu} style={{ color: '#333' }}>
+                                    <i className="fa fa-user" style={{ margin: '0 10px' }}></i>
+                                    {messages.login}
                                 </Link>
                         }
                     </div>
@@ -143,7 +190,12 @@ function MobileMenu ( props ) {
                     </button>
                 </div>
                 <div className="mobilemenu__content">
-                    <MobileLinks categories={categories} links={mobileMenuLinks} userInfo={userInfo} onItemClick={handleItemClick} />
+                    <MobileLinks
+                        categories={categories}
+                        links={mobileMenuLinks}
+                        userInfo={userInfo}
+                        onItemClick={handleItemClick}
+                    />
                 </div>
             </div>
         </div>

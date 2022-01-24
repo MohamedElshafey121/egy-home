@@ -4,7 +4,6 @@ import { combineReducers } from "redux";
 import compareReducer from "./compare";
 import currencyReducer from "./currency";
 import localeReducer from "./locale";
-import styleReducer from "./style";
 import mobileMenuReducer from "./mobile-menu";
 import quickviewReducer from "./quickview";
 import sidebarReducer from "./sidebar";
@@ -107,7 +106,6 @@ export default combineReducers({
     compare: compareReducer,
     currency: currencyReducer,
     locale: localeReducer,
-    style: styleReducer,
     mobileMenu: mobileMenuReducer,
     quickview: quickviewReducer, //important and necessary
     sidebar: sidebarReducer,

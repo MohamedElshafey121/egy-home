@@ -17,7 +17,7 @@ export default function BlockBanner() {
                     />
                     <div
                         className="block-banner__image block-banner__image--mobile"
-                        style={{ backgroundImage: 'url("images/banners/banner-1-mobile.jpg")' }}
+                        style={{ backgroundImage: 'url("/uploads/imgs/banner04.jpg")' }}
                     />
                     <div className="block-banner__title">
                         Hundreds
