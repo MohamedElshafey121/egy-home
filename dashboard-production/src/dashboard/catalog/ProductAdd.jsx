@@ -344,6 +344,8 @@ export default function ProductAdd ({history}) {
                         onChange={e => setSize( e.target.value )} />
                 </div> */}
 
+                
+                
                 <div className="mb-4">
                     <label htmlFor="form-product/description" className="form-label">
                         {messages.description}
