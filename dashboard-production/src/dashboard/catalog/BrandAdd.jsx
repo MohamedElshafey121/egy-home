@@ -47,6 +47,7 @@ export default function BrandAdd ( { history } ) {
     const [description, setDescription] = useState();
 
     const dispatch = useDispatch();
+    
     useEffect( () => {
         if ( success ) {
             history.push( "/dashboard/brands" );

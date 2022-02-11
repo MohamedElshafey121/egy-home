@@ -39,6 +39,7 @@ import SitePageFaq from './site/SitePageFaq';
 import SitePageNotFound from './site/SitePageNotFound';
 import SitePageTerms from './site/SitePageTerms';
 import SitePageTypography from './site/SitePageTypography';
+import SocialAuth from './shared/SocialAuth'
 
 // data stubs
 import theme from '../data/theme';
@@ -184,12 +185,13 @@ function Layout ( props ) {
                         <Route exact path="/site/contact-us-alt" component={SitePageContactUsAlt} />
                         <Route exact path="/site/not-found" component={SitePageNotFound} />
                         <Route exact path="/site/faq" component={SitePageFaq} />
-                        <Route exact path="/site/terms" component={SitePageTerms} />
-                        <Route exact path="/site/typography" component={SitePageTypography} />
+                        <Route exact path="/site/terms" component={SitePageTerms} /> {/** Used */}
+                        <Route exact path="/site/privacy" component={SitePageTypography} /> {/** Used */}
 
                         {/*
                         // Page Not Found
                         */}
+                        <Route path='/social' component={SocialAuth} exact />
                         <Route component={SitePageNotFound} />
                     </Switch>
                 </div>

@@ -100,6 +100,8 @@ import { dashboardSidebarMobileReducer } from "./dashboard-sidebar";
 
 import { getBrandsReducer, createBrandReducer, updateBrandReducer, getOneBrandReducer } from "./brand";
 
+import { getAllSliderItemsReducer } from "./slider";
+
 export default combineReducers({
     version: (state = version) => state,
     // cart: cartReducer,
@@ -174,4 +176,5 @@ export default combineReducers({
     addPermissionToRole: addPermissionToRoleReducer,
     removePermissionFromRole: removePermissionFromRoleReducer,
     createRole: createRoleReducer,
+    allSliders: getAllSliderItemsReducer,
 });

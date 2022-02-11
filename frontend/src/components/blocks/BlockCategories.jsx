@@ -1,5 +1,5 @@
 // react
-import React,{useEffect} from 'react';
+import React from 'react';
 
 // third-party
 import PropTypes from 'prop-types';
@@ -16,7 +16,7 @@ export default function BlockCategories(props) {
 
         const subcategories = category.subCategories && category.subCategories.map((sub, subIndex) => (
             <li key={subIndex}>
-                <Link >{sub.name}</Link>
+                <Link to={`/shop/catalog?s=${sub._id}`} >{sub.name}</Link>
             </li>
         ));
 
@@ -24,17 +24,17 @@ export default function BlockCategories(props) {
             <div key={index} className={classes}>
                 <div className=" category-card__body">
                     <div className=" category-card__image">
-                        <Link to={category.url}><img src={`/uploads/imgs/categories/${ category.photo }`} alt="" style={{width:'90px',height:'90px'}}/></Link>
+                        <Link to={`/shop/catalog?c=${category._id}`}><img src={`/uploads/imgs/categories/${ category.photo }`} alt="" style={{width:'90px',height:'90px'}}/></Link>
                     </div>
                     <div className=" category-card__content">
                         <div className=" category-card__name">
-                            <Link to={category.url}>{category.name}</Link>
+                            <Link to={`/shop/catalog?c=${category._id}`}>{category.name}</Link>
                         </div>
                         <ul className="category-card__links">
                             {subcategories}
                         </ul>
                         <div className="category-card__all">
-                            <Link to={category.url}>Show All</Link>
+                            <Link to={`/shop/catalog?c=${category._id}`}>Show All</Link>
                         </div>
                         <div className="category-card__products">
                             {`${category.products} Products`}

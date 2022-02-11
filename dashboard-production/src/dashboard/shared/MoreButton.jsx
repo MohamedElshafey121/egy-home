@@ -10,6 +10,7 @@ function MoreButton ( {
     categoryId,
     subcategoryId,
     brandId,
+    sliderId,
     customerId,
     openDeleteAlertHandler,
     setDeleteItemIdHandler,
@@ -59,6 +60,27 @@ function MoreButton ( {
                         openDeleteAlertHandler( true );
                         setDeleteItemIdHandler( brandId )
                         setDeleteItemTypeHandler('brand')
+                    }
+                }
+            >Delete</button></li>
+        </>
+    ) );
+
+    // SLIDER
+    ( sliderId ) && ( links = (
+        <>
+            {/* <li><Link className="dropdown-item" to={url.brandDashboard( { _id: brandId } )}>Edit</Link></li>
+            <li><Link className="dropdown-item" to={url.brandDashboard( { _id: brandId } )}>View</Link></li>
+            <li><hr className="dropdown-divider" /></li> */}
+            <li><button
+                type="button"
+                className="dropdown-item text-danger"
+                data-toggle="modal" data-target="#exampleModal"
+                onClick={
+                    e => {
+                        openDeleteAlertHandler( true );
+                        setDeleteItemIdHandler( sliderId )
+                        setDeleteItemTypeHandler('slider')
                     }
                 }
             >Delete</button></li>

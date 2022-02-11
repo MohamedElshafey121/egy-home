@@ -110,7 +110,7 @@ class ProductGallery extends Component {
         }, 0);
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate ( prevProps ) {        
         const { locale: prevLocale } = prevProps;
         const { direction: prevDirection } = languages[prevLocale];
         const { locale: currLocale } = this.props;
@@ -161,6 +161,7 @@ class ProductGallery extends Component {
 
     handleThumbnailClick = ( index ) => {
         const { transition } = this.state;
+        // alert(index)
         if (transition) {
             return;
         }
@@ -273,9 +274,16 @@ class ProductGallery extends Component {
         });
     }
 
-    render() {
-        const { layout, images } = this.props;
+    render () {
+        const { layout, images,colorChange,handleColorChange } = this.props;
         const { currentIndex } = this.state;
+        if ( currentIndex > images.length - 1 ) {
+            this.setState({currentIndex:0})
+        }
+        if ( colorChange === true ) {
+            if(currentIndex!==0){ this.setState( { currentIndex: 0 } )}
+            handleColorChange( false )
+        }
 
         const featured = images.map((image, index) => (
             <div key={index} className="product-image product-image--location--gallery">

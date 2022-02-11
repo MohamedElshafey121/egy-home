@@ -17,67 +17,50 @@ const slickSettings = {
     arrows: false,
     infinite: true,
     speed: 400,
+    autoplay: true,
+    autoplayspeed:2000,
     slidesToShow: 1,
     slidesToScroll: 1,
 };
 
 class BlockSlideShow extends Component {
     departmentsAreaRef = null;
-
     media = window.matchMedia('(min-width: 992px)');
+    
+    slides=[]
+    getAllImages = () => {
+        this.slides=[]
+        const { mainImages } = this.props;
+        mainImages &&  mainImages.forEach( ( image ) => {
+            this.slides.push(
+                {
+                    description: image.description,
+                    redirect: image.redirect,
+                    title:image.title,
+                    image_classic: {
+                        ltr: `uploads/imgs/slider/${image.photo}`,
+                        rtl: `uploads/imgs/slider/${image.photo}`,
+                    },
+                    image_full: {
+                        ltr: `uploads/imgs/slider/${image.photo}`,
+                        rtl: `uploads/imgs/slider/${image.photo}`,
+                    },
+                    image_mobile: {
+                        ltr: `uploads/imgs/slider/${image.phonePhoto}`,
+                        rtl: `uploads/imgs/slider/${image.phonePhoto}`,
+                    },
+                }
+            )
+        } );
 
-    slides = [
-        {
-            title: 'Big choice of<br>Plumbing products',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Etiam pharetra laoreet dui quis molestie.',
-            image_classic: {
-                ltr: '/uploads/imgs/site/slider0.jpeg',
-                rtl: '/uploads/imgs/site/slider0.jpeg',
-            },
-            image_full: {
-                ltr: '/uploads/imgs/site/slider0.jpeg',
-                rtl: '/uploads/imgs/site/slider0.jpeg',
-            },
-            image_mobile: {
-                ltr: '/uploads/imgs/site/slider0.jpeg',
-                rtl: '/uploads/imgs/site/slider0.jpeg',
-            },
-        },
-        {
-            title: 'Screwdrivers<br>Professional Tools',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Etiam pharetra laoreet dui quis molestie.',
-            image_classic: {
-                ltr: 'images/slides/slide-2-ltr.jpg',
-                rtl: 'images/slides/slide-2-rtl.jpg',
-            },
-            image_full: {
-                ltr: 'images/slides/slide-2-full-ltr.jpg',
-                rtl: 'images/slides/slide-2-full-rtl.jpg',
-            },
-            image_mobile: {
-                ltr: 'images/slides/slide-2-mobile.jpg',
-                rtl: 'images/slides/slide-2-mobile.jpg',
-            },
-        },
-        {
-            title: 'One more<br>Unique header',
-            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Etiam pharetra laoreet dui quis molestie.',
-            image_classic: {
-                ltr: 'images/slides/slide-3-ltr.jpg',
-                rtl: 'images/slides/slide-3-rtl.jpg',
-            },
-            image_full: {
-                ltr: 'images/slides/slide-3-full-ltr.jpg',
-                rtl: 'images/slides/slide-3-full-rtl.jpg',
-            },
-            image_mobile: {
-                ltr: 'images/slides/slide-3-mobile.jpg',
-                rtl: 'images/slides/slide-3-mobile.jpg',
-            },
-        },
-    ];
+        // console.log('slides',this.slides)
+        // this.setState({mainImages:imageArray})
 
-    componentDidMount() {
+    }
+
+    componentDidMount () {
+        //get All Images
+        
         if (this.media.addEventListener) {
             this.media.addEventListener('change', this.onChangeMedia);
         } else {
@@ -111,7 +94,8 @@ class BlockSlideShow extends Component {
         }
     };
 
-    render() {
+    render () {
+        this.getAllImages();
         const { locale, withDepartments } = this.props;
         const { direction } = languages[locale];
 
@@ -156,10 +140,10 @@ class BlockSlideShow extends Component {
                         />
                         <div
                             className="block-slideshow__slide-text"
-                            dangerouslySetInnerHTML={{ __html: slide.text }}
+                            dangerouslySetInnerHTML={{ __html: slide.description }}
                         />
-                        <div className="block-slideshow__slide-button">
-                            <Link to="/" className="btn btn-primary btn-lg">تسوق الآن</Link>
+                        <div className="block-slideshow__slide-button ">
+                            <Link to={slide.redirect?slide.redirect:'/shop/catalog'} className="btn btn-primary btn-lg">تسوق الآن</Link>
                         </div>
                     </div>
                 </div>

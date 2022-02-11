@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import {
     deleteOneBrand
 } from "../../store/brand";
+import{deleteSliderItemHandler}from '../../store/slider'
 
 function DeleteAlert ( props ) {
     const { openDeleteAlert, openDeleteAlertHandler, deleteItemType, deleteItemId } = props;
@@ -11,8 +12,13 @@ function DeleteAlert ( props ) {
     
     const deleteItemAction = () => {
         if ( deleteItemType === 'brand' ) {
-            // alert( deleteItemId )
+            // DELETE BRAND
             dispatch( deleteOneBrand( deleteItemId ) ).then( () => {
+                openDeleteAlertHandler(false)
+            })
+        }else if ( deleteItemType === 'slider' ) {
+            // DELETE SLIDER
+            dispatch( deleteSliderItemHandler( deleteItemId ) ).then( () => {
                 openDeleteAlertHandler(false)
             })
         }

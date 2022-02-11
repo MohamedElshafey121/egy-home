@@ -26,6 +26,7 @@ import theme from '../../data/theme';
 import {
     getHomePageCategories, getHomePageNewArrivaProducts, getHomePageTopRatedProducts
 } from '../../store/homePage';
+import{getAllSliderItemsHandler} from '../../store/slider'
 
 function HomePageOne () {
     // const[categoryId,setCategoryId]=useState(null)
@@ -38,7 +39,8 @@ function HomePageOne () {
      const homeToprated = useSelector( state => state.homeToprated )
     const { loading: loadingTopRated, products: topRated, error: topRatedError } = homeToprated
     
-    
+    const allSliders = useSelector( state => state.allSliders );
+    const {sliders } = allSliders;
 
     const dispatch = useDispatch()
     //load categories
@@ -62,6 +64,12 @@ function HomePageOne () {
         }
     }, [dispatch, topRated] )
     
+    //DISPATCH SLIDER ITEMS
+    useEffect( () => {
+        if ( !sliders ) {
+            dispatch(getAllSliderItemsHandler())
+        }
+    },[sliders])
     
     function getNewArrivalHandler (categoryId) {
         dispatch(getHomePageNewArrivaProducts(categoryId))
@@ -78,7 +86,7 @@ function HomePageOne () {
                 <title>{ theme.name }</title>
             </Helmet>
 
-            {useMemo( () => <BlockSlideShow withDepartments />, [] )}
+            {useMemo( () => <BlockSlideShow mainImages={sliders} withDepartments />, [sliders] )}
 
             {useMemo( () => <BlockFeatures />, [] )}
 

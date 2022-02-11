@@ -41,6 +41,8 @@ function ProductCard ( props ) {
     const locale = useSelector( state => state.locale )
     const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
     
+    // const [mainImages, setMainImages] = useState( [product && product.photo] );
+    const [selectedImage,setSelectedImage]=useState('')
     useEffect( () => {
         setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
     }, [locale] )
@@ -72,6 +74,14 @@ function ProductCard ( props ) {
     let image;
     let price;
     let features;
+    
+    const mouseOverHandler = () => {
+        if ( product.Specifications &&product.Specifications.length ) {
+            setSelectedImage(product.Specifications[0].photo)
+        }
+    }
+
+    useEffect(()=>{},[selectedImage])
 
     // if ( product.badges&& product.badges.includes( 'sale' ) ) {
     //     badges.push( <div key="sale" className="product-card__badge product-card__badge--sale">{messages.sale}</div> );
@@ -131,7 +141,9 @@ function ProductCard ( props ) {
     // }
 
     return (
-        <div className={containerClasses}>
+        <div className={containerClasses} onMouseOver={mouseOverHandler} onMouseLeave={e => {
+            setSelectedImage('')
+        }}>
             <AsyncAction
                 action={() => quickviewOpen( product._id )}
                 render={( { run, loading } ) => (
@@ -150,8 +162,8 @@ function ProductCard ( props ) {
             {/* Start Render Product Data */}
             {/* {image} */}
             <div className="product-card__image product-image">
-                <Link to={url.product( product )} className="product-image__body">
-                    <img className="product-image__img" src={`/uploads/imgs/products/${ product.photo }`} alt="" />
+                <Link to={url.product( product )} className="product-image__body" >
+                    <img className="product-image__img" src={`/uploads/imgs/products/${ selectedImage?selectedImage:product.photo }`} alt="" />
                 </Link>
             </div>
             <div className="product-card__info">

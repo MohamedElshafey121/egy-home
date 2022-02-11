@@ -14,7 +14,8 @@ import DropdownLanguage from './DropdownLanguage';
 function Topbar ( props ) {
     const { userLogin:{userInfo} } = props;
     const links = [
-        { title: <FormattedMessage id="topbar.privacy" defaultMessage="سياسة الخصوصية" />, url: '/site/about-us' },
+        { title: <FormattedMessage id="topbar.privacy" defaultMessage="سياسة الخصوصية" />, url: '/site/privacy' },
+        { title: <FormattedMessage id="topbar.term" defaultMessage="الشروط والأحكام" />, url: '/site/terms' },
         { title: <FormattedMessage id="topbar.contactss" defaultMessage="تواصل معنا" />, url: '/site/contact-us' },
         { title: <FormattedMessage id="topbar.trackOrderr" defaultMessage="تتبع طلبك" />, url: '/shop/track-order' },
     ];

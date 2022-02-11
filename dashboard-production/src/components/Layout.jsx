@@ -218,7 +218,7 @@ function Layout ( props ) {
                         {/*
                         // Site
                         */}
-                        <Redirect exact from="/site" to="/site/about-us" />
+                        <Redirect exact from="/site" to="/site/terms" />
                         <Route exact path="/site/about-us" component={SitePageAboutUs} />
                         <Route exact path="/site/components" component={SitePageComponents} />
                         <Route exact path="/site/contact-us" component={SitePageContactUs} />

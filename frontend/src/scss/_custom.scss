@@ -28,6 +28,21 @@
     font-size: 16px;
 }
 
+.block-slideshow__slide-image{
+    background-size: cover;
+}
+
+.block-slideshow__slide-title{
+    font-weight: normal;
+    // font-size: 15px;
+    line-height: 1.8;
+    color: #fff;
+}
+
+.block-slideshow__slide-text {
+    color: #fff;
+}
+
 @media (max-width: 479px){
     .products-list[data-layout=grid-3-sidebar] .products-list__item {
         width: 48%;

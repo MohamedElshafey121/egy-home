@@ -46,6 +46,7 @@ exports.uploadProductImage = upload.fields([
   { name: "images", maxCount: 15 },
   { name: "photo", maxCount: 1 },
   { name: "extraPhotos", maxCount: 15 },
+  { name: "attachments", maxCount: 10 },
 ]);
 
 // exports.resizeproductImage = catchAsync(async (req, res, next) => {
@@ -66,27 +67,23 @@ exports.resizeproductImages = catchAsync(async (req, res, next) => {
   if (!req.files.photo) return next();
 
   // 1) Cover image
-  req.body.photo = `product-${Date.now()}.jpeg`;
-  await sharp(req.files.photo[0].buffer)
-    // .resize(700, 700)
-    .toFormat("jpeg")
-    .jpeg({ quality: 90 })
-    .toFile(`uploads/imgs/products/${req.body.photo}`);
+  const mimetype = req.files.photo[0].mimetype.split("/")[1];
+  req.body.photo = `product-${Date.now()}.${mimetype}`;
+  await sharp(req.files.photo[0].buffer).toFile(
+    `uploads/imgs/products/${req.body.photo}`
+  );
 
-  // 2) Images
+  // 2) Images (base attachments)
   req.body.extraPhotos = [];
 
   if (req.files.extraPhotos) {
     // console.log("extraPhotos Found");
     await Promise.all(
       req.files.extraPhotos.map(async (file, i) => {
-        const filename = `product-${Date.now()}-other${i + 1}.jpeg`;
+        const mimeTyp = file.mimetype.split("/")[1];
+        const filename = `product-${Date.now()}-other${i + 1}.${mimeTyp}`;
 
-        await sharp(file.buffer)
-          // .resize(2000, 1333)
-          .toFormat("jpeg")
-          .jpeg({ quality: 90 })
-          .toFile(`uploads/imgs/products/${filename}`);
+        await sharp(file.buffer).toFile(`uploads/imgs/products/${filename}`);
 
         req.body.extraPhotos.push(filename);
       })
@@ -100,15 +97,30 @@ exports.resizeproductImages = catchAsync(async (req, res, next) => {
     // console.log("images Found");
     await Promise.all(
       req.files.images.map(async (file, i) => {
-        const filename = `product-${Date.now()}-${i + 1}.jpeg`;
+        const mimeTyp = file.mimetype.split("/")[1];
 
-        await sharp(file.buffer)
-          // .resize(2000, 1333)
-          .toFormat("jpeg")
-          .jpeg({ quality: 90 })
-          .toFile(`uploads/imgs/products/${filename}`);
+        const filename = `product-${Date.now()}-${i + 1}.${mimeTyp}`;
+
+        await sharp(file.buffer).toFile(`uploads/imgs/products/${filename}`);
 
         req.body.images.push(filename);
+      })
+    );
+  }
+
+  // 4) Specification attachments
+
+  if (req.files.attachments) {
+    req.body.attachments = [];
+    await Promise.all(
+      req.files.attachments.map(async (file, i) => {
+        const mimeTyp = file.mimetype.split("/")[1];
+
+        const filename = `product-${Date.now()}-${i * 15 + 1}.${mimeTyp}`;
+
+        await sharp(file.buffer).toFile(`uploads/imgs/products/${filename}`);
+
+        req.body.attachments.push(filename);
       })
     );
   }
@@ -119,12 +131,12 @@ exports.resizeproductImages = catchAsync(async (req, res, next) => {
 exports.resizenewProductImages = catchAsync(async (req, res, next) => {
   // 1) Cover image
   if (req.files.photo) {
-    req.body.photo = `product-${Date.now()}.jpeg`;
-    await sharp(req.files.photo[0].buffer)
-      // .resize(700, 700)
-      .toFormat("jpeg")
-      .jpeg({ quality: 90 })
-      .toFile(`uploads/imgs/products/${req.body.photo}`);
+    const mimetype = req.files.photo[0].mimetype.split("/")[1];
+
+    req.body.photo = `product-${Date.now()}.${mimetype}`;
+    await sharp(req.files.photo[0].buffer).toFile(
+      `uploads/imgs/products/${req.body.photo}`
+    );
   }
 
   // 2) Images
@@ -133,13 +145,11 @@ exports.resizenewProductImages = catchAsync(async (req, res, next) => {
     req.body.extraPhotos = [];
     await Promise.all(
       req.files.extraPhotos.map(async (file, i) => {
-        const filename = `product-${Date.now()}-other${i + 1}.jpeg`;
+        const mimTyp = file.mimetype.split("/")[1];
 
-        await sharp(file.buffer)
-          // .resize(2000, 1333)
-          .toFormat("jpeg")
-          .jpeg({ quality: 90 })
-          .toFile(`uploads/imgs/products/${filename}`);
+        const filename = `product-${Date.now()}-other${i + 1}.${mimTyp}`;
+
+        await sharp(file.buffer).toFile(`uploads/imgs/products/${filename}`);
 
         req.body.extraPhotos.push(filename);
       })
@@ -149,17 +159,48 @@ exports.resizenewProductImages = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.uploadProductSpecImage = upload.single("photo");
+// exports.uploadProductSpecImage = upload.single("photo");
+exports.uploadProductSpecImage = upload.fields([
+  { name: "photo", maxCount: 1 },
+  { name: "attachments", maxCount: 10 },
+]);
 
 exports.resizeProductSpecImgae = catchAsync(async (req, res, next) => {
-  if (!req.file) return next();
+  if (!req.files.photo) return next();
+  // if (!req.file) return next();
 
-  req.body.photo = `product-${req.params.id}-${Date.now()}.jpeg`;
-  await sharp(req.file.buffer)
-    // .resize(500, 500)
-    .toFormat("jpeg")
-    .jpeg({ quality: 90 })
-    .toFile(`uploads/imgs/products/${req.body.photo}`);
+  /*HANDLE MAIN IMAGE */
+  const mimetype = req.files.photo[0].mimetype.split("/")[1];
+  // OLD FORM WITH SINGLE UPLOAD
+  // req.body.photo = `product-${req.params.id}-${Date.now()}.${mimetype}`;
+  // await sharp(req.file.buffer).toFile(
+  //   `uploads/imgs/products/${req.body.photo}`
+  // );
+
+  //New Form with ATTATCHMENTS (MULTIPLE UPLOAD)
+  req.body.photo = `product-${req.params.id}-${Date.now()}.${mimetype}`;
+  await sharp(req.files.photo[0].buffer).toFile(
+    `uploads/imgs/products/${req.body.photo}`
+  );
+
+  // 3) Specification attachments
+  req.body.attachments = [];
+
+  if (req.files.attachments) {
+    await Promise.all(
+      req.files.attachments.map(async (file, i) => {
+        const mimeTyp = file.mimetype.split("/")[1];
+
+        const filename = `product-${req.params.id}-${Date.now()}-${
+          i + 1
+        }.${mimeTyp}`;
+
+        await sharp(file.buffer).toFile(`uploads/imgs/products/${filename}`);
+
+        req.body.attachments.push(filename);
+      })
+    );
+  }
 
   next();
 });
@@ -172,11 +213,21 @@ exports.resizeProductSpecImgae = catchAsync(async (req, res, next) => {
  * @access   private
  */
 exports.createProduct = catchAsync(async (req, res, next) => {
+  //note => we update the code to get only one specification from front end
   const Specifications = JSON.parse(req.body.Specifications);
   if (req.body.images) {
     req.body.images.forEach((image, imageIdx) => {
       Specifications[imageIdx].photo = image;
     });
+  }
+
+  //we will only get one specification then we will add all coming images to it
+  if (req.body.attachments) {
+    const attachments_images = [];
+    req.body.attachments.forEach((image) => {
+      attachments_images.push(image);
+    });
+    Specifications[0].attachments = [...attachments_images];
   }
 
   const {
@@ -186,6 +237,7 @@ exports.createProduct = catchAsync(async (req, res, next) => {
     shortDescription,
     price,
     oldPrice,
+    newPrice,
     size,
     color,
     shape,
@@ -222,6 +274,7 @@ exports.createProduct = catchAsync(async (req, res, next) => {
     visibility,
     sku,
     oldPrice,
+    newPrice,
     category,
     subCategory,
     brand,
@@ -439,7 +492,6 @@ exports.getRelatedProducts = catchAsync(async (req, res, next) => {
  */
 exports.addProductSpecification = catchAsync(async (req, res, next) => {
   const product = await Product.findById(req.params.id);
-  console.log(req.body);
 
   if (!product) {
     return next(new AppError("Product is not found ", 400));
@@ -452,6 +504,14 @@ exports.addProductSpecification = catchAsync(async (req, res, next) => {
     photo: req.body.photo,
     shape: req.body.shape,
   };
+
+  if (req.body.attachments) {
+    const attachments_images = [];
+    req.body.attachments.forEach((image) => {
+      attachments_images.push(image);
+    });
+    specification.attachments = [...attachments_images];
+  }
 
   product.Specifications.push(specification);
 

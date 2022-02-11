@@ -30,21 +30,8 @@ class Root extends Component {
             site: true,
         }
     }
-    // state = {
-    //     siteFiles:this.props.style.site
-    // }
-
-    setFileSite = ( valu ) => {
-        this.setState( { siteFiles: valu } )
-        // this.forceUpdate()
-    }
-
+    
     componentDidMount () {
-        // alert('Render Again')
-        // const { siteFiles } = this.state;
-        // if(true) require('./../css/bootstrap/css/bootstrap.ltr.css');
-
-        
         // preloader
         setTimeout( () => {
             const preloader = document.querySelector( '.site-preloader' );
@@ -87,14 +74,14 @@ class Root extends Component {
                                 <Route
                                     path="/dashboard"
                                     render={( props ) => (
-                                        <DashboardLayout {...props} style={style} setFileSite={this.setFileSite}/>
+                                        <DashboardLayout {...props} style={style} />
                                     )}
                                 />
 
                                 <Route
                                     path="/auth"
                                     render={( props ) => (
-                                        <AuthLayout {...props} style={style} setFileSite={this.setFileSite}/>
+                                        <AuthLayout {...props} style={style} />
                                     )}
                                 />
 

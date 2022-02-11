@@ -114,6 +114,7 @@ const messages_en = {
     shapes: "Shapes",
     contactUs: "Contact Us",
     sellingPolices: "Selling Polices",
+    privacyPolicy: "Privacy Info",
 };
 
 export default messages_en;

@@ -133,7 +133,13 @@ const homeLink = {
     mobileMenuLinks.push( {
         type: "link",
         label: messages.sellingPolices,
-        url: "/site/about-us"
+        url: "/site/terms"
+    } );
+
+    mobileMenuLinks.push( {
+        type: "link",
+        label: messages.privacyPolicy,
+        url: "/site/privacy"
     } );
 
      if ( userInfo ) {

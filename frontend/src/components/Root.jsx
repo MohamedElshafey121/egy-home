@@ -29,9 +29,7 @@ class Root extends Component {
         }
     }
   
-    setFileSite = ( valu ) => {
-        this.setState( { siteFiles: valu } )
-    }
+    
 
     componentDidMount () {
         // preloader
@@ -77,7 +75,7 @@ class Root extends Component {
                                 <Route
                                     path="/"
                                     render={( props ) => (
-                                        <Layout {...props} style={style} setFileSite={this.setFileSite}/>
+                                        <Layout {...props} style={style} />
                                     )}
                                 />
 

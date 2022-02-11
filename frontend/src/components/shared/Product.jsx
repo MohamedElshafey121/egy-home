@@ -37,37 +37,130 @@ class Product extends Component {
             selectedImage: this.props.product.photo,
             selectedShape: this.props.product.shape ? this.props.product.shape : '',
             selectedSize: this.props.product.size ? this.props.product.size : '',
-            selectedColor: '',
-            choosedPhoto:''
+            selectedColor: this.props.product.color?this.props.product.color:'',
+            choosedPhoto: '',
+            images: [],
+            colorChange:true
         };
     }
 
     componentDidMount () {
+        const{product}=this.props
+        const currentimages = []
+        //1)add main photo
+        currentimages.push( product.photo );
+        //2)add product extra photos
+        if ( product.extraPhotos ) {
+            product.extraPhotos.forEach( ( photo ) => {
+                currentimages.push( photo );
+            } );
+        };
+        this.setState( { images: [...currentimages] } );
+        
         this.setState({messages: this.props.locale === 'ar' ? message_ar : message_en || message_ar })
-    }
+    };
 
 
-    images = [];
-    getAllImages () {
-        this.images = [];
+    // images = [];
+    // getAllImages ( color = '' ) {
+    //     this.images = [];
+    //     const { product } = this.props;
+
+    //     if ( color.trim() ) {
+    //         //  CHECK  COLOR SELECTED THEN SELECET ITIMAGES
+    //         if ( color === product.color ) {
+    //                //1)add product main photo
+    //     this.images.push( product.photo );
+
+    //     //2)add product extra photos
+    //     if ( product.extraPhotos ) {
+    //         product.extraPhotos.forEach( ( photo ) => {
+    //             this.images.push( photo );
+    //         } );
+    //             };
+
+    //         } else {
+    //              product.Specifications.forEach( feature => {
+    //             // this.images.push( feature.photo )
+    //                  if ( feature.color === color ) {
+    //                      this.images.push( feature.photo )
+    //                      if ( feature.attachments ) {
+    //                          feature.attachments.forEach( ( feat ) => {
+    //                               this.images.push( feat )
+    //                          })
+    //                      }
+    //                  }
+    //     } );
+    //         }
+         
+    //     } else {
+    //            //1)add product main photo
+    //     this.images.push( product.photo );
+
+    //     //2)add product extra photos
+    //     if ( product.extraPhotos ) {
+    //         product.extraPhotos.forEach( ( photo ) => {
+    //             this.images.push( photo );
+    //         } );
+    //         };
+    //     };
+        
+    //     //3)add specification photos
+    //     // product.Specifications.forEach( feature => {
+    //     //     this.images.push( feature.photo )
+    //     // } );
+    // };
+
+    getAllImages ( color = '' ) {
+        let currentimages=[]
         const { product } = this.props;
-        //1)add product main photo
-        this.images.push( product.photo );
+
+        if ( color.trim() ) {
+            //  CHECK  COLOR SELECTED THEN SELECET ITIMAGES
+            if ( color === product.color ) {
+                   //1)add product main photo
+        currentimages.push( product.photo );
 
         //2)add product extra photos
         if ( product.extraPhotos ) {
             product.extraPhotos.forEach( ( photo ) => {
-                this.images.push( photo );
-            })
-        }
-        //3)add specification photos
-        product.Specifications.forEach( feature => {
-            this.images.push( feature.photo )
+                currentimages.push( photo );
+            } );
+                };
+
+            } else {
+                 product.Specifications.forEach( feature => {
+                // currentimages.push( feature.photo )
+                     if ( feature.color === color ) {
+                         currentimages.push( feature.photo )
+                         if ( feature.attachments ) {
+                             feature.attachments.forEach( ( feat ) => {
+                                  currentimages.push( feat )
+                             })
+                         }
+                     }
         } );
+            }
+         
+        } else {
+               //1)add product main photo
+        currentimages.push( product.photo );
+
+        //2)add product extra photos
+        if ( product.extraPhotos ) {
+            product.extraPhotos.forEach( ( photo ) => {
+                currentimages.push( photo );
+            } );
+            };
+        };
+
+        this.setState({images:[...currentimages]})
     };
 
+    //get images and its corresponding color for selected shape
     imagesWithColors = [];
     getAllImagesWithColors () {
+        
         this.imagesWithColors = [];
         const { product } = this.props;
 
@@ -81,18 +174,18 @@ class Product extends Component {
         } );
     };
 
-
-    colors = [];
-    getAllcolors () {
-        this.colors = [];
-        const { product } = this.props;
-        this.colors.push( product.color );
-        product.Specifications.forEach( feature => {
-            if ( feature.color ) {
-                this.colors.push( feature.color )
-            }
-        } );
-    };
+    //get colors on سادة
+    // colors = [];
+    // getAllcolors () {
+    //     this.colors = [];
+    //     const { product } = this.props;
+    //     this.colors.push( product.color );
+    //     product.Specifications.forEach( feature => {
+    //         if ( feature.color ) {
+    //             this.colors.push( feature.color )
+    //         }
+    //     } );
+    // };
 
    
 
@@ -118,6 +211,10 @@ class Product extends Component {
         this.setState( { selectedImage: image } )
     }
 
+    handleColorChange = (val) => {
+        //val true or false
+        this.setState( { colorChange: val } );
+    }
 
     // //add to cart handler
     // addTocartHandler =  ( product, qty = 1 , shape = '',color='') => {
@@ -159,9 +256,6 @@ class Product extends Component {
     };
 
     render () {
-        this.getAllImages();
-        this.getAllcolors();
-        this.getAllImagesWithColors()
         const {
             product,
             layout,
@@ -169,7 +263,10 @@ class Product extends Component {
             compareAddItem,
             
         } = this.props;
-        const { quantity,messages,selectedShape,selectedColor,choosedPhoto } = this.state;
+        const { quantity, messages, selectedShape, selectedColor } = this.state;
+        // this.getAllImages(selectedColor);
+        // this.getAllcolors();
+        this.getAllImagesWithColors()
         let prices;
 
         if ( product.oldPrice ) {
@@ -189,9 +286,11 @@ class Product extends Component {
                 <div className="product__content">
                     <ProductGallery
                         layout={layout}
-                        images={this.images}
-                        selectedIndex='2'
-                        choosedPhoto={choosedPhoto}
+                        images={this.state.images}
+                        // selectedColor={selectedColor}
+                        // currentIndex={0}
+                        colorChange={this.state.colorChange}
+                        handleColorChange={this.handleColorChange}
                     />
 
                     <div className="product__info">
@@ -279,7 +378,8 @@ class Product extends Component {
 
                         <form className="product__options">
 
-                            {((product.shape==='color' || !product.shape)&& this.colors.length > 0) && (
+                            {/* for products سادة */}
+                            {/* {((product.shape==='color' || !product.shape)&& this.colors.length > 0) && (
                                 <div className="form-group product__option">
                                     <div className="product__option-label">{messages.colors} { selectedColor&& `: ${selectedColor}` }</div>
                                     <div className="input-radio-color mt-3">
@@ -305,10 +405,10 @@ class Product extends Component {
                                     </div>
                                 </div>
                             
-                            )}
+                            )} */}
 
 
-                            {(product.shape==='shape'&& this.imagesWithColors.length > 0) && (
+                            {/* {(product.shape==='shape'&& this.imagesWithColors.length > 0) && ( */}
                                 <div className="form-group product__option">
                                     <div className="product__option-label">{messages.colors} { selectedColor&& `: ${selectedColor}` }</div>
                                     <div className="input-radio-color mt-3">
@@ -322,8 +422,11 @@ class Product extends Component {
                                                         width: '40px',
                                                         height: '40px',
                                                         borderRadius: '50%',
-                                                        border: '2px solid #ddd',
-                                                        borderColor:selectedColor===image.color?`${image.color}`:'#ddd'
+                                                        // border: '2px solid #ddd',
+                                                        // borderWidth: '2px',
+                                                        // borderStyle:'solid',
+                                                        // borderColor:selectedColor===image.color?`${image.color}`:'#000'
+                                                        border:selectedColor===image.color?`2px solid #000`:''
                                                     }}
                                                     data-toggle="tooltip"
                                                     title={image.color}
@@ -335,7 +438,11 @@ class Product extends Component {
                                                         onClick={e=>this.setState({choosedPhoto:image.photo})}
                                                         style={{borderColor:`${image.color}`}}
                                                         checked={selectedColor === image.color}
-                                                        onChange={e=>this.setState({selectedColor:e.target.value})}
+                                                        onChange={e => {
+                                                            this.handleColorChange(true)
+                                                            this.setState( { selectedColor: e.target.value } );
+                                                            this.getAllImages( e.target.value );
+                                                        }}
                                                      />
                                                     {/* <span >{imageIdx}</span> */}
                                                  </label>
@@ -344,7 +451,7 @@ class Product extends Component {
                                     </div>
                                 </div>
                             
-                            )}
+                            {/* )} */}
 
                             
 
@@ -449,7 +556,7 @@ class Product extends Component {
                 </div>
             </div>
         );
-    }
+    };
 };
 
 Product.propTypes = {

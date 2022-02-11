@@ -15,11 +15,11 @@ const rolrRouter = require("./routers/roleRoutes");
 const permissionRouter = require("./routers/permissionRoutes");
 const brandRouters = require("./routers/brandRoutes");
 const sliderRouter = require("./routers/sliderRoutes");
+const passport = require("passport");
 
 //Models
 // const Role = require( './models/RoleModel' );
 const app = express();
-
 //Global middleware to get information about the request
 // if ( process.env.NODE_ENV === 'development' ) {
 // }
@@ -31,6 +31,7 @@ app.use(express.urlencoded());
 app.disable("etag");
 
 app.use((req, res, next) => {
+  req.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "*");
   if (req.methods === "OPTIONS") {
@@ -39,6 +40,7 @@ app.use((req, res, next) => {
   }
   next();
 });
+// require("./controllers/passportInject");
 
 app.use("/users", userRouter);
 app.use("/api/products", productRouter);
@@ -49,6 +51,11 @@ app.use("/api/roles", rolrRouter);
 app.use("/api/permissions", permissionRouter);
 app.use("/api/brands", brandRouters);
 app.use("/api/sliders", sliderRouter);
+
+// app.get(
+//   "/auth/google",
+//   passport.authenticate("google", { scope: ["profile"] })
+// );
 
 app.use("/api/config/paypal/clientid", (req, res) =>
   res.send(process.env.PAYPAL_CLIENT_ID)

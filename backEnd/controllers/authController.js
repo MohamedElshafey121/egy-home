@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 const crypto = require("crypto");
+const passport = require("passport");
 
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
@@ -282,3 +283,20 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+// exports.loginFacebook = function (req, res, next) {
+//   console.log("Hello server");
+//   passport.authenticate("google", { scope: ["profile"] }, (err, user, info) => {
+//     // Decide what to do on authentication
+//     if (err || !user) {
+//       // return res.redirect(
+//       //   process.env.BASE_CLIENT_URL + "/login?error=" + info.message
+//       // );
+//       console.log("No Thing");
+//       res.json({ err: "error" });
+//     }
+
+//     console.log(user, "user found");
+//     res.jason({ user });
+//   })(req, res, next);
+// };

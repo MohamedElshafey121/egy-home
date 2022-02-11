@@ -14,16 +14,18 @@ const slickSettings = {
     dots: false,
     arrows: false,
     infinite: true,
+    autoplay: true,
+    autoplaySpeed: 2000,
     auto:true,
-    speed: 200,
+    speed: 1000,
     slidesToShow: 6,
-    slidesToScroll: 6,
+    slidesToScroll: 1,
     responsive: [
         {
             breakpoint: 1199,
             settings: {
                 slidesToShow: 5,
-                slidesToScroll: 5,
+                slidesToScroll: 1,
             },
         },
         {

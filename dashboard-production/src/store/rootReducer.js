@@ -110,7 +110,13 @@ import {
     deleteBrandReducer,
 } from "./brand";
 
-import { addSliderItemReducer, deleteSliderItemReducer } from "./slider";
+import {
+    addSliderItemReducer,
+    deleteSliderItemReducer,
+    editSliderItemReducer,
+    getAllSliderItemsReducer,
+    getOneSliderItemReducer,
+} from "./slider";
 
 export default combineReducers({
     version: (state = version) => state,
@@ -190,6 +196,9 @@ export default combineReducers({
     removePermissionFromRole: removePermissionFromRoleReducer,
     createRole: createRoleReducer,
     roleDescriptionUpdate: updateRoleDescriptionReducer,
+    allSliders: getAllSliderItemsReducer,
     addSlider: addSliderItemReducer,
+    editSlider: editSliderItemReducer,
     deleteSlider: deleteSliderItemReducer,
+    oneSlider: getOneSliderItemReducer,
 });

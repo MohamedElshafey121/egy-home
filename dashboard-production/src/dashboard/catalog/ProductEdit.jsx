@@ -81,7 +81,7 @@ export default function ProductEdit ( { match, history } ) {
 
     //states
     const [name, setName] = useState();
-    const [slug, setSlug] = useState();
+    // const [slug, setSlug] = useState();
     const [sku, setSKU] = useState();
     const [description, setDescription] = useState( '' )
     const[shortDescription,setShortDescription]=useState()
@@ -90,7 +90,8 @@ export default function ProductEdit ( { match, history } ) {
     const [size, setSize] = useState()
     const[shape,setShape]=useState()
     const [photo, setPhoto] = useState()
-    const[extraPhotos,setExtraPhotos]=useState([])
+    const [extraPhotos, setExtraPhotos] = useState( [] )
+    const[attachments,setAttachments]=useState([])
     const [photoName, setPhotoName] = useState( '' )
     const[visibility,setVisibility]=useState()//["published", "hidden"]
     const [color, setColor] = useState()
@@ -211,8 +212,16 @@ export default function ProductEdit ( { match, history } ) {
     if (specificationSize) specificationForm.append("size", specificationSize);
     if (specificationColor) specificationForm.append("color", specificationColor);
 
+    //add specification atachments
+    if ( attachments.length ) {
+        attachments.forEach( ( image ) => {
+            specificationForm.append('attachments',image)
+        })
+    };
+    
     dispatch(handleAddProductSpecification(product._id, specificationForm));
     };
+    
     
     const removeBeforeUploadeSpecification = ( e ) => {
         e.preventDefault()
@@ -220,6 +229,7 @@ export default function ProductEdit ( { match, history } ) {
         setSpecificationPrice()
         setSpecificationSize()
         setSpecificationColor()
+        setAttachments([])
     }
 
     const updateSpecificationSubmitHandler = ( e,specificationId ) => {
@@ -328,6 +338,7 @@ export default function ProductEdit ( { match, history } ) {
                                     <th className="w-min">{messages.image}</th>
                                     <th className="min-w-10x">{messages.color}</th>
                                     <th className="min-w-10x">{messages.size}</th>
+                                    <th className="min-w-10x">{locale==='ar'?"الملحقات":"Attachments"}</th>
                                     <th className="w-min">{messages.price}</th>
                                     <th className="w-min" />
                                     <th className="w-min" />
@@ -360,6 +371,14 @@ export default function ProductEdit ( { match, history } ) {
                                                 className="form-control form-control-sm"
                                                 defaultValue={featurs.size}
                                                 id={imageIdx}
+                                                disabled
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                className="form-control form-control-sm"
+                                                placeholder={featurs.attachments?`${featurs.attachments.length} ملحقات`:'No attachments'}
                                                 disabled
                                             />
                                         </td>
@@ -446,13 +465,16 @@ export default function ProductEdit ( { match, history } ) {
                                                 )}
                                             </td>
                                             <td>
-                                                <input
-                                                    type="text"
-                                                    className="form-control form-control-sm"
-                                                    value={specificationSize}
-                                                    onChange={e => setSpecificationSize( e.target.value )}
-                                                />
+                                                <input type="text" onChange={e=>setSpecificationPrice(e.target.value)} value={specificationSize} />
                                             </td>
+                                              <td>
+                                                            <input
+                                                                type="file"
+                                                                class="form-control form-control-sm"
+                                                                onChange={e => { setAttachments( [...e.target.files] ) }}
+                                                                multiple
+                                                            />
+                                                        </td>
                                             <td>
                                                 <input
                                                     type="number"

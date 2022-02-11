@@ -5,9 +5,31 @@ const {
   addNewSliderItem,
   uploadSliderImage,
   deleteSliderItem,
+  editSliderItem,
+  resizeSliderImgae,
+  getAllSliderItems,
+  getOneSlider,
 } = require("../controllers/sliderController");
 
-router.post("/", authController.protect, uploadSliderImage, addNewSliderItem);
-router.delete("/:id", authController.protect, deleteSliderItem);
+router
+  .route("/")
+  .post(
+    authController.protect,
+    uploadSliderImage,
+    resizeSliderImgae,
+    addNewSliderItem
+  )
+  .get(getAllSliderItems);
+
+router
+  .route("/:id")
+  .delete(authController.protect, deleteSliderItem)
+  .patch(
+    authController.protect,
+    uploadSliderImage,
+    resizeSliderImgae,
+    editSliderItem
+  )
+  .get(authController.protect, getOneSlider);
 
 module.exports = router;

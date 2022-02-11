@@ -1,8 +1,8 @@
-import 'photoswipe/dist/photoswipe.css';
-import 'photoswipe/dist/default-skin/default-skin.css';
+import "photoswipe/dist/photoswipe.css";
+import "photoswipe/dist/default-skin/default-skin.css";
 
-import _PhotoSwipe from 'photoswipe/dist/photoswipe';
-import _PhotoSwipeUIDefault from 'photoswipe/dist/photoswipe-ui-default';
+import _PhotoSwipe from "photoswipe/dist/photoswipe";
+import _PhotoSwipeUIDefault from "photoswipe/dist/photoswipe-ui-default";
 
 // noinspection CheckTagEmptyBody
 const template = `
@@ -42,7 +42,7 @@ const template = `
 </div>
 `;
 
-const div = document.createElement('div');
+const div = document.createElement("div");
 
 div.innerHTML = template;
 

@@ -15,31 +15,34 @@ import StroykaSlick from '../shared/StroykaSlick';
 const slickSettings = {
     'grid-4': {
         dots: false,
+        autoplay: true,
+        autoplaySpeed: 2000,
         arrows: false,
         infinite: true,
-        speed: 400,
+        speed: 1000,
         slidesToShow: 4,
-        slidesToScroll: 4,
+        slidesToScroll: 1,
+        cssEase:"linear",
         responsive: [
             {
                 breakpoint: 992,
                 settings: {
                     slidesToShow: 4,
-                    slidesToScroll: 4,
+                    slidesToScroll: 1,
                 },
             },
             {
                 breakpoint: 991,
                 settings: {
                     slidesToShow: 3,
-                    slidesToScroll: 3,
+                    slidesToScroll: 1,
                 },
             },
             {
                 breakpoint: 767,
                 settings: {
                     slidesToShow: 2,
-                    slidesToScroll: 2,
+                    slidesToScroll: 1,
                 },
             },
             {
@@ -53,6 +56,8 @@ const slickSettings = {
     },
     'grid-4-sm': {
         dots: false,
+        autoPlay: true,
+      autoplaySpeed: 2000,
         arrows: false,
         infinite: true,
         speed: 400,
@@ -84,6 +89,8 @@ const slickSettings = {
     },
     'grid-5': {
         dots: false,
+        autoPlay: true,
+      autoplaySpeed: 1000,
         arrows: false,
         infinite: true,
         speed: 400,
@@ -122,6 +129,8 @@ const slickSettings = {
     },
     horizontal: {
         dots: false,
+        autoPlay: true,
+        autoplaySpeed: 1000,
         arrows: false,
         infinite: true,
         speed: 400,
@@ -230,7 +239,7 @@ export default class BlockProductsCarousel extends Component {
 
                         <StroykaSlick
                             ref={this.setSlickRef}
-                            {...slickSettings[layout]}
+                            {...slickSettings['grid-4']}
                         >
                             {columns}
                         </StroykaSlick>

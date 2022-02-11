@@ -114,6 +114,7 @@ const messages_ar = {
     shapes: "الأشكال",
     contactUs: "تواصل معنا",
     sellingPolices: "سياسة البيع",
+    privacyPolicy: "سياسة الخصوصيه",
 };
 
 export default messages_ar;

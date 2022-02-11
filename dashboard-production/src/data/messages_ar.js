@@ -8,6 +8,7 @@ const messages_ar = {
     shortDescription: "وصف مختصر",
     price: "السعر",
     oldPrice: "السعر قبل الخصم",
+    newPrice: "السعر بعد الخصم",
     addFeatures: "أضف صور و أشكال اخرى",
     replaceImage: "صورة جديدة",
     removeImage: "حذف الصورة",
@@ -111,6 +112,15 @@ const messages_ar = {
     catalog: "المخزن",
     customersList: "قائمة العملاء",
     ordersList: "قائمة الطلبات",
+    slider: "الصور الرئيسية",
+    addSlider: "أضف صورة رئيسية",
+    newSlider: "صورة رئيسية جديدة",
+    desktopImage: "صورة كبيرة",
+    mobileImage: "صورة الهاتف",
+    redirectLink: "لينك التوجية",
+    overviewText: "وصف تعريفى",
+    sliderList: "قائمة الصور",
+    SliderTitle: "عنوان الصورة",
 };
 
 export default messages_ar;

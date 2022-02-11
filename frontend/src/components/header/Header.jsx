@@ -22,7 +22,7 @@ function Header ( props ) {
             <div className="site-header__logo" >
                 {/* <Link to="/"><LogoSvg /></Link> */}
                 <Link to="/">
-                    <img src='/uploads/imgs/site/logo_alt_2.jpeg' style={{maxWidth:'150px'}} />
+                    <img src='/uploads/imgs/site/icon.jpeg' style={{maxWidth:'150px'}} />
                 </Link>
             </div>
             <div className="site-header__search">

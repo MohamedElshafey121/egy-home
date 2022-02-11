@@ -8,6 +8,7 @@ const messages_en = {
     shortDescription: "Short description",
     price: "Price",
     oldPrice: "Old price",
+    newPrice: "new price",
     addFeatures: "Add Features",
     replaceImage: "Replace image",
     removeImage: "Remove image",
@@ -110,6 +111,15 @@ const messages_en = {
     catalog: "Catalog",
     customersList: "Customers List",
     ordersList: "Orders List",
+    slider: "Slider",
+    addSlider: "Add Slider",
+    newSlider: "New Slider",
+    desktopImage: "Desktop Image",
+    mobileImage: "Mobile Image",
+    redirectLink: "Redirect Link",
+    overviewText: "Overview Text",
+    sliderList: "Slider",
+    SliderTitle: "Slider Title",
 };
 
 export default messages_en;

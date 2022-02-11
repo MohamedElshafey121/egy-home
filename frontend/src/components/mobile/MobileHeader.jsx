@@ -62,7 +62,7 @@ class MobileHeader extends Component {
                             <Link to="/" className="mobile-header__logo">
                                 {/* <LogoSmallSvg /> */}
                                 <h3 style={{fontFamily:'cursive'}}> <span style={{color:'red',fontWeight:'bold',textTransform:'uppercase'}}>Egy</span>Home</h3>
-                                 {/* <img src='/uploads/imgs/site/logo_alt.jpeg' style={{width:'150px',maxHeight:'50px'}} /> */}
+                                 {/* <img src='/uploads/imgs/site/logoPhone.jpg' style={{width:'150px',maxHeight:'50px'}} /> */}
                             </Link>
                             <Search
                                 context="mobile-header"

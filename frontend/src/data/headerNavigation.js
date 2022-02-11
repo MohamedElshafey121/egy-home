@@ -93,7 +93,7 @@ export default [
     },
     {
         title: "About Us",
-        url: "/site/about-us",
+        url: "/site/terms",
     },
     {
         title: "Contact Us",

@@ -37,6 +37,7 @@ const addressSchema = new mongoose.Schema({
     required: [true, "Email address is required"],
   },
   default: {
+    //deafult_address?
     type: Boolean,
     required: true,
     default: false,
@@ -88,6 +89,12 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "Category",
     },
+    provider: {
+      type: String,
+      enum: ["email", "facebook", "google"],
+      default: "email",
+    },
+    providerUserId: String,
   },
   {
     timestamps: true,

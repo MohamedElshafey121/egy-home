@@ -53,6 +53,9 @@ import RoleList from '../dashboard/ACL/RoleList'
 import RoleAdd from '../dashboard/ACL/RoleAdd'
 import RoleEdit from '../dashboard/ACL/RoleEdit'
 import PermissionList from '../dashboard/ACL/PermissionList'
+import AddSlider from '../dashboard/slider/AddSlider';
+import SliderList from '../dashboard/slider/SliderList';
+import EditSlider from '../dashboard/slider/EditSlider';
 
 
 function useQuery() {
@@ -104,7 +107,6 @@ function DashboardLayout ( props ) {
 
   
     useEffect( () => {
-    //   alert(match.path)
         window.stroyka.containerQuery();
       effectSidebar();
   },[])
@@ -166,6 +168,11 @@ function DashboardLayout ( props ) {
                         <Route exact path={`${ match.path }/roles-add`} component={RoleAdd} />
                         <Route exact path={`${ match.path }/roles/:id`} component={RoleEdit} />
                         {/* <Route exact path={`${ match.path }/permissions-list`} component={PermissionList} /> */}
+
+                        {/* Slider */}
+                        <Route exact path={`${ match.path }/add-slider`} component={AddSlider} />
+                        <Route exact path={`${ match.path }/sliders`} component={SliderList} />
+                        <Route exact path={`${ match.path }/sliders/:id`} component={EditSlider} />
                         
                         
                     </Switch>

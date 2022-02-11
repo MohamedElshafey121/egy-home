@@ -37,6 +37,7 @@ const SpecificationSchema = new mongoose.Schema({
   photo: {
     type: String,
   },
+  attachments: [String], //more photos
 });
 
 const ProductSchem = new mongoose.Schema(
@@ -83,6 +84,10 @@ const ProductSchem = new mongoose.Schema(
     oldPrice: {
       type: Number,
       min: [1, "invalid price value"],
+    },
+    newPrice: {
+      type: Number,
+      min: [0, "invalid price value"],
     },
     size: {
       type: String,

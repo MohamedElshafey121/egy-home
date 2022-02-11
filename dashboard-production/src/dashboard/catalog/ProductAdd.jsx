@@ -7,9 +7,11 @@ import { Link } from 'react-router-dom';
 import PropType from 'prop-types';
 import { select2 } from 'select2'
 import { useSelector, useDispatch } from 'react-redux';
-import ReactSelect  from '../shared/Select';
+import ReactSelect from '../shared/Select';
+import { TagInput } from 'reactjs-tag-input'
+
+
 //scripts
-import $ from 'jquery'
 import './../utils/containerQry'
 
 //components 
@@ -34,8 +36,7 @@ import classNames from 'classnames';
 
 
 export default function ProductAdd ({history}) {
-    // const [photosArray, setPhotosArray] = useState();
-
+    // const [photosArray, setPhotosArray] = useState()
     const locale = useSelector( state => state.locale )
     const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
     
@@ -69,9 +70,11 @@ export default function ProductAdd ({history}) {
     const[shortDescription,setShortDescription]=useState()
     const [price, setPrice] = useState()
     const[oldPrice,setOldPrice]=useState()
+    // const[newPrice,setNewPrice]=useState()
     const [size, setSize] = useState()
     const [photo, setPhoto] = useState()
     const[extraPhotos,setExtraPhotos]=useState([])
+    const[attachments,setAttachments]=useState([])
     const [photoName, setPhotoName] = useState( '' )
     const[visibility,setVisibility]=useState()//["published", "hidden"]
     const [color, setColor] = useState()
@@ -119,6 +122,10 @@ export default function ProductAdd ({history}) {
     
     const submitHandlerAdd = ( e ) => {
         e.preventDefault();
+        // if ( newPrice ) {
+        //     setOldPrice( price );
+        //     setPrice(newPrice)
+        // }
 
         if ( specifications.length > 0 && !color ) {
             specifications.forEach( ( spec ) => {
@@ -151,17 +158,27 @@ export default function ProductAdd ({history}) {
             productForm.append( 'Specifications', JSON.stringify( specifications ) );
         };
 
+        //add specificatio photos
         if ( images.length > 0 ) { 
             images.forEach( ( image ) => {
                 productForm.append( 'images', image );
             })
         }
 
+        //add main photo attachments
         if ( extraPhotos.length ) {
             extraPhotos.forEach( ( image ) => {
                 productForm.append('extraPhotos',image)
             })
         }
+
+        //add specification atachments
+        if ( attachments.length>0 ) {
+            attachments.forEach( ( image ) => {
+                productForm.append('attachments',image)
+            })
+        }
+
         dispatch( handleAddProduct( productForm ) )
     };
 
@@ -247,25 +264,25 @@ export default function ProductAdd ({history}) {
   
     const main = (
         <>
-            <Card title={ messages.basicInformation}>
+            <Card title={messages.basicInformation}>
                 <div className="mb-4">
                     <label htmlFor="form-product/name" className="form-label">
                         {messages.name} *
                     </label>
                     <input type="text" className="form-control" id="form-product/name" value={name} onChange={e => setName( e.target.value )} />
-                     {addProductError &&
-              addProductError.match(/name/) &&
-              JSON.parse(addProductError).name &&
-              (JSON.parse(addProductError).name.toLowerCase().trim() ===
-              "product name is required" ? (
-                  <div id="form-product/slug-help" className="form-text text-danger">
-                        * يجب تحديد الاسم *
-                    </div>
-                    ) : (
-                             <div id="form-product/slug-help" className="form-text text-danger">
-                  * اسم المنتج يجب الا يقل عن 10 حروف *
-                    </div>
-              ))}
+                    {addProductError &&
+                        addProductError.match( /name/ ) &&
+                        JSON.parse( addProductError ).name &&
+                        ( JSON.parse( addProductError ).name.toLowerCase().trim() ===
+                            "product name is required" ? (
+                            <div id="form-product/slug-help" className="form-text text-danger">
+                                * يجب تحديد الاسم *
+                            </div>
+                        ) : (
+                            <div id="form-product/slug-help" className="form-text text-danger">
+                                * اسم المنتج يجب الا يقل عن 10 حروف *
+                            </div>
+                        ) )}
                     {/* <div id="form-product/slug-help" className="form-text text-danger">
                         Unique human-readable product identifier. No longer than 255 characters.
                     </div> */}
@@ -278,17 +295,17 @@ export default function ProductAdd ({history}) {
                         class="form-control"
                         id="formFile-1"
                         value={photoName}
-                        onChange={e => { setPhoto( e.target.files[0] );setPhotoName(e.target.value)}}
+                        onChange={e => { setPhoto( e.target.files[0] ); setPhotoName( e.target.value ) }}
                     />
                     {addProductError &&
-              addProductError.match(/photo/) &&
-              JSON.parse(addProductError).photo && (
-                <div id="form-product/slug-help" className="form-text text-danger">* يجب اختيار صورة المنتج *</div>
-              )}
+                        addProductError.match( /photo/ ) &&
+                        JSON.parse( addProductError ).photo && (
+                            <div id="form-product/slug-help" className="form-text text-danger">* يجب اختيار صورة المنتج *</div>
+                        )}
                 </div>
 
-                 <div className="mb-4">
-                    <label for="formFile-other" class="form-label">{locale==='ar'?"صور إضافية":"extra images"}</label>
+                <div className="mb-4">
+                    <label for="formFile-other" class="form-label">{locale === 'ar' ? "صور إضافية" : "extra images"}</label>
                     <input
                         type="file"
                         class="form-control"
@@ -309,22 +326,23 @@ export default function ProductAdd ({history}) {
                         value={color}
                     />
                     {
-                     colorError && <div id="form-product/slug-help" className="form-text text-danger">* يجب اختيار لون المنتج *</div>
-                    }                    
+                        colorError && <div id="form-product/slug-help" className="form-text text-danger">* يجب اختيار لون المنتج *</div>
+                    }
                   
                 </div>
 
-                <div className="mb-4">
+                {/* <div className="mb-4">
                     <label htmlFor="form-product/size" className="form-label">
-                        {messages.size} 
+                        {messages.size}
                     </label>
+                    <TagInput tags={['hello','world']}  class="form-control"/>
                     <input
                         type="text"
                         className="form-control"
                         id="form-product/size"
                         value={size}
                         onChange={e => setSize( e.target.value )} />
-                </div>
+                </div> */}
 
                 <div className="mb-4">
                     <label htmlFor="form-product/description" className="form-label">
@@ -354,19 +372,19 @@ export default function ProductAdd ({history}) {
                             ],
                         }}
                         value={description}
-                    onChange={setDescription}
+                        onChange={setDescription}
                     />
-                     {addProductError &&
-              addProductError.match(/description/) &&
-              JSON.parse(addProductError).description &&
-              (JSON.parse(addProductError).description.toLowerCase().trim() ===
-              "product description must be provided" ? (
-               <div id="form-product/slug-help" className="form-text text-danger">* يجب إضافة وصف للمنتج *</div>
-              ) : (
-               <div id="form-product/slug-help" className="form-text text-danger">
-                  * وصف المنتج يجب الا يقل عن 30 حرف *
-                </div>
-              ))}
+                    {addProductError &&
+                        addProductError.match( /description/ ) &&
+                        JSON.parse( addProductError ).description &&
+                        ( JSON.parse( addProductError ).description.toLowerCase().trim() ===
+                            "product description must be provided" ? (
+                            <div id="form-product/slug-help" className="form-text text-danger">* يجب إضافة وصف للمنتج *</div>
+                        ) : (
+                            <div id="form-product/slug-help" className="form-text text-danger">
+                                * وصف المنتج يجب الا يقل عن 30 حرف *
+                            </div>
+                        ) )}
                 </div>
                 
                 <div>
@@ -378,19 +396,19 @@ export default function ProductAdd ({history}) {
                         className="form-control"
                         rows={3}
                         value={shortDescription}
-                        onChange={e=>setShortDescription(e.target.value)}
+                        onChange={e => setShortDescription( e.target.value )}
                     />
                     {addProductError &&
-              addProductError.match(/shortDescription/) &&
-              JSON.parse(addProductError).shortDescription &&
-              (JSON.parse(addProductError).shortDescription.toLowerCase().trim() ===
-              "product short description must be provided" ? (
-               <div id="form-product/slug-help" className="form-text text-danger">* يجب إضافة وصف للمنتج *</div>
-              ) : (
-               <div id="form-product/slug-help" className="form-text text-danger">
-                  * وصف المنتج يجب الا يقل عن 30 حرف *
-                </div>
-              ))}
+                        addProductError.match( /shortDescription/ ) &&
+                        JSON.parse( addProductError ).shortDescription &&
+                        ( JSON.parse( addProductError ).shortDescription.toLowerCase().trim() ===
+                            "product short description must be provided" ? (
+                            <div id="form-product/slug-help" className="form-text text-danger">* يجب إضافة وصف للمنتج *</div>
+                        ) : (
+                            <div id="form-product/slug-help" className="form-text text-danger">
+                                * وصف المنتج يجب الا يقل عن 30 حرف *
+                            </div>
+                        ) )}
                 </div>
             </Card>
 
@@ -398,27 +416,33 @@ export default function ProductAdd ({history}) {
                 <div className="row g-4">
                     <div className="col">
                         <label htmlFor="form-product/price" className="form-label">
-                            {messages.price}
+                            {messages.price} الحالى
                         </label>
-                        <input type="number" className="form-control" id="form-product/price" defaultValue={price} onChange={e => setPrice( e.target.value )} />
+                        <input type="number"
+                            className="form-control"
+                            id="form-product/price"
+                            value={price} onChange={e => setPrice( e.target.value )}
+                            min={0}
+                        />
                         {addProductError &&
-                  addProductError.match(/price/) &&
-                  JSON.parse(addProductError).price && (
-                     <div id="form-product/slug-help" className="form-text text-danger">
-                      * {JSON.parse(addProductError).price} *
-                    </div>
-                  )}
+                            addProductError.match( /price/ ) &&
+                            JSON.parse( addProductError ).price && (
+                                <div id="form-product/slug-help" className="form-text text-danger">
+                                    * {JSON.parse( addProductError ).price} *
+                                </div>
+                            )}
                     </div>
                     <div className="col">
                         <label htmlFor="form-product/old-price" className="form-label">
-                            {messages.oldPrice}
+                            {messages.oldPrice} / الاصلى
                         </label>
                         <input
                             type="number"
                             className="form-control"
                             id="form-product/old-price"
                             value={oldPrice}
-                            onChange={e=>setOldPrice(e.target.value)}
+                            onChange={e => setOldPrice( e.target.value )}
+                            min={0}
                         />
                     </div>
                 </div>
@@ -454,101 +478,114 @@ export default function ProductAdd ({history}) {
                 body={
                     <div className="mt-n5">
                         <input
-                            multiple
-                        ref={specificationRef}
-                        type="file"
-                        className="form-control"
-                        style={{display:'none'}}
+                            // multiple
+                            ref={specificationRef}
+                            type="file"
+                            className="form-control"
+                            style={{ display: 'none' }}
                             onChange={handleCreateSpecification}
-                    />
+                        />
                         <div className="sa-divider" />
                         {( specifications && specifications.length > 0 ) && (
                             <React.Fragment>
-                     <div className="table-responsive">
-                            <table className="sa-table">
-                                <thead>
-                                    <tr>
-                                        <th className="w-min">{messages.image}</th>
-                                        <th className="min-w-10x">{messages.color}</th>
-                                        <th className="min-w-10x">{messages.size}</th>
-                                        <th className="w-min">{messages.price}</th>
-                                        <th className="w-min" />
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    { specifications.map( ( specifiaction, imageIdx ) => (
-                                        <tr key={imageIdx}>
-                                            <td>
-                                                <div className="sa-symbol sa-symbol--shape--rounded sa-symbol--size--lg">
-                                                    <img src={URL.createObjectURL(specifiaction.photo)}  />
-                                                </div>
-                                            </td>
-                                            <td>
-                                                {/* <ReactSelect addSpecificationColor={addSpecificationColor} Id={imageIdx} /> */}
-                                                <input
-                                                    type="text"
-                                                    className="form-control form-control-sm"
-                                                    value={specifiaction.size}
-                                                    onChange={addSpecificationColor}
-                                                />
-                                                {(specifiaction.colorError) &&<span className="text-danger text-sm"> {locale==='ar'?"*يجب تحديد اللون *":"you should specify color "} </span>}
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    className="form-control form-control-sm"
-                                                    onChange={addSpecificationSize}
-                                                    id={imageIdx}
-                                                    value={specifiaction.size}
-                                                />
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="number"
-                                                    className="form-control form-control-sm w-4x"
-                                                    id={imageIdx}
-                                                    onChange={addSpecificationPrice}
-                                                    value={specifications.price}
-                                                />
-                                            </td>
-                                            <td>
-                                                <button
-                                                    id={imageIdx}
-                                                    onClick={removeSpecification}
-                                                    className="btn btn-sa-muted btn-sm mx-n3"
-                                                    type="button"
-                                                    aria-label="Delete image"
-                                                    data-bs-toggle="tooltip"
-                                                    data-bs-placement="right"
-                                                    title="Delete image"
-                                                >
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="12"
-                                                        height="12"
-                                                        viewBox="0 0 12 12"
-                                                        fill="currentColor"
-                                                    >
-                                                        <path
-                                                            d="M10.8,10.8L10.8,10.8c-0.4,0.4-1,0.4-1.4,0L6,7.4l-3.4,3.4c-0.4,0.4-1,0.4-1.4,0l0,0c-0.4-0.4-0.4-1,0-1.4L4.6,6L1.2,2.6 c-0.4-0.4-0.4-1,0-1.4l0,0c0.4-0.4,1-0.4,1.4,0L6,4.6l3.4-3.4c0.4-0.4,1-0.4,1.4,0l0,0c0.4,0.4,0.4,1,0,1.4L7.4,6l3.4,3.4 C11.2,9.8,11.2,10.4,10.8,10.8z"
-                                                        ></path>
-                                                    </svg>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ) )}
-                                </tbody>
-                            </table>
-                        </div>
+                                <div className="table-responsive">
+                                    <table className="sa-table">
+                                        <thead>
+                                            <tr>
+                                                <th className="w-min">{messages.image}</th>
+                                                <th className="min-w-10x">{messages.color}</th>
+                                                <th className="min-w-10x">{messages.size}</th>
+                                                <th className="min-w-10x">{locale === 'ar' ? 'الملحقات' : 'Attachments'}</th>
+                                                <th className="w-min">{messages.price}</th>
+                                                <th className="w-min" />
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {specifications.map( ( specifiaction, imageIdx ) => (
+                                                <React.Fragment>
+                                                    <tr key={imageIdx}>
+                                                        <td>
+                                                            <div className="sa-symbol sa-symbol--shape--rounded sa-symbol--size--lg">
+                                                                <img src={URL.createObjectURL( specifiaction.photo )} />
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            {/* <ReactSelect addSpecificationColor={addSpecificationColor} Id={imageIdx} /> */}
+                                                            <input
+                                                                type="text"
+                                                                className="form-control form-control-sm"
+                                                                value={specifiaction.color}
+                                                                id={imageIdx}
+                                                                onChange={e=>addSpecificationColor(imageIdx,e.target.value)}
+                                                            />
+                                                            {( specifiaction.colorError ) && <span className="text-danger text-sm"> {locale === 'ar' ? "*يجب تحديد اللون *" : "you should specify color "} </span>}
+                                                        </td>
+                                                        <td>
+                                                            <input
+                                                                type="text"
+                                                                className="form-control form-control-sm"
+                                                                onChange={addSpecificationSize}
+                                                                id={imageIdx}
+                                                                value={specifiaction.size}
+                                                            />
+                                                        </td>
+                                                        <td>
+                                                            <input
+                                                                type="file"
+                                                                class="form-control form-control-sm"
+                                                                onChange={e => { setAttachments( [...e.target.files] ) }}
+                                                                multiple
+                                                            />
+                                                        </td>
+                                                        <td>
+                                                            <input
+                                                                type="number"
+                                                                className="form-control form-control-sm w-4x"
+                                                                id={imageIdx}
+                                                                onChange={addSpecificationPrice}
+                                                                value={specifications.price}
+                                                            />
+                                                        </td>
+                                            
+                                                        <td>
+                                                            <button
+                                                                id={imageIdx}
+                                                                onClick={removeSpecification}
+                                                                className="btn btn-sa-muted btn-sm mx-n3"
+                                                                type="button"
+                                                                aria-label="Delete image"
+                                                                data-bs-toggle="tooltip"
+                                                                data-bs-placement="right"
+                                                                title="Delete image"
+                                                            >
+                                                                <svg
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    width="12"
+                                                                    height="12"
+                                                                    viewBox="0 0 12 12"
+                                                                    fill="currentColor"
+                                                                >
+                                                                    <path
+                                                                        d="M10.8,10.8L10.8,10.8c-0.4,0.4-1,0.4-1.4,0L6,7.4l-3.4,3.4c-0.4,0.4-1,0.4-1.4,0l0,0c-0.4-0.4-0.4-1,0-1.4L4.6,6L1.2,2.6 c-0.4-0.4-0.4-1,0-1.4l0,0c0.4-0.4,1-0.4,1.4,0L6,4.6l3.4-3.4c0.4-0.4,1-0.4,1.4,0l0,0c0.4,0.4,0.4,1,0,1.4L7.4,6l3.4,3.4 C11.2,9.8,11.2,10.4,10.8,10.8z"
+                                                                    ></path>
+                                                                </svg>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </React.Fragment>
+                                            ) )}
+                                        </tbody>
+                                    </table>
+                                </div>
                                 <div className="sa-divider" />
-                                </React.Fragment>
+                            </React.Fragment>
                         )}
                         <div className="px-5 py-4 my-2">
                             <Link onClick={clickSpecificationFileInput}>{messages.addFeatures}</Link>
                         </div>
                     </div>
                 }
-            /> 
+            />
         </>
     );
 
