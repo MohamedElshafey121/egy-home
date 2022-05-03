@@ -237,7 +237,7 @@ class Product extends Component {
         
         return this.props.addToCart( product._id, {
             qty,
-            // shape: shape.trim() ? shape : product.shape,
+            shape: shape.trim() ? shape : product.shape,
             color: color.trim() ? color : product.color
         } );
     };

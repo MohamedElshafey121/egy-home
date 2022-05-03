@@ -99,19 +99,18 @@ class ProductGallery extends Component {
         };
     }
 
-    componentDidMount() {
-        this.createGallery = import('../../photoswipe').then((module) => module.createGallery);
-
+    componentDidMount () {
+        this.createGallery = import( '../../photoswipe' ).then( ( module ) => module.createGallery );
         // this is necessary to reset the transition state, because sometimes
         // react-slick does not trigger an afterChange event after a beforeChange event
         setTimeout(() => {
             this.setState(() => ({
                 transition: false,
             }));
-        }, 0);
+        }, 200);
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate ( prevProps ) {        
         const { locale: prevLocale } = prevProps;
         const { direction: prevDirection } = languages[prevLocale];
         const { locale: currLocale } = this.props;
@@ -160,14 +159,17 @@ class ProductGallery extends Component {
         this.openPhotoswipe(index);
     };
 
-    handleThumbnailClick = (index) => {
+    handleThumbnailClick = ( index ) => {
         const { transition } = this.state;
-
+        // alert(index)
         if (transition) {
             return;
         }
+        //commit  hello
+        
 
-        this.setState(() => ({ currentIndex: index }));
+        this.setState( () => ( { currentIndex: index } ) );
+        
 
         if (this.slickFeaturedRef) {
             this.slickFeaturedRef.slickGoTo(this.getIndexDependOnDir(index));
@@ -179,19 +181,23 @@ class ProductGallery extends Component {
             currentIndex: this.getIndexDependOnDir(newIndex),
             transition: true,
         }));
+        
     };
 
     handleFeaturedAfterChange = (index) => {
         this.setState(() => ({
             currentIndex: this.getIndexDependOnDir(index),
             transition: false,
-        }));
+        } ) );
+        
+
     };
 
     handleZoomButtonClick = () => {
         const { currentIndex } = this.state;
 
-        this.openPhotoswipe(currentIndex);
+        // this.openPhotoswipe(currentIndex);
+        this.openPhotoswipe(0);
     };
 
     setSlickFeaturedRef = (ref) => {
@@ -211,6 +217,8 @@ class ProductGallery extends Component {
                 msrc: `/uploads/imgs/products/${  images[index] }`,
                 w: 500,
                 h: 500,
+                // w: width,
+                // h: height,
             };
         });
 
@@ -269,9 +277,16 @@ class ProductGallery extends Component {
         });
     }
 
-    render() {
-        const { layout, images } = this.props;
+    render () {
+        const { layout, images,colorChange,handleColorChange } = this.props;
         const { currentIndex } = this.state;
+        if ( currentIndex > images.length - 1 ) {
+            this.setState({currentIndex:0})
+        }
+        if ( colorChange === true ) {
+            if(currentIndex!==0){ this.setState( { currentIndex: 0 } )}
+            handleColorChange( false )
+        }
 
         const featured = images.map((image, index) => (
             <div key={index} className="product-image product-image--location--gallery">
@@ -301,7 +316,8 @@ class ProductGallery extends Component {
             </div>
         ));
 
-        const thumbnails = images.map((image, index) => {
+        const thumbnails = images.map( ( image, index ) => {
+            
             const classes = classNames('product-gallery__carousel-item product-image', {
                 'product-gallery__carousel-item--active': index === currentIndex,
             });
@@ -310,7 +326,7 @@ class ProductGallery extends Component {
                 <button
                     type="button"
                     key={index}
-                    onClick={() => this.handleThumbnailClick(index)}
+                    onClick={() => { this.handleThumbnailClick( index )}}
                     className={classes}
                 >
                     <div className="product-image__body">
