@@ -33,7 +33,9 @@ function SitePageTerms () {
     return (
         <React.Fragment>
             <Helmet>
-                <title>{`Terms And Conditions — ${theme.name}`}</title>
+                <title>{messages.termsAndCondition}</title>
+                <meta name="description" content={theme.termsAndCondition}/>
+                
             </Helmet>
 
             <PageHeader breadcrumb={breadcrumb} />

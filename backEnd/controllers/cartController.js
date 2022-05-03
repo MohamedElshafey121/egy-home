@@ -63,18 +63,18 @@ exports.getCart = catchAsync(async (req, res, next) => {
  * @access   private
  */
 exports.addCartItem = catchAsync(async (req, res, next) => {
+  //get the user cart
   const cart = await Cart.findOne({ user: req.user._id });
   if (!cart) {
     return next(new AppError("Cart is not found", 400));
   }
-  // console.log( req.body );
 
-  const { product, name, price, photo, qty, shape, color, size } = req.body;
+  const { product, name, price, photo, qty, color, size } = req.body;
 
+  //check if the product exist in cart
   const existItem = await Cart.findOne({
     user: req.user._id,
     "cartItems.product": product,
-    "cartItems.shape": shape,
     "cartItems.color": color,
     "cartItems.size": size,
   });
@@ -88,16 +88,17 @@ exports.addCartItem = catchAsync(async (req, res, next) => {
     photo,
     price,
     qty,
-    shape,
     color,
     size,
   };
 
+  //check the product exist in database
   const added_product = await Product.findById(product);
   if (!added_product) {
     return next(new AppError("product is not found", 404));
   }
 
+  //add Item to cart
   cart.cartItems.push(cartItem);
   await cart.save();
   res.status(200).json({

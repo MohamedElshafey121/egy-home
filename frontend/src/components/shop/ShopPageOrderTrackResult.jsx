@@ -160,6 +160,7 @@ export default function ShopPageOrderTrackResult ( { history, match } ) {
         <div className="block order-success">
             <Helmet>
                 <title>{messages.trackOrder}</title>
+                <meta name="description" content="يمكنك تتبع حالة طلبك لمعرفة التطور فى عمليه الشحن فقط من خلال الرقم التعريفى بالطلب" />
             </Helmet>
 
             <div className="container">

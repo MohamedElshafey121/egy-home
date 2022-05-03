@@ -2,7 +2,9 @@ import React,{useState} from 'react'
 import {Link} from 'react-router-dom'
 
 import propTypes from 'prop-types'
+import {useDispatch} from 'react-redux'
 import { url } from '../../services/utils';
+import {handleDeleteProduct} from './../../store/product'
 
 function MoreButton ( {
     id,
@@ -12,10 +14,19 @@ function MoreButton ( {
     brandId,
     sliderId,
     customerId,
+    productId,
     openDeleteAlertHandler,
     setDeleteItemIdHandler,
     setDeleteItemTypeHandler
 } ) {
+
+    const dispatch = useDispatch();
+    const deleteProductHandler = ( e, id ) => {
+        e.preventDefault()
+        if ( window.confirm( 'هل أنت متاكد أنك تريد حذف المنتج' ) ) {
+            dispatch(handleDeleteProduct(id))
+        }
+    }
    
     let links;
     ( orderId ) && ( links = (
@@ -95,6 +106,21 @@ function MoreButton ( {
             <li><a className="dropdown-item text-danger" href="#">Delete</a></li> */}
         </>
     ) );
+
+    ( productId ) && ( links = (
+        <>
+            <li><Link className="dropdown-item" to={url.product( { _id: productId } )}>View</Link></li>
+            <li><hr className="dropdown-divider" /></li>
+            <li><button
+                type="button"
+                className="dropdown-item text-danger"
+                data-toggle="modal" data-target="#exampleModal"
+                onClick={e => {
+                    deleteProductHandler(e,productId)
+                }}
+            >Delete</button></li>
+        </>
+    ) );
      
     return (
         <div className="dropdown">
@@ -114,12 +140,6 @@ function MoreButton ( {
             </button>
             <ul className="dropdown-menu dropdown-menu-end" aria-labelledby={id}>
                 {links}
-                {/* <li><a className="dropdown-item" href="#">Edit</a></li>
-                <li><a className="dropdown-item" href="#">Duplicate</a></li>
-                <li><a className="dropdown-item" href="#">Add tag</a></li>
-                <li><a className="dropdown-item" href="#">Remove tag</a></li>
-                <li><hr className="dropdown-divider" /></li>
-                <li><a className="dropdown-item text-danger" href="#">Delete</a></li> */}
             </ul>
         </div>
     );

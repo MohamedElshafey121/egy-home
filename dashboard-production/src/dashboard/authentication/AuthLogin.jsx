@@ -76,7 +76,7 @@ function AuthLogin ( props ) {
                             </div>
                             <div className="col-auto d-flex align-items-center">
                                 {/* <a href={url.customer({_id:45})}>Forgot password?</a> */}
-                                <Link to="/auth/password/forget">Forgot password?</Link>
+                                <Link to="/authdashboard/password/forget">Forgot password?</Link>
                             </div>
                         </div>
                         <div>
@@ -91,7 +91,7 @@ function AuthLogin ( props ) {
                     </div>
 
                     <div className='text-center'>
-                            Don't have an account? <Link to='/auth/signup'>Sign up</Link>
+                            Don't have an account? <Link to='/authdashboard/signup'>Sign up</Link>
 
                     </div>
                     

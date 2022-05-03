@@ -41,7 +41,7 @@ function Header ( props ) {
                         <div className="block-features__icon" style={{marginLeft:'8px'}}>
                             <Fi24Hours48Svg />
                         </div>
-                        <div className="block-features__content">
+                        <div className="block-features__content" >
                             {/* <div className="block-features__title">Support 24/7</div>
                             <div className="block-features__subtitle">Call us anytime</div> */}
                             <div className="block-features__title">خدمة العملاء</div>

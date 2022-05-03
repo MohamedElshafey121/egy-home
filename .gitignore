@@ -73,6 +73,7 @@ typings/
 /backend/config.env
 .env
 .env.test
+/uploads
 
 # production
 # /frontend/build

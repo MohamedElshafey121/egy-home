@@ -43,6 +43,15 @@
     color: #fff;
 }
 
+.shape-images-outline{
+    height: '35px';
+    width: '35px';
+    border-radius: '50%';
+    border: '2px solid #000';
+    margin-right: '5px';
+    cursor:pointer;
+}
+
 @media (max-width: 479px){
     .products-list[data-layout=grid-3-sidebar] .products-list__item {
         width: 48%;

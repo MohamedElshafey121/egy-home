@@ -37,12 +37,24 @@ function ProductCard ( props ) {
         compareAddItem,
         userInfo
     } = props;
+    const calcSale = (oldPrice,newPrice) => {
+        const difference = oldPrice - newPrice;
+        const percent = difference / oldPrice;
+        return percent * 100;
+    }
+    const imagesList = [];
+    imagesList.push( product.photo );
+    if ( product.Specifications && product.Specifications.length ) {
+        product.Specifications.forEach( spec => {
+            imagesList.push(spec.photo)
+        })
+    }
+    
 
     const locale = useSelector( state => state.locale )
     const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
     
-    // const [mainImages, setMainImages] = useState( [product && product.photo] );
-    const [selectedImage,setSelectedImage]=useState('')
+    const [selectedImage,setSelectedImage]=useState(product.photo)
     useEffect( () => {
         setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
     }, [locale] )
@@ -71,14 +83,10 @@ function ProductCard ( props ) {
     } );
 
     let badges = [];
-    let image;
     let price;
-    let features;
     
-    const mouseOverHandler = () => {
-        if ( product.Specifications &&product.Specifications.length ) {
-            setSelectedImage(product.Specifications[0].photo)
-        }
+    const shapeClickHandler = (photo) => {
+        setSelectedImage(photo)
     }
 
     useEffect(()=>{},[selectedImage])
@@ -94,24 +102,44 @@ function ProductCard ( props ) {
     // }
 
     if ( product.oldPrice ) {
-        badges.push( <div key="sale" className="product-card__badge product-card__badge--sale">{messages.sale}{' '}{ (((product.oldPrice-product.price)/product.price)*100).toFixed(0)} % </div> );
+        badges.push( <div key="sale" className="product-card__badge product-card__badge--sale">{messages.sale}{' '}{ calcSale(product.oldPrice,product.price).toFixed(0)} % </div> );
     }
     if ( product.rating >4 ) {
         badges.push( <div key="hot" className="product-card__badge product-card__badge--hot">{locale==='en'? messages.hot:'تقييم مرتفع'}</div> );
         
     }
 
+    // badges.push( <div key="new" className="product-card__badge product-card__badge--new">{messages.hot}</div> );
+
+
 
     badges = badges.length ? <div className="product-card__badges-list">{badges}</div> : null;
 
-    // if ( product.images  ) {
-    //     image = (
-    //         <div className="product-card__image product-image">
-    //             <Link to={url.product( product )} className="product-image__body">
-    //                 <img className="product-image__img" src={`/uploads/imgs/products/${ image }`} alt="" />
-    //             </Link>
-    //         </div>
-    //     );
+    let images = (
+        <div style={{
+            height: '50px',
+            overflow: 'hidden',
+            textAlign: 'center',
+            lineHeight: '50px',
+            padding: '0 14px'
+        }}>
+            { imagesList.map( img => (
+                <img
+                    src={`/uploads/imgs/products/${ img }`}
+                    alt=""
+                    onClick={()=>shapeClickHandler(img)}
+                style={{
+                    height: '35px',
+                    width: '35px',
+                    borderRadius: '50%',
+                    border:selectedImage===img? '2px solid #000': '2px solid #ddd',
+                    marginRight: '5px',
+                    cursor:'pointer'
+                }}
+            />
+            ))}
+        </div>
+    );
     // }
 
     if ( product.oldPrice ) {
@@ -130,20 +158,9 @@ function ProductCard ( props ) {
         );
     }
 
-    // if ( product.attributes && product.attributes.length ) {
-    //     features = (
-    //         <ul className="product-card__features-list">
-    //             {product.attributes.filter( ( x ) => x.featured ).map( ( attribute, index ) => (
-    //                 <li key={index}>{`${ attribute.name }: ${ attribute.values.map( ( x ) => x.name ).join( ', ' ) }`}</li>
-    //             ) )}
-    //         </ul>
-    //     );
-    // }
 
     return (
-        <div className={containerClasses} onMouseOver={mouseOverHandler} onMouseLeave={e => {
-            setSelectedImage('')
-        }}>
+        <div className={containerClasses} >
             <AsyncAction
                 action={() => quickviewOpen( product._id )}
                 render={( { run, loading } ) => (
@@ -160,12 +177,13 @@ function ProductCard ( props ) {
             />
             {badges}
             {/* Start Render Product Data */}
-            {/* {image} */}
+            
             <div className="product-card__image product-image">
                 <Link to={url.product( product )} className="product-image__body" >
-                    <img className="product-image__img" src={`/uploads/imgs/products/${ selectedImage?selectedImage:product.photo }`} alt="" />
+                    <img className="product-image__img" src={`/uploads/imgs/products/${ selectedImage }`} alt="" />
                 </Link>
             </div>
+            {images}
             <div className="product-card__info">
                 <div className="product-card__name">
                     <Link to={url.product( product )}>{product.name}</Link>
@@ -174,7 +192,6 @@ function ProductCard ( props ) {
                     <Rating value={product.rating} />
                     <div className=" product-card__rating-legend">{`( ${ product.numReviews } )`}</div>
                 </div>
-                {/* {features} */}
                 {/* Faetures Start */}
                 
                 {layout==='grid-with-features'&& <ul className="product-card__features-list">

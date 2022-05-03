@@ -10,45 +10,11 @@ const createSendToken = require("./../utils/createSendToken");
 const User = require("../models/userModel");
 const Cart = require("../models/cartModel");
 const APIFeatures = require("./../utils/apiFeatures");
-
-// const signToken = async ( id ) => {
-//   return await jwt.sign( { id }, process.env.JWT_SECRET, {
-//     expiresIn: process.env.JWT_EXPIRES_IN
-//   } );
-// };
-
-// const createSendToken = async( user, statusCode, res ) => {
-//   const token =await signToken( user._id );
-//   // console.log( token );
-//   const cookieOptions = {
-//     expiresIn: new Date(
-//       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-//     ),
-//     httpOnly: true
-//   };
-//   if ( process.env.NODE_ENV === 'production' ) cookieOptions.secure = true;
-
-//   res.cookie( 'jwt', token, cookieOptions );
-
-//   //remove password from output
-//   user.password = undefined;
-
-//   res.status( statusCode ).json( {
-//     status: 'success',
-//     token,
-//     data: {
-//       user
-//     }
-//   } )
-
-// };
+const Email = require("../utils/prodEmail");
 
 //Sign Up handler
 exports.signUp = catchAsync(async (req, res, next) => {
-  // console.log( "Sign Up" );
-  // console.log( req.body );
   // 1)Create User According to Incoming Data
-  // const { name, email, password, passwordConfirm } = req.body;
   const user = new User({
     name: req.body.name,
     email: req.body.email,
@@ -88,7 +54,13 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   //2) check if email and password correct
-  const user = await User.findOne({ email }).select("+password name email");
+  const user = await User.findOne({ email }).select(
+    "+password name email registerationType"
+  );
+
+  if (user.registerationType === "google") {
+    return next(new AppError("user name or password is incorrect", 400));
+  }
 
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError("Email or password is not valid ", 400));
@@ -200,17 +172,11 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   //   "host"
   // )}/auth/password/reset/${resetToken}`;
 
-  const resetURL = `${req.protocol}://127.0.0.1:3000/auth/password/reset/${resetToken}`;
-
-  const message = `EgyHome\n Forgot your password? Submit  your new password to:\n ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
-  // console.log(user.email);
+  const resetURL = `${req.protocol}://localhost:3000/account/reset/${resetToken}`;
+  const message = `Forgot your password ?\n Submit  your new password to:\n ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
 
   try {
-    await sendEmail({
-      email: "mgmohamed11@gmail.com",
-      subject: "Your password reset token (valid for 10 min)",
-      message,
-    });
+    await new Email(user).send("Egy Home Forget password", message);
 
     res.status(200).json({
       status: "success",
@@ -247,7 +213,6 @@ exports.resetePassword = catchAsync(async (req, res, next) => {
   if (!user) {
     return next(new AppError("This Token is not valid or has expired", 400));
   }
-  console.log(user);
 
   user.password = req.body.password;
   user.passwordConfirm = req.body.passwordConfirm;
@@ -283,20 +248,3 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
     },
   });
 });
-
-// exports.loginFacebook = function (req, res, next) {
-//   console.log("Hello server");
-//   passport.authenticate("google", { scope: ["profile"] }, (err, user, info) => {
-//     // Decide what to do on authentication
-//     if (err || !user) {
-//       // return res.redirect(
-//       //   process.env.BASE_CLIENT_URL + "/login?error=" + info.message
-//       // );
-//       console.log("No Thing");
-//       res.json({ err: "error" });
-//     }
-
-//     console.log(user, "user found");
-//     res.jason({ user });
-//   })(req, res, next);
-// };

@@ -208,8 +208,47 @@ export default function AccountPageLogin ( props ) {
                                         <div>
                                             <p>  إن كنت تمتلك حساب بالفعل يمكنك تسجيل الدخول <Link to='/account/login'>من هنا  </Link>   </p>
                                         </div>
-                                        <button type="submit" className="btn btn-primary mt-2 mt-md-3 mt-lg-4" onClick={e => checkData( e )}>
+                                        <button type="submit" className="btn btn-primary mt-2 mt-md-3 mt-lg-4 d-block m-auto btn-block" onClick={e => checkData( e )}>
                                             {messages.register}
+                                        </button>
+
+                                        <span
+                                            style={{
+                                                display: 'block',
+                                                margin: 'auto',
+                                                width:'40px',
+                                                height: '40px',
+                                                textAlign: 'center',
+                                                marginTop: '10px',
+                                                marginBottom: '10px',
+                                                lineHeight: '40px',
+                                                borderRadius: '50%',
+                                                textTransform: 'uppercase',
+                                                border:'1px solid #333'
+                                            }}
+                                        >or</span>
+
+                                        <button
+                                            type='button'
+                                            className="btn btn-primary  d-block m-auto btn-block"
+                                            style={{
+                                                backgroundColor: '#df4930', border: '0px', padding: '15px 25px',
+                                                textAlign: 'center',
+                                                minWidth:'150px'
+                                            }}
+                                            onClick={async e => {
+                                                e.preventDefault();
+                                                await window.open('http://localhost:5000/auth/google','_self')
+                                            }}
+                                        >
+                                            Google
+                                            <img src='/uploads/imgs/google.png' alt="" className="icon"
+                                                style={{ width: '20px',
+                                                        height: '20px',
+                                                    marginRight: '10px',
+                                                    marginBottom:'10px'
+                                                }}
+                                            />
                                         </button>
                                         
                                     </form>

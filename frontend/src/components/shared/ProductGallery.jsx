@@ -107,7 +107,7 @@ class ProductGallery extends Component {
             this.setState(() => ({
                 transition: false,
             }));
-        }, 0);
+        }, 200);
     }
 
     componentDidUpdate ( prevProps ) {        
@@ -196,7 +196,8 @@ class ProductGallery extends Component {
     handleZoomButtonClick = () => {
         const { currentIndex } = this.state;
 
-        this.openPhotoswipe(currentIndex);
+        // this.openPhotoswipe(currentIndex);
+        this.openPhotoswipe(0);
     };
 
     setSlickFeaturedRef = (ref) => {
@@ -208,14 +209,16 @@ class ProductGallery extends Component {
         const { direction } = languages[locale];
 
         const items = this.imagesRefs.map((tag, index) => {
-            const width = parseFloat(tag.dataset.width) || tag.naturalWidth;
-            const height = parseFloat(tag.dataset.height) || tag.naturalHeight;
+            // const width = parseFloat(tag.dataset.width) || tag.naturalWidth;
+            // const height = parseFloat(tag.dataset.height) || tag.naturalHeight;
 
             return {
                 src:`/uploads/imgs/products/${  images[index] }`,
                 msrc: `/uploads/imgs/products/${  images[index] }`,
-                w: width,
-                h: height,
+                // w: width,
+                // h: height,
+                w: 500,
+                h: 500,
             };
         });
 

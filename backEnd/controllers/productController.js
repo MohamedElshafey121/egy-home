@@ -354,6 +354,7 @@ exports.getProductByCategory = catchAsync(async (req, res, next) => {
 exports.getAllProducts = catchAsync(async (req, res, next) => {
   let category;
   const limit = req.query.limit || 20;
+  req.query.visibility = req.query.visibility || "published";
 
   const features = new APIFeatures(Product.find(), req.query)
     .filter()
@@ -437,6 +438,11 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * @desc Delete product
+ * @route DELETE /api/products/:id
+ * @access Private
+ */
 exports.deleteProduct = catchAsync(async (req, res, next) => {
   const product = await Product.findByIdAndDelete(req.params.id);
 

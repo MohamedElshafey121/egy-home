@@ -148,6 +148,11 @@ exports.getAllCategorySubs = (req, res, next) => {
 };
 
 // exports.getAllSubCategory = factory.getAll(SubCategory);
+/*
+ * @desc     Get All subcategories
+ * @route    GET  /api/categories/sub
+ * @access   Public
+ */
 exports.getAllSubCategory = catchAsync(async (req, res, next) => {
   let category;
   const limit = req.query.limit || 20;

@@ -21,20 +21,43 @@ import {
     getSearchCategories,
 } from "../../store/homePage"
 
+import {
+    handleGetAllSubCategories,
+}from '../../store/subCategory'
+
+
 //data stubs
 import message_ar from '../../data/messages_ar'
 import message_en from '../../data/messages_en'
 
 
-function prepareCategories ( categories ) {
-    const listcategory=[]
+
+function getSubcategoriesSmallMenu ( categoryId, subCategories=[] ) {
+    const subs = [];
+    subCategories&&subCategories.forEach( ( subCat ) => {
+        if ( subCat.category ) {
+            if ( categoryId === subCat.category._id ) {
+                subs.push({ type: "link", label: subCat.name, url: `/shop/catalog?c=${categoryId}&s=${ subCat._id }` })
+            }
+        }
+    } );
+
+    return subs;
+}
+
+function prepareCategories ( categories,subCategories=null ) {
+    const listcategory = []
     for (const category of categories) {
-        listcategory.push( { type: "link",label:category.name,url:"/shop/category",url:`/shop/catalog?c=${category._id}`})
+        const categoryItem = { type: "link", label: category.name, url: `/shop/catalog?c=${ category._id }` }
+        const subcats = getSubcategoriesSmallMenu( category._id, subCategories );
+        if ( subcats.length ) {
+            categoryItem.children = subcats;
+        }
+        listcategory.push(  categoryItem)
     }
 
     return listcategory;
 }
-
 
 function MobileMenu ( props ) {
     const locale = useSelector( state => state.locale )
@@ -46,6 +69,9 @@ function MobileMenu ( props ) {
 
     const searchCategories = useSelector( state => state.searchCategories )
     const { categories } = searchCategories;
+
+    const allSubCategories = useSelector( state => state.allSubCategories )
+    const {  SubCategories } = allSubCategories;
 
     const mobileMenuLinks = [];
 
@@ -59,10 +85,18 @@ function MobileMenu ( props ) {
 
     const dispatch = useDispatch()
     useEffect( () => {
+        if ( !SubCategories ) {
+            dispatch( handleGetAllSubCategories( {}, 1000 ) )
+        }
+    }, [] );
+    
+    useEffect( () => {
         if ( !categories ) {
             dispatch( getSearchCategories() )
-        } 
+        }
     }, [dispatch, categories] );
+
+    
 
     const shopLinks = {
     type: "link",
@@ -93,13 +127,13 @@ const accountlinks = {
     };
     
     let categoriesLinks=null;
-    if ( categories ) {
+    if ( categories   ) {
         
         categoriesLinks = {
         type: "button",
         label: "الاقسام",
         url: "/shop/catalog",
-        children: prepareCategories( categories )
+        children: prepareCategories( categories,SubCategories )
         };
     }
 

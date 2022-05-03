@@ -61,7 +61,7 @@ class Root extends Component {
     );
 
     render () {
-        const { locale,style } = this.props;
+        const { locale } = this.props;
         const { messages, direction } = languages[locale];
 
         return (
@@ -75,7 +75,7 @@ class Root extends Component {
                                 <Route
                                     path="/"
                                     render={( props ) => (
-                                        <Layout {...props} style={style} />
+                                        <Layout {...props}  />
                                     )}
                                 />
 

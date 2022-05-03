@@ -49,6 +49,10 @@ import {
     DELETE_PRODUCT_SPECIFICATION_SUCCESS,
     DELETE_PRODUCT_SPECIFICATION_FAIL,
     DELETE_PRODUCT_SPECIFICATION_RESET,
+    DELETE_PRODUCT_REQUEST,
+    DELETE_PRODUCT_SUCCESS,
+    DELETE_PRODUCT_FAIL,
+    DELETE_PRODUCT_RESET,
 } from "./prpductsActionTypes";
 
 export function handleAddProduct(product) {
@@ -438,4 +442,45 @@ export function getRelatedProducts(productId) {
             });
         }
     };
+}
+
+export function handleDeleteProduct(productId) {
+    return async (dispatch, getState) => {
+        try {
+            const {
+                userLogin: { userInfo },
+            } = getState();
+
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${userInfo.token}`,
+                },
+            };
+
+            dispatch({ type: DELETE_PRODUCT_REQUEST });
+            await axios.delete(`/api/products/${productId}`, config);
+            dispatch({
+                type: DELETE_PRODUCT_SUCCESS,
+            });
+
+            toast.success(`تم حذف المنتج`, {
+                theme: "colored",
+            });
+        } catch (error) {
+            const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+
+            dispatch({
+                type: DELETE_PRODUCT_FAIL,
+                payload: message,
+            });
+
+            toast.success(`حدث خطأ برجاء المحاولة لاحقا`, {
+                theme: "colored",
+            });
+        }
+    };
+}
+
+export function handleDeleteProductReset() {
+    return { type: DELETE_PRODUCT_RESET };
 }

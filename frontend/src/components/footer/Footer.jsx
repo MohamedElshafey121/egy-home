@@ -11,8 +11,6 @@ import FooterLinks from './FooterLinks';
 import FooterNewsletter from './FooterNewsletter';
 import ToTop from './ToTop';
 
-// data stubs
-import theme from '../../data/theme';
 
 
 function Footer ( props ) {
@@ -26,10 +24,10 @@ function Footer ( props ) {
     ];
 
     const informationLinks_ar = [
-        { title: 'الشحن', url: '' },
-        { title: 'سياسة الخصوصيه', url: '' },
-        { title: 'تواصل معنا', url: '' },
-        { title: 'المرتجعات', url: '' },
+        { title: 'تتبع طلبك', url: '/shop/track-order' },
+        { title: 'سياسة الخصوصيه', url: '/site/privacy' },
+        { title: 'تواصل معنا', url: '/site/contact-us' },
+        { title: 'الشروط والاحكام', url: '/site/terms' },
     ];
 
     let accountLinks;

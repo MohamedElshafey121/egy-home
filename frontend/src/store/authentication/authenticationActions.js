@@ -8,6 +8,10 @@ import {
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
     LOGIN_FAILED,
+    SOCIAL_LOGIN_REQUEST,
+    SOCIAL_LOGIN_SUCCESS,
+    SOCIAL_LOGIN_FAILED,
+    SOCIAL_LOGIN_RESET,
     FORGET_PASSWORD_REQUEST,
     FORGET_PASSWORD_SUCCESS,
     FORGET_PASSWORD_FAIL,
@@ -120,6 +124,43 @@ export const handleLogin =
         }
     };
 
+//handle Social login redux action creator
+export const handleSocialLogin = (token) => async (dispatch) => {
+    try {
+        const config = {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        };
+
+        dispatch({
+            type: SOCIAL_LOGIN_REQUEST,
+        });
+
+        const result = await axios.post(`/auth/login/success/${token}`, config);
+
+        const user = getData(result);
+
+        user.token = result.data.token;
+        dispatch({
+            type: SOCIAL_LOGIN_SUCCESS,
+            payload: user,
+        });
+        localStorage.setItem("userInfo", JSON.stringify(user));
+    } catch (error) {
+        const message = error.response && error.response.data.message ? error.response.data.message : error.message;
+
+        dispatch({
+            type: SOCIAL_LOGIN_FAILED,
+            payload: message,
+        });
+    }
+};
+
+export const socialLoginReset = () => {
+    return { type: SOCIAL_LOGIN_RESET };
+};
+
 export const logout = () => (dispatch) => {
     localStorage.removeItem("userInfo");
     dispatch({ type: USER_LOGOUT });
@@ -132,7 +173,6 @@ export function forgetPassword(email) {
             dispatch({ type: FORGET_PASSWORD_REQUEST });
 
             await axios.post(`/users/forgotPassword`, { email });
-            // console.log( 'data',data.data.data );
 
             dispatch({
                 type: FORGET_PASSWORD_SUCCESS,

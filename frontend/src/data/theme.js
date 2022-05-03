@@ -1,6 +1,7 @@
 export default {
     name: "egy-home",
-    fullName: "Stroyka - Tools Store React eCommerce Template",
+    fullName:
+        " مرحباً بك فى إيجى هوم أكبر موقع متخصص فى الاجهزة المنزليه وبأرخص الاسعار فى مصر . يمكنك الاختيار من بين اكثر من 20 علامة تجارية . يمكننا التوصيل إلى أى مكان فى مصر وفى أسرع وقت.",
     url: "https://themeforest.net/item/stroyka-tools-store-react-ecommerce-template/23909258",
     author: {
         name: "Kos",
@@ -11,4 +12,11 @@ export default {
         email: "stroyka@example.com",
         phone: "(800) 060-0730",
     },
+    shopPageCart: "",
+    mainShopPage: "",
+    orderSuccess: "قم بمتابعة حالة طلبك لمعرفة مراحل التطور حتى التسليم",
+    aboutUs: "",
+    contactUs: "",
+    privacyPolicy: "",
+    termsAndCondition: "",
 };

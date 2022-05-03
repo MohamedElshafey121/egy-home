@@ -33,7 +33,9 @@
     "nodemailer": "^6.6.0",
     "passport": "^0.5.2",
     "passport-google-oauth2": "^0.2.0",
+    "passport-google-oauth20": "^2.0.0",
     "reactjs-tag-input": "^2.0.15",
+    "request": "^2.88.2",
     "sharp": "^0.28.3",
     "validator": "^13.6.0",
     "validators": "^0.3.1"

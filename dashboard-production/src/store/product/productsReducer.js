@@ -38,6 +38,10 @@ import {
     GET_RELATED_PRODUCTS_REQUEST,
     GET_RELATED_PRODUCTS_SUCCESS,
     GET_RELATED_PRODUCTS_FAIL,
+    DELETE_PRODUCT_REQUEST,
+    DELETE_PRODUCT_SUCCESS,
+    DELETE_PRODUCT_FAIL,
+    DELETE_PRODUCT_RESET,
 } from "./prpductsActionTypes";
 
 export function addProductReducer(state = {}, action) {
@@ -196,6 +200,21 @@ export function relatedProductsReducer(state = { products: [] }, action) {
             return { loading: false, products: action.payload };
         case GET_RELATED_PRODUCTS_FAIL:
             return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+}
+
+export function deleteProductReducer(state = {}, action) {
+    switch (action.type) {
+        case DELETE_PRODUCT_REQUEST:
+            return { loading: true };
+        case DELETE_PRODUCT_SUCCESS:
+            return { loading: false, success: true };
+        case DELETE_PRODUCT_FAIL:
+            return { loading: false, error: action.payload };
+        case DELETE_PRODUCT_RESET:
+            return {};
         default:
             return state;
     }

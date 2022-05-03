@@ -98,6 +98,7 @@ export default function ShopPageOrderSuccess ( { history, match } ) {
                         </div>
                     )} */}
                 </td>
+                <td className="order-list__column-color" data-title="Color:">{item.color}</td>
                 <td className="order-list__column-quantity" data-title="Qty:">{item.qty}</td>
                 <td className="order-list__column-total"><Currency value={(item.price * item.qty)} /></td>
             </tr>
@@ -108,19 +109,19 @@ export default function ShopPageOrderSuccess ( { history, match } ) {
         <div className="order-success__meta">
             <ul className="order-success__meta-list">
                 <li className="order-success__meta-item">
-                    <span className="order-success__meta-title">{ messages.orderNumber} :</span>
+                    <span className="order-success__meta-title">{messages.orderNumber} :</span>
                     <span className="order-success__meta-value">{`#${ userOrder._id }`}</span>
                 </li>
                 <li className="order-success__meta-item">
                     <span className="order-success__meta-title">{messages.createdAt_order} :</span>
-                    <span className="order-success__meta-value">{new Date(userOrder.createdAt).toDateString()}</span>
+                    <span className="order-success__meta-value">{new Date( userOrder.createdAt ).toDateString()}</span>
                 </li>
                 <li className="order-success__meta-item">
                     <span className="order-success__meta-title">{messages.total} :</span>
                     <span className="order-success__meta-value"><Currency value={userOrder.totalPrice} /></span>
                 </li>
                 <li className="order-success__meta-item">
-                    <span className="order-success__meta-title">{ messages.paymentMethod} :</span>
+                    <span className="order-success__meta-title">{messages.paymentMethod} :</span>
                     <span className="order-success__meta-value">{userOrder.paymentMethod}</span>
                 </li>
             </ul>
@@ -132,6 +133,7 @@ export default function ShopPageOrderSuccess ( { history, match } ) {
         <div className="block order-success">
             <Helmet>
                 <title>{messages.orderSuccess}</title>
+                <meta name="description" content={theme.orderSuccess} />
             </Helmet>
 
             <div className="container">
@@ -141,7 +143,7 @@ export default function ShopPageOrderSuccess ( { history, match } ) {
                         <h1 className="order-success__title">{messages.thankYou} </h1>
                         <div className="order-success__subtitle">{messages.orderReceivedMessage} </div>
                         <div className="order-success__actions">
-                            <Link to="/" className="btn btn-xs btn-secondary">{ messages.goToHome}</Link>
+                            <Link to="/" className="btn btn-xs btn-secondary">{messages.goToHome}</Link>
                         </div>
                     </div>
 
@@ -152,8 +154,9 @@ export default function ShopPageOrderSuccess ( { history, match } ) {
                             <table>
                                 <thead className="order-list__header">
                                     <tr>
-                                        <th className="order-list__column-label" colSpan="2">{ messages.product}</th>
-                                        <th className="order-list__column-quantity">{ messages.quantity}</th>
+                                        <th className="order-list__column-label" colSpan="2">{messages.product}</th>
+                                        <th className="order-list__column-color ">{messages.color}</th>
+                                        <th className="order-list__column-quantity">{messages.quantity}</th>
                                         <th className="order-list__column-total">{messages.total}</th>
                                     </tr>
                                 </thead>
@@ -162,23 +165,23 @@ export default function ShopPageOrderSuccess ( { history, match } ) {
                                 </tbody>
                                 {userOrder && (
                                     <>
-                                    <tbody className="order-list__subtotals">
-                                        <tr>
-                                                <th className="order-list__column-label" colSpan="3">{ messages.subtotal}</th>
-                                            <td className="order-list__column-total"><Currency value={userOrder.itemsPrice} /></td>
-                                        </tr>
-                                        <tr>
-            <th className="order-list__column-label" colSpan="3">{messages.shipping}</th>
-            <td className="order-list__column-total"><Currency value={userOrder.shippingPrice} /></td>
-        </tr>
-                                    </tbody>
-                                    <tfoot className="order-list__footer">
-                                    <tr>
-                                        <th className="order-list__column-label" colSpan="3">{messages.total}</th>
-                                        <td className="order-list__column-total"><Currency value={userOrder.totalPrice} /></td>
-                                    </tr>
+                                        <tbody className="order-list__subtotals">
+                                            <tr>
+                                                <th className="order-list__column-label" colSpan="4">{messages.subtotal}</th>
+                                                <td className="order-list__column-total"><Currency value={userOrder.itemsPrice} /></td>
+                                            </tr>
+                                            <tr>
+                                                <th className="order-list__column-label" colSpan="4">{messages.shipping}</th>
+                                                <td className="order-list__column-total"><Currency value={userOrder.shippingPrice} /></td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot className="order-list__footer">
+                                            <tr>
+                                                <th className="order-list__column-label" colSpan="4">{messages.total}</th>
+                                                <td className="order-list__column-total"><Currency value={userOrder.totalPrice} /></td>
+                                            </tr>
                                         </tfoot>
-                                        </>
+                                    </>
                                 )}
                                 
                             </table>
@@ -186,38 +189,38 @@ export default function ShopPageOrderSuccess ( { history, match } ) {
                     </div>
 
                     <div className="row mt-3 no-gutters mx-n2">
-                        {(userOrder&& userOrder.shippingAddress) && (
+                        {( userOrder && userOrder.shippingAddress ) && (
                             <div className="col-sm-12 col-12 px-2">
-                            <div className="card address-card">
-                                <div className="address-card__body">
-                                    <div className="address-card__badge address-card__badge--muted">
-                                        {messages.shippingAddress}
-                                    </div>
-                                    <div className="address-card__name">
-                                        {`${userOrder.shippingAddress.firstName} ${userOrder.shippingAddress.lastName}`}
-                                    </div>
-                                    <div className="address-card__row">
-                                        {userOrder.shippingAddress.governate}
-                                        <br />
-                                        {`${userOrder.shippingAddress.city}, ${userOrder.shippingAddress.area}`}
-                                        <br />
-                                        {userOrder.shippingAddress.address}
-                                    </div>
-                                    <div className="address-card__row">
-                                        <div className="address-card__row-title">{messages.addressType}</div>
-                                        <div className="address-card__row-content">{userOrder.shippingAddress.type}</div>
+                                <div className="card address-card">
+                                    <div className="address-card__body">
+                                        <div className="address-card__badge address-card__badge--muted">
+                                            {messages.shippingAddress}
+                                        </div>
+                                        <div className="address-card__name">
+                                            {`${ userOrder.shippingAddress.firstName } ${ userOrder.shippingAddress.lastName }`}
                                         </div>
                                         <div className="address-card__row">
-                                        <div className="address-card__row-title">{messages.phoneNumber}</div>
-                                        <div className="address-card__row-content">{userOrder.phone}</div>
-                                    </div>
-                                    <div className="address-card__row">
-                                        <div className="address-card__row-title">{messages.emailAddress}</div>
-                                        <div className="address-card__row-content">{userInfo.email}</div>
+                                            {userOrder.shippingAddress.governate}
+                                            <br />
+                                            {`${ userOrder.shippingAddress.city }, ${ userOrder.shippingAddress.area }`}
+                                            <br />
+                                            {userOrder.shippingAddress.address}
+                                        </div>
+                                        <div className="address-card__row">
+                                            <div className="address-card__row-title">{messages.addressType}</div>
+                                            <div className="address-card__row-content">{userOrder.shippingAddress.type}</div>
+                                        </div>
+                                        <div className="address-card__row">
+                                            <div className="address-card__row-title">{messages.phoneNumber}</div>
+                                            <div className="address-card__row-content">{userOrder.phone}</div>
+                                        </div>
+                                        <div className="address-card__row">
+                                            <div className="address-card__row-title">{messages.emailAddress}</div>
+                                            <div className="address-card__row-content">{userInfo.email}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         
                         )}
                     </div>

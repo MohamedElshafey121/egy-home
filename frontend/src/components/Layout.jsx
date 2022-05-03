@@ -19,6 +19,9 @@ import Quickview from './shared/Quickview';
 import HomePageOne from './home/HomePageOne';
 import AccountLayout from './account/AccountLayout';
 import AccountPageLogin from './account/AccountPageLogin';
+import AccountPageForgetPassword from './account/AccountPageForgetPassword'
+import AccountpageEmailConfirm from './account/AccountpageEmailConfirm'
+import AccountResetPassword from './account/AccountResetPassword'
 import AccountPageSignUp from './account/AccountPageSignUp';
 import BlogPageCategory from './blog/BlogPageCategory';
 import BlogPagePost from './blog/BlogPagePost';
@@ -28,6 +31,7 @@ import PageCompare from './shop/ShopPageCompare';
 import PageWishlist from './shop/ShopPageWishlist';
 import ShopPageCategory from './shop/ShopPageCategory';
 import ShopPageOrderSuccess from './shop/ShopPageOrderSuccess';
+import PagePayment from './shop/PagePayment'
 import ShopPageOrderTrackResult from './shop/ShopPageOrderTrackResult'
 import ShopPageProduct from './shop/ShopPageProduct';
 import ShopPageTrackOrder from './shop/ShopPageTrackOrder';
@@ -39,13 +43,16 @@ import SitePageFaq from './site/SitePageFaq';
 import SitePageNotFound from './site/SitePageNotFound';
 import SitePageTerms from './site/SitePageTerms';
 import SitePageTypography from './site/SitePageTypography';
-import SocialAuth from './shared/SocialAuth'
 
 // data stubs
 import theme from '../data/theme';
 
 
 function Layout ( props ) {
+    const noHeader = [
+        "/account/confirm",
+        "/account/forgetpassword"
+    ]
     return (
         <React.Fragment>
             <Helmet>
@@ -65,7 +72,7 @@ function Layout ( props ) {
                 </header>
 
                 <header className="site__header d-lg-block d-none">
-                    <Header />
+                    {(!noHeader.includes(window.location.pathname) ||!window.location.pathname.startsWith('/account/reset') ) &&<Header />}
                 </header>
 
                 <div className="site__body">
@@ -115,6 +122,7 @@ function Layout ( props ) {
 
                         <Route exact path="/shop/cart" component={PageCart} />
                         <Route exact path="/shop/checkout" component={PageCheckout} />
+                        <Route exact path="/shop/payment" component={PagePayment} />
                         <Route exact path="/shop/checkout/success/:id" component={ShopPageOrderSuccess} />
                         <Route exact path="/shop/track/:id" component={ShopPageOrderTrackResult} />
                         <Route exact path="/shop/wishlist" component={PageWishlist} />
@@ -172,7 +180,10 @@ function Layout ( props ) {
                         // Account
                         */}
                         <Route exact path="/account/login" component={AccountPageLogin} />
+                        <Route exact path="/account/forgetpassword" component={AccountPageForgetPassword} />
                         <Route exact path="/account/signup" component={AccountPageSignUp} />
+                        <Route exact path="/account/confirm" component={AccountpageEmailConfirm} />
+                        <Route exact path="/account/reset/:token" component={AccountResetPassword} />
                         <Route path="/account" component={AccountLayout} />
 
                         {/*
@@ -191,13 +202,12 @@ function Layout ( props ) {
                         {/*
                         // Page Not Found
                         */}
-                        <Route path='/social' component={SocialAuth} exact />
                         <Route component={SitePageNotFound} />
                     </Switch>
                 </div>
 
                 <footer className="site__footer">
-                    <Footer />
+                   {(!noHeader.includes(window.location.pathname)||!window.location.pathname.trim().startsWith('/account/reset'))&& <Footer />}
                 </footer>
             </div>
         </React.Fragment>

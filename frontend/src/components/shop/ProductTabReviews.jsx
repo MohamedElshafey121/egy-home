@@ -15,18 +15,28 @@ import {
     handleGetOneProduct,
 } from '../../store/product';
 
+//data-stubs
+import message_ar from '../../data/messages_ar'
+import message_en from '../../data/messages_en'
+import { toast } from 'react-toastify';
+
 
 function ProductTabReviews ( { productId, reviews } ) {
     const userLogin = useSelector(state=>state.userLogin);
     const { userInfo } = userLogin;
+
+    const locale = useSelector( state => state.locale )
+    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
+    
 
     const createProductReview = useSelector( state => state.createProductReview )
     const { success } = createProductReview;
    
     const limit = 5;
     const [rating, setRating] = useState(5)
-    const [comment, setComment] = useState();
+    const [comment, setComment] = useState('');
     const [page, setpage] = useState( 1 )
+    const [ratingError,setRatingError]=useState('')
 
     const alreadyReviewed=userInfo&& reviews.find( review => review.user === userInfo._id )
     
@@ -35,6 +45,10 @@ function ProductTabReviews ( { productId, reviews } ) {
     //create review
     function createReviewHandler ( event ) {
         event.preventDefault();
+        if ( !comment ) {
+            toast.error(locale==='ar'?" يجب إضافة تعليق أولاً":"You should add comment",{theme:'colored'})
+            return setRatingError(locale==='ar'?" يجب إضافة تعليق أولاً*":"You should add comment")
+        }
     
         dispatch(createProductReviewHandler(productId,{rating,comment}))
     };
@@ -49,32 +63,33 @@ function ProductTabReviews ( { productId, reviews } ) {
 
 
     const reviewForm=(<form className="reviews-view__form" onSubmit={e=>createReviewHandler(e)}>
-                <h3 className="reviews-view__header">Write A Review</h3>
+                <h3 className="reviews-view__header">{messages.writereview}</h3>
                 <div className="row">
                     <div className="col-12 col-lg-9 col-xl-8">
                         <div className="form-row">
                             <div className="form-group col-md-4">
-                                <label htmlFor="review-stars">Review Stars</label>
+                                <label htmlFor="review-stars">{messages.stars}</label>
                                 <select id="review-stars" className="form-control" value={rating} onChange={e=>setRating(e.target.value)}>
-                                    <option value="5">5 Stars Rating</option>
-                                    <option value="4">4 Stars Rating</option>
-                                    <option value="3">3 Stars Rating</option>
-                                    <option value="2">2 Stars Rating</option>
-                                    <option value="1">1 Stars Rating</option>
+                                    <option value="5">5 {messages.starsRating}</option>
+                                    <option value="4">4 {messages.starsRating}</option>
+                                    <option value="3">3 {messages.starsRating}</option>
+                                    <option value="2">2 {messages.starsRating}</option>
+                                    <option value="1">1 {messages.starRating}</option>
                                 </select>
                             </div>
                         </div>
                         <div className="form-group">
-                            <label htmlFor="review-text">Your Review</label>
+                            <label htmlFor="review-text">{messages.yourOpinion}</label>
                             <textarea
                                 className="form-control"
                                 id="review-text" rows="6"
-                                placeholder='Add your experience about this product'
+                                placeholder={messages.opinion}
                                 value={comment}
                                 onChange={e => setComment( e.target.value )} />
-                        </div>
+                <span className="text-danger">{ratingError}</span>
+                </div>
                         <div className="form-group mb-0">
-                            <button type="submit" className="btn btn-primary btn-lg" onClick={e=>createReviewHandler(e)}>Post Your Review</button>
+                    <button type="submit" className="btn btn-primary btn-lg" onClick={e => createReviewHandler( e )}>{ messages.postReview}</button>
                         </div>
                     </div>
                 </div>
@@ -100,7 +115,7 @@ function ProductTabReviews ( { productId, reviews } ) {
     return (
         <div className="reviews-view">
             <div className="reviews-view__list">
-                <h3 className="reviews-view__header">Customer Reviews</h3>
+                <h3 className="reviews-view__header">{ messages.customerReviews}</h3>
 
                 {reviews.length > 0 && (
                     <div className="reviews-list">
@@ -112,7 +127,7 @@ function ProductTabReviews ( { productId, reviews } ) {
                     </div>}
                     </div>
                 )}
-                {reviews.length===0 && (<div className="reviews-list"> Ther is No Reviews Yet </div>)}
+                {reviews.length===0 && (<div className="reviews-list"> {messages.noReviews} </div>)}
             </div>
 
             {(!alreadyReviewed && userInfo) && reviewForm}

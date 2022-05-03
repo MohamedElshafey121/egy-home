@@ -4,6 +4,8 @@ const APIFeatures = require("./../utils/apiFeatures");
 const Factory = require("./handlerFactory");
 
 const Order = require("../models/orderModel");
+const Email = require("../utils/prodEmail");
+
 const Product = require("../models/productModel");
 
 /**
@@ -40,10 +42,41 @@ exports.addOrderItems = catchAsync(async (req, res, next) => {
   });
 
   const newOrder = await order.save();
+
+  if (!newOrder) {
+    throw new AppError("Error Occured while creating order", 401);
+  }
+
+  let emailSent = false;
+
+  //send email to the customer
+  if (newOrder) {
+    try {
+      const message = `تم إستلام طلب رقم:\n ${newOrder._id}.\nوجارى العمل عليه`;
+      await new Email(req.user).send(" طلب جديد من إيجى هوم", message);
+      emailSent = true;
+    } catch (err) {
+      emailSent = false;
+    }
+  }
+
+  //send email to admin
+  try {
+    const message = `لديك طلب جديد برقم:\n ${newOrder._id}.\n اضغط على الرابط لمتلبعة الطلب \n http://egy-home.com/dashboard/orders/${newOrder._id}`;
+    await new Email({ email: "mero.aa555@gmail.com" }).send(
+      " طلب جديد من إيجى هوم",
+      message
+    );
+    emailSent = true;
+  } catch (err) {
+    emailSent = false;
+  }
+
   res.status(201).json({
     status: "success",
     data: {
       order: newOrder,
+      emailSent,
     },
   });
 });
@@ -133,7 +166,12 @@ exports.updateOrder = Factory.updateOne(Order);
  */
 exports.updateOrderStatus = catchAsync(async (req, res, next) => {
   const { status: newStatus, adminNotes } = req.body;
-  const order = await Order.findById(req.params.id);
+  // let sendEmailError = "";
+  const order = await Order.findById(req.params.id).populate({
+    path: "user",
+    select: "email",
+  });
+
   if (!order) {
     return next(new AppError("Order not found", 404));
   }
@@ -152,6 +190,29 @@ exports.updateOrderStatus = catchAsync(async (req, res, next) => {
     if (order.isPaid === false) {
       order.isPaid = true;
       order.paidAt = new Date(Date.now());
+    }
+  }
+
+  let emailSent = false;
+  //order onhold/accepted
+  if (newStatus === "onhold") {
+    try {
+      const message = `تم تأكيد طلب رقم:\n ${order._id}.\n وهو الان فى مرحلة الشحن`;
+      await new Email(order.user).send("  إيجى هوم", message);
+      emailSent = true;
+    } catch (err) {
+      emailSent = false;
+    }
+  }
+
+  //order refused
+  if (newStatus === "refused") {
+    try {
+      const message = `تم رفض طلبكم رقم :\n ${newOrder._id}.\n من إيجى هوم للاسبا التاليه \n ${adminNotes}`;
+      await new Email(order.user).send(" إيجى هوم", message);
+      emailSent = true;
+    } catch (err) {
+      emailSent = false;
     }
   }
 

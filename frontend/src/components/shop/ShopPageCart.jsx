@@ -57,7 +57,8 @@ function ShopPageCart ( props ) {
 
     //calculate prices
     cart.itemPrices = cartItems ? ( cartItems.reduce( ( acc, item ) => acc + item.price * item.qty, 0 ) ) : 0;
-    cart.shippingPrice = cart.itemPrices > 100 ? ( 21 * cartItems.length ) : 0;
+    // cart.shippingPrice = cart.itemPrices > 100 ? ( 50 * cartItems.length ) : 0;
+    cart.shippingPrice =  cartItems ? ( cartItems.reduce( ( acc, item ) => acc + 35 * item.qty, 0 ) ) : 0;
     cart.totalPrice = Number( cart.itemPrices ) + Number( cart.shippingPrice );
 
     //HANDLERS
@@ -118,6 +119,9 @@ function ShopPageCart ( props ) {
                     </td>
                     <td className="cart-table__column cart-table__column--price" data-title="Price">
                         <Currency value={item.price} />
+                    </td>
+                     <td className="cart-table__column cart-table__column--color" data-title="color">
+                        {item.color} 
                     </td>
                     <td className="cart-table__column cart-table__column--quantity" data-title="Quantity">
                         {/* <InputNumber
@@ -224,6 +228,7 @@ function ShopPageCart ( props ) {
                                 <th className="cart-table__column cart-table__column--image">{ messages.imageProduct}</th>
                                 <th className="cart-table__column cart-table__column--product"> {messages.product} </th>
                                 <th className="cart-table__column cart-table__column--price"> {messages.price} </th>
+                                <th className="cart-table__column cart-table__column--color"> {messages.color} </th>
                                 <th className="cart-table__column cart-table__column--quantity"> {messages.quantity} </th>
                                 <th className="cart-table__column cart-table__column--total"> {messages.total} </th>
                                 <th className="cart-table__column cart-table__column--remove" aria-label="Remove" />
@@ -287,7 +292,9 @@ function ShopPageCart ( props ) {
     return (
         <React.Fragment>
             <Helmet>
-                <title>{`${messages.shoppingCart} `}</title>
+                <title>{`${ messages.shoppingCart } `}</title>
+                <meta name="description" content={theme.shopPageCart} />
+                
             </Helmet>
 
             <PageHeader header={messages.shoppingCart} breadcrumb={breadcrumb} />

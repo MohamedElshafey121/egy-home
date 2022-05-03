@@ -12,7 +12,7 @@ const orderSchema = mongoose.Schema(
         name: { type: String, required: true },
         qty: { type: Number, required: true },
         photo: { type: String, required: true },
-        // color: { type: String, required: true },
+        color: { type: String, required: true },
         price: { type: Number, required: true },
         product: {
           type: mongoose.Schema.Types.ObjectId,
@@ -38,7 +38,8 @@ const orderSchema = mongoose.Schema(
     paymentMethod: {
       type: String,
       required: true,
-      default: "Cash on delivery",
+      enum: ["cash", "bank"],
+      // default: "cash",
     },
     paymentResult: {
       id: { type: String },

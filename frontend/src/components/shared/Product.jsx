@@ -39,23 +39,25 @@ class Product extends Component {
             selectedSize: this.props.product.size ? this.props.product.size : '',
             selectedColor: this.props.product.color?this.props.product.color:'',
             choosedPhoto: '',
-            images: [],
+            // images: [],
             colorChange:true
         };
     }
 
     componentDidMount () {
-        const{product}=this.props
-        const currentimages = []
-        //1)add main photo
-        currentimages.push( product.photo );
-        //2)add product extra photos
-        if ( product.extraPhotos ) {
-            product.extraPhotos.forEach( ( photo ) => {
-                currentimages.push( photo );
-            } );
-        };
-        this.setState( { images: [...currentimages] } );
+        // const{product}=this.props
+        // const currentimages = []
+        // //1)add main photo
+        // currentimages.push( product.photo );
+        // //2)add product extra photos
+        // if ( product.extraPhotos ) {
+        //     product.extraPhotos.forEach( ( photo ) => {
+        //         currentimages.push( photo );
+        //     } );
+        // };
+        // console.log('Mount')
+        // this.setState( { images: [...currentimages] } );
+        // console.log(product.photo)
         
         this.setState({messages: this.props.locale === 'ar' ? message_ar : message_en || message_ar })
     };
@@ -111,39 +113,13 @@ class Product extends Component {
     //     // } );
     // };
 
+    images=[];
     getAllImages ( color = '' ) {
         let currentimages=[]
         const { product } = this.props;
 
-        if ( color.trim() ) {
-            //  CHECK  COLOR SELECTED THEN SELECET ITIMAGES
-            if ( color === product.color ) {
-                   //1)add product main photo
-        currentimages.push( product.photo );
-
-        //2)add product extra photos
-        if ( product.extraPhotos ) {
-            product.extraPhotos.forEach( ( photo ) => {
-                currentimages.push( photo );
-            } );
-                };
-
-            } else {
-                 product.Specifications.forEach( feature => {
-                // currentimages.push( feature.photo )
-                     if ( feature.color === color ) {
-                         currentimages.push( feature.photo )
-                         if ( feature.attachments ) {
-                             feature.attachments.forEach( ( feat ) => {
-                                  currentimages.push( feat )
-                             })
-                         }
-                     }
-        } );
-            }
-         
-        } else {
-               //1)add product main photo
+        if ( (color.trim() && color === product.color) || !color.trim() ) {
+              //1)add product main photo
         currentimages.push( product.photo );
 
         //2)add product extra photos
@@ -152,9 +128,24 @@ class Product extends Component {
                 currentimages.push( photo );
             } );
             };
+         
+        } else {
+              //  CHECK  COLOR SELECTED THEN SELECET ITIMAGES
+            product.Specifications.forEach( feature => {
+                // currentimages.push( feature.photo )
+                if ( feature.color === color ) {
+                    currentimages.push( feature.photo )
+                    if ( feature.attachments ) {
+                        feature.attachments.forEach( ( feat ) => {
+                            currentimages.push( feat )
+                        } )
+                    }
+                }
+            } );
         };
+        this.images=[...currentimages]
 
-        this.setState({images:[...currentimages]})
+        // this.setState({images:[...currentimages]})
     };
 
     //get images and its corresponding color for selected shape
@@ -172,6 +163,7 @@ class Product extends Component {
         product.Specifications.forEach( feature => {
             this.imagesWithColors.push( {photo:feature.photo,color:feature.color} )
         } );
+        
     };
 
     //get colors on سادة
@@ -245,7 +237,7 @@ class Product extends Component {
         
         return this.props.addToCart( product._id, {
             qty,
-            shape: shape.trim() ? shape : product.shape,
+            // shape: shape.trim() ? shape : product.shape,
             color: color.trim() ? color : product.color
         } );
     };
@@ -264,7 +256,7 @@ class Product extends Component {
             
         } = this.props;
         const { quantity, messages, selectedShape, selectedColor } = this.state;
-        // this.getAllImages(selectedColor);
+        this.getAllImages(selectedColor);
         // this.getAllcolors();
         this.getAllImagesWithColors()
         let prices;
@@ -286,8 +278,8 @@ class Product extends Component {
                 <div className="product__content">
                     <ProductGallery
                         layout={layout}
-                        images={this.state.images}
-                        // selectedColor={selectedColor}
+                        images={this.images}
+                        selectedColor={selectedColor}
                         // currentIndex={0}
                         colorChange={this.state.colorChange}
                         handleColorChange={this.handleColorChange}
@@ -441,7 +433,7 @@ class Product extends Component {
                                                         onChange={e => {
                                                             this.handleColorChange(true)
                                                             this.setState( { selectedColor: e.target.value } );
-                                                            this.getAllImages( e.target.value );
+                                                            // this.getAllImages( e.target.value );
                                                         }}
                                                      />
                                                     {/* <span >{imageIdx}</span> */}

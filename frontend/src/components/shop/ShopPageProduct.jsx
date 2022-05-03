@@ -81,14 +81,14 @@ function ShopPageProduct ( props ) {
     }
 
     const breadcrumb = [
-        { title: 'Home', url: url.home() },
-        { title: 'Shop', url: url.catalog() },
+        { title: messages.home, url: url.home() },
+        { title: messages.shop, url: url.catalog() },
         { title: product? product.name:"", url: product? url.product(product):"" },
     ];
 
     let content;
 
-    if ( product && !error ) {
+    if ( product &&!isLoading && !error ) {
         if ( layout === 'sidebar' ) {
             content = (
                 <div className="container">
@@ -151,7 +151,9 @@ function ShopPageProduct ( props ) {
     return (
         <React.Fragment>
             <Helmet>
-                <title>{`${product ?product.name :theme.name}`}</title>
+                <title>{`${ product ? product.name : theme.name }`}</title>
+                <meta name="description" content={product &&product.shortDescription} />
+                
             </Helmet>
 
             {(product && !error)&&<PageHeader breadcrumb={breadcrumb} />}

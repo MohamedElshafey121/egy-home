@@ -34,7 +34,7 @@ function ToolBar ( props ) {
     //check for user
     useEffect( () => {
         if ( !userInfo ) {
-            history.push( '/auth/login' )
+            history.push( '/authdashboard/login' )
         }
     }, [userInfo] );
 

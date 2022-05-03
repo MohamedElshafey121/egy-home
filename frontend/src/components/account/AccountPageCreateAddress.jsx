@@ -6,9 +6,11 @@ import { Helmet } from "react-helmet-async";
 import { useSelector, useDispatch } from "react-redux";
 
 // data stubs
-import theme from "../../data/theme";
 import message_ar from '../../data/messages_ar'
 import message_en from '../../data/messages_en'
+import governates from '../../data/governates.json'
+import cities from '../../data/cities.json'
+
 
 import { addNewUserAddress } from "../../store/user";
 
@@ -21,6 +23,7 @@ export default function AccountPageCreateAddress ( { history } ) {
         setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
     }, [locale] )
 
+   
 
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
@@ -55,11 +58,18 @@ export default function AccountPageCreateAddress ( { history } ) {
 
     const submitHandler = ( e ) => {
         e.preventDefault();
+        let governateName = governates.find( gov => {
+            if ( gov.id === governate ) return gov;
+        } ).governorate_name_ar
+        
+        let cityName = cities.find( cit => {
+            if ( cit.id === city ) return cit;
+        } ).city_name_ar;
         dispatch(addNewUserAddress({
             firstName,
             lastName,
-            governate,
-            city,
+            governate:governateName,
+            city:cityName,
             area,
             address:street,
             type,
@@ -72,11 +82,11 @@ export default function AccountPageCreateAddress ( { history } ) {
     return (
         <div className="card">
             <Helmet>
-                <title>{` ${messages.myAccount}`}</title>
+                <title>{` ${ messages.myAccount }`}</title>
             </Helmet>
 
             <div className="card-header">
-                <h5>{ messages.addNewAddress}</h5>
+                <h5>{messages.addNewAddress}</h5>
             </div>
             <div className="card-divider" />
             <div className="card-body">
@@ -84,14 +94,14 @@ export default function AccountPageCreateAddress ( { history } ) {
                     <div className="col-12 col-lg-10 col-xl-8">
                         <div className="form-row">
                             <div className="form-group col-md-6">
-                                <label htmlFor="checkout-first-name">{ messages.firstName}</label>
+                                <label htmlFor="checkout-first-name">{messages.firstName}</label>
                                 <input
                                     type="text"
                                     className="form-control"
                                     id="checkout-first-name"
-                                    placeholder={ messages.firstName}
+                                    placeholder={messages.firstName}
                                     value={firstName}
-                                    onChange={(e) => setFirstName(e.target.value)}
+                                    onChange={( e ) => setFirstName( e.target.value )}
                                 />
                             </div>
                             <div className="form-group col-md-6">
@@ -102,60 +112,38 @@ export default function AccountPageCreateAddress ( { history } ) {
                                     id="checkout-last-name"
                                     placeholder={messages.lastName}
                                     value={lastName}
-                                    onChange={(e) => setLastName(e.target.value)}
+                                    onChange={( e ) => setLastName( e.target.value )}
                                 />
                             </div>
                         </div>
 
-                        {/* <div className="form-group">
-                            <label htmlFor="checkout-company-name">
-                                Company Name
-                                {' '}
-                                <span className="text-muted">(Optional)</span>
-                            </label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="checkout-company-name"
-                                placeholder="Company Name"
-                            />
-                        </div> */}
-                        {/* <div className="form-group">
-                            <label htmlFor="checkout-country">Country</label>
-                            <select id="checkout-country" className="form-control form-control-select2">
-                                <option>Select a country...</option>
-                                <option>United States</option>
-                                <option>Russia</option>
-                                <option>Italy</option>
-                                <option>France</option>
-                                <option>Ukraine</option>
-                                <option>Germany</option>
-                                <option>Australia</option>
-                            </select>
-                        </div> */}
                         <div className="form-group">
-                            <label htmlFor="checkout-street-address">{messages.governate}</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="checkout-street-address"
-                                placeholder={messages.governate}
+                            <label htmlFor="checkout-governate_name"> {messages.governate}</label>
+                            <select id="checkout-governate_name" className="form-control"
                                 value={governate}
-                                onChange={(e) => setGovernate(e.target.value)}
-                            />
+                                onChange={( e ) => setGovernate( e.target.value )}
+                            >
+                                {!governate && <option  >--</option>}
+                                {governates && governates.map( gov => (
+                                    <option value={gov.id}>{locale === 'ar' ? gov.governorate_name_ar : gov.governorate_name_en}</option>
+                                ) )}
+                            </select>
                         </div>
 
-                        <div className="form-group">
-                            <label htmlFor="checkout-city">{ messages.city}</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="checkout-city"
-                                placeholder={messages.city}
+
+                        {governate && <div className="form-group">
+                            <label htmlFor="checkout-city"> {messages.city}</label>
+                            <select id="checkout-city" className="form-control"
                                 value={city}
-                                onChange={(e) => setCity(e.target.value)}
-                            />
-                        </div>
+                                onChange={( e ) => setCity( e.target.value )}
+                            >
+                                {!city && <option  >--</option>}
+                                {cities && cities.map( city => {
+                                    return ( city.governorate_id === governate ) ? <option value={city.id}> {locale === 'ar' ? city.city_name_ar : city.city_name_en}</option> : ''
+                                } )}
+                            </select>
+                        </div>}
+
                         <div className="form-group">
                             <label htmlFor="checkout-state">{messages.area}</label>
                             <input
@@ -163,27 +151,27 @@ export default function AccountPageCreateAddress ( { history } ) {
                                 className="form-control"
                                 id="checkout-state"
                                 value={area}
-                                onChange={(e) => setArea(e.target.value)}
+                                onChange={( e ) => setArea( e.target.value )}
                             />
                         </div>
                         <div className="form-group">
-                            <label htmlFor="checkout-state">{ messages.streetAddress}</label>
+                            <label htmlFor="checkout-state">{messages.streetAddress}</label>
                             <input
                                 type="text"
                                 className="form-control"
                                 id="checkout-state"
                                 value={street}
-                                onChange={(e) => setAddress(e.target.value)}
+                                onChange={( e ) => setAddress( e.target.value )}
                             />
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="checkout-address-type">{ messages.addressType}</label>
+                            <label htmlFor="checkout-address-type">{messages.addressType}</label>
                             <select
                                 id="checkout-address-type"
                                 className="form-control form-control-select2"
                                 value={type}
-                                onChange={(e) => setAddressType(e.target.value)}
+                                onChange={( e ) => setAddressType( e.target.value )}
                             >
                                 <option>Select address type...</option>
                                 <option value="home">{messages.homeAddress}</option>
@@ -199,24 +187,24 @@ export default function AccountPageCreateAddress ( { history } ) {
                                     id="checkout-email"
                                     placeholder={messages.emailAddress}
                                     value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    onChange={( e ) => setEmail( e.target.value )}
                                 />
                             </div>
                             <div className="form-group col-md-6">
-                                <label htmlFor="checkout-phone">{ messages.phoneNumber}</label>
+                                <label htmlFor="checkout-phone">{messages.phoneNumber}</label>
                                 <input
                                     type="text"
                                     className="form-control"
                                     id="checkout-phone"
                                     placeholder={messages.phoneNumber}
                                     value={phoneNumber}
-                                    onChange={(e) => setPhone(e.target.value)}
+                                    onChange={( e ) => setPhone( e.target.value )}
                                 />
                             </div>
                         </div>
 
                         <div className="form-group mt-3 mb-0">
-                            <button className="btn btn-primary" type="button" onClick={(e) => submitHandler(e)}>
+                            <button className="btn btn-primary" type="button" onClick={( e ) => submitHandler( e )}>
                                 {messages.save}
                             </button>
                         </div>

@@ -79,13 +79,8 @@ export function addToUserCart(id, properites) {
             let price = null;
             let photo = null;
 
-            if (
-                (properites.shape && properites.shape !== product.shape) ||
-                (properites.color && properites.color !== product.color)
-            ) {
-                const selected = product.Specifications.find(
-                    (el) => el.shape === properites.shape || el.color === properites.color
-                );
+            if (properites.color && properites.color !== product.color) {
+                const selected = product.Specifications.find((el) => el.color === properites.color);
                 if (selected) {
                     price = selected.price ? selected.price : null;
                     photo = selected.photo;
@@ -109,7 +104,7 @@ export function addToUserCart(id, properites) {
                     price: price ? price : product.price,
                     photo: photo ? photo : product.photo,
                     qty: properites.qty,
-                    shape: properites.shape,
+                    // shape: properites.shape,
                     color: properites.color,
                     size: properites.size,
                 },
@@ -129,9 +124,16 @@ export function addToUserCart(id, properites) {
         } catch (error) {
             const message = error.response && error.response.data.message ? error.response.data.message : error.message;
 
-            toast.error(`Error occured while adding item to cart! check if the item already exist in your cart`, {
-                theme: "colored",
-            });
+            toast.error(
+                message === "product is already found in cart"
+                    ? "العنصر موجود فى السلة بالفعل"
+                    : "حدث خطأ برجاء المحاولة لاحقاُ",
+                {
+                    theme: "colored",
+                }
+            );
+
+            console.log("Error message", message);
 
             dispatch({
                 type: CART_ADD_ITEM_FAIL,
@@ -254,7 +256,7 @@ export function saveUserShippingAddress(data) {
             payload: data,
         });
 
-        // localStorage.setItem( 'shippingAddress', JSON.stringify( data ) )
+        localStorage.setItem("shippingAddress", JSON.stringify(data));
     };
 }
 
@@ -268,13 +270,8 @@ export function addToCart(id, properites) {
         let price = null;
         let photo = null;
 
-        if (
-            (properites.shape && properites.shape !== product.shape) ||
-            (properites.color && properites.color !== product.color)
-        ) {
-            const selected = product.Specifications.find(
-                (el) => el.shape === properites.shape || el.color === properites.color
-            );
+        if (properites.color && properites.color !== product.color) {
+            const selected = product.Specifications.find((el) => el.color === properites.color);
             if (selected) {
                 price = selected.price ? selected.price : null;
                 photo = selected.photo;

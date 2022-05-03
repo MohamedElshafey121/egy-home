@@ -68,6 +68,8 @@ function ShopPageTrackOrder ( { history, params } ) {
         <React.Fragment>
             <Helmet>
                 <title>تتبع طلبك</title>
+                <meta name="description" content="يمكنك تتبع حالة طلبك لمعرفة التطور فى عمليه الشحن فقط من خلال الرقم التعريفى بالطلب" />
+
             </Helmet>
 
             <PageHeader breadcrumb={breadcrumb} />

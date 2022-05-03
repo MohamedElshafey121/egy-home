@@ -7,8 +7,6 @@ import { Link } from 'react-router-dom';
 import {useSelector,useDispatch } from 'react-redux';
 
 // data stubs
-import dataAddresses from '../../data/accountAddresses';
-import theme from '../../data/theme';
 import message_ar from '../../data/messages_ar'
 import message_en from '../../data/messages_en'
 
@@ -21,6 +19,8 @@ import {
     ADD_USER_ADDRESS_RESET,
     USER_ADDRESS_DETAILS_RESET
 } from '../../store/user/userActionsTypes';
+
+import {deleteUserAddress} from '../../store/user'
 
 
 
@@ -54,23 +54,29 @@ export default function AccountPageAddresses () {
     useEffect( () => {
         if ( gettingAddressError ) {
             //reset getting address
-            dispatch({type:USER_ADDRESS_DETAILS_RESET})
+            dispatch( { type: USER_ADDRESS_DETAILS_RESET } )
         }
    
-      if (!user || !user.name) {
-        dispatch(getUserDetails("profile"));
-      } else if (updateAddressSuccess || addAddressSuccess) {
-        dispatch({ type: UPDATE_USER_ADDRESS_RESET });
-        dispatch({ type: ADD_USER_ADDRESS_RESET });
-        dispatch(getUserDetails("profile"));
-      }
+        if ( !user || !user.name ) {
+            dispatch( getUserDetails( "profile" ) );
+        } else if ( updateAddressSuccess || addAddressSuccess ) {
+            dispatch( { type: UPDATE_USER_ADDRESS_RESET } );
+            dispatch( { type: ADD_USER_ADDRESS_RESET } );
+            dispatch( getUserDetails( "profile" ) );
+        }
     
-  }, [
-    dispatch,
-    user,
-    updateAddressSuccess,
-    addAddressSuccess,
-  ]);
+    }, [
+        dispatch,
+        user,
+        updateAddressSuccess,
+        addAddressSuccess,
+    ] );
+
+    const deleteAddressHandler = (id) => {
+        if ( window.confirm( 'Are you sure' ) ) {
+            dispatch(deleteUserAddress(id))
+        }
+    }
 
 
     const addresses = ( user && user.address && user.address.length > 0 ) && user.address.map( ( address ) => (
@@ -104,7 +110,10 @@ export default function AccountPageAddresses () {
                     <div className="address-card__footer">
                         <Link to={`/account/addresses/${ address._id }`}>{ messages.edit}</Link>
                         &nbsp;&nbsp;
-                        <Link to="/">{messages.remove}</Link>
+                        {!address.default && <Link onClick={e => {
+                            e.preventDefault()
+                           return deleteAddressHandler(address._id)
+                        }}>{messages.remove}</Link>}
                     </div>
                 </div>
             </div>
@@ -115,7 +124,7 @@ export default function AccountPageAddresses () {
     return (
         <div className="addresses-list">
             <Helmet>
-                <title>{`Address List — ${theme.name}`}</title>
+                <title>{messages.addresses}</title>
             </Helmet>
 
             <Link to="/account/addAddress" className="addresses-list__item addresses-list__item--new">

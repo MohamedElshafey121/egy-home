@@ -79,7 +79,7 @@ class Root extends Component {
                                 />
 
                                 <Route
-                                    path="/auth"
+                                    path="/authdashboard"
                                     render={( props ) => (
                                         <AuthLayout {...props} style={style} />
                                     )}

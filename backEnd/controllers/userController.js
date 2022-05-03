@@ -39,7 +39,6 @@ exports.changePassword = catchAsync(async (req, res, next) => {
     return next(new AppError("User Not found", 404));
   }
 
-  console.log(req.body.oldPassword, user.password);
   if (!(await user.correctPassword(req.body.oldPassword, user.password))) {
     return next(new AppError("Password is not correct", 400));
   }
@@ -104,8 +103,6 @@ exports.updateUserProfile = catchAsync(async (req, res, next) => {
 exports.addUserAddress = catchAsync(async (req, res, next) => {
   let filteredBody = {};
   const user = await User.findById(req.user._id);
-
-  console.log(req.body);
 
   if (req.body)
     filteredBody = filterObj(

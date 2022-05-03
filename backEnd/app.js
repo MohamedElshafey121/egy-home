@@ -15,7 +15,11 @@ const rolrRouter = require("./routers/roleRoutes");
 const permissionRouter = require("./routers/permissionRoutes");
 const brandRouters = require("./routers/brandRoutes");
 const sliderRouter = require("./routers/sliderRoutes");
+const socialRoutes = require("./routers/auth");
+const paymentRoutes = require("./routers/paymentRoutes");
+require("./passport");
 const passport = require("passport");
+// require("./payment");
 
 //Models
 // const Role = require( './models/RoleModel' );
@@ -29,6 +33,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded());
 app.disable("etag");
+app.use(passport.initialize());
 
 app.use((req, res, next) => {
   req.header("Access-Control-Allow-Origin", "*");
@@ -51,6 +56,8 @@ app.use("/api/roles", rolrRouter);
 app.use("/api/permissions", permissionRouter);
 app.use("/api/brands", brandRouters);
 app.use("/api/sliders", sliderRouter);
+app.use("/auth", socialRoutes);
+app.use("/payment", paymentRoutes);
 
 // app.get(
 //   "/auth/google",
@@ -68,7 +75,7 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "/frontend/build")));
   app.use(express.static(path.join(__dirname, "/dashboard-production/build")));
 
-  app.get(/^\/auth/, (req, res) =>
+  app.get(/^\/authdashboard/, (req, res) =>
     res.sendFile(
       path.resolve(__dirname, "dashboard-production", "build", "index.html")
     )

@@ -19,7 +19,9 @@ function SitePageContactUsAlt() {
     return (
         <React.Fragment>
             <Helmet>
-                <title>{`Contact Us Alt — ${theme.name}`}</title>
+                <title>{`Contact Us Alt — ${ theme.name }`}</title>
+                <meta name="description" content={theme.contactUs}/>
+                
             </Helmet>
 
             <PageHeader header="Contact Us" breadcrumb={breadcrumb} />

@@ -53,6 +53,9 @@ class MobileHeader extends Component {
 
         return (
             <div className="mobile-header">
+                {/* <div className="container text-center">
+                    <img src='/uploads/imgs/screenLogo.png' style={{width:'150px',maxHeight:'50px'}} />
+                </div> */}
                 <div className="mobile-header__panel">
                     <div className="container">
                         <div className="mobile-header__body">
@@ -62,7 +65,7 @@ class MobileHeader extends Component {
                             <Link to="/" className="mobile-header__logo">
                                 {/* <LogoSmallSvg /> */}
                                 <h3 style={{fontFamily:'cursive'}}> <span style={{color:'red',fontWeight:'bold',textTransform:'uppercase'}}>Egy</span>Home</h3>
-                                 {/* <img src='/uploads/imgs/site/logoPhone.jpg' style={{width:'150px',maxHeight:'50px'}} /> */}
+                                 {/* <img src='/uploads/imgs/site/icon.jpeg' style={{width:'150px',maxHeight:'50px'}} /> */}
                             </Link>
                             <Search
                                 context="mobile-header"
@@ -85,7 +88,7 @@ class MobileHeader extends Component {
                                 <Indicator
                                     className="indicator--mobile"
                                     url="/shop/cart"
-                                    value={cart.quantity}
+                                    value={(cart && cart.cartItems)?cart.cartItems.length:0}
                                     icon={<Cart20Svg />}
                                 />
                             </div>
@@ -97,10 +100,15 @@ class MobileHeader extends Component {
     }
 }
 
-const mapStateToProps = (state) => ({
-    cart: state.cart,
-    wishlist: state.wishlist,
-});
+const mapStateToProps = ( state ) => {
+    // cart: state.cart,
+    const userLogin = state.userLogin;
+    const { userInfo } = userLogin;
+    return {
+        cart: userInfo ? state.userCart : state.cart,
+        wishlist: state.wishlist,
+    }
+};
 
 const mapDispatchToProps = {
     openMobileMenu: mobileMenuOpen,

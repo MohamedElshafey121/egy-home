@@ -16,10 +16,12 @@ import { Check9x7Svg } from '../../svg';
 
 // data stubs
 import payments from '../../data/shopPayments';
-import theme from '../../data/theme';
 import order from '../../data/accountOrderDetails';
 import message_ar from '../../data/messages_ar'
 import message_en from '../../data/messages_en'
+import governates from '../../data/governates'
+import cities from '../../data/cities'
+
 
 import {
     saveShippingAddress,
@@ -27,6 +29,8 @@ import {
     removeFromCart,
     emptyUserCart
 } from '../../store/cart'
+
+import {handleOnlinePayment} from '../../store/payment'
 
 import {
     getUserDetails,
@@ -67,7 +71,7 @@ function ShopPageCheckout ( props ) {
             { title: `${messages.proceedToCheckout}`, url: '' },
         ];
         
-    const [payment, setPayment] = useState( 'bank' );
+    const [payment, setPayment] = useState('');
 
     //ADDRESS STATES
     const [firstName, setFirstName] = useState( (userInfo&& userInfo.name)?userInfo.name:'' )
@@ -86,19 +90,20 @@ function ShopPageCheckout ( props ) {
 
     //calculate prices
     cart.itemPrices = cartItems ? ( cartItems.reduce( ( acc, item ) => acc + item.price * item.qty, 0 ) ):0;
-    cart.shippingPrice = cart.itemPrices > 100 ? ( 21 * cartItems.length ) : 0;
+    cart.shippingPrice = cart.itemPrices > 100 ? ( 50 * cartItems.length ) : 0;
     cart.totalPrice = Number( cart.itemPrices ) + Number( cart.shippingPrice );
 
     const dispatch = useDispatch();
     useEffect( () => {
         if ( !userInfo ) {
-            return <Redirect to="/shop/cart"/>
+            localStorage.setItem("redirect","/shop/checkout")
+            history.push("/account/login")
         } else {
             if ( !user || !user.name ) {
                 dispatch( getUserDetails( 'profile' ) );
             } 
         }
-        if (cartItems.length < 1) {
+        if (cartItems && cartItems.length < 1) {
             return <Redirect to="/shop/cart" />;
         }
        
@@ -110,6 +115,7 @@ function ShopPageCheckout ( props ) {
             toast.success( 'تم اضافة العنوان بنجاح', { theme: 'colored' } );
             dispatch( getUserDetails( "profile" ) );
             dispatch( addUserAddressReset() );
+            setAddNewAddress(false)
         }
     }, [addAddressSuccess, dispatch] );
     
@@ -122,16 +128,51 @@ function ShopPageCheckout ( props ) {
     
     //CREATE ORDER SUCCESS
     useEffect( () => {
-        if ( success ) {
-            history.push(`/shop/checkout/success/${order._id}`)
+        if ( success && order.paymentMethod === "cash" ) {
+            history.push( `/shop/checkout/success/${ order._id }` )
+        }
+
+        if ( success && order.paymentMethod === "bank" ) {
+            console.log( "...order.orderItems ", order.orderItems )
+            const formdata = {
+                amount: {
+                    currency: "EGP",
+                    total: order.totalPrice * 100,
+                },
+                callbackUrl: "http://localhost:5000/payment/redirectPayment",
+                cancelUrl: "http://127.0.0.1:3000/your-cacel-url",
+                country: "EG",
+                expireAt: 300,
+                payMethod: "BankCard",
+                productList: [
+                    {
+                        description: "productList description",
+                        imageUrl: "https://imageUrl.com",
+                        name: "name",
+                        price: 100,
+                        productId: "610168b22639f50adc658c00",
+                        quantity: 2,
+                    }
+                ],
+                reference: order._id,
+                returnUrl: `http://localhost:3000/shop/checkout/success/${ order._id }`,
+                userInfo: {
+                    userEmail: user.email,
+                    userId: user._id,
+                    userMobile: order.phone,
+                    userName: user.name,
+                },
+            }
+
+            dispatch( handleOnlinePayment( formdata ) );
         }
 
         if ( error ) {
-            toast.error(' خطأ أثناء إنشاء طلبك يرجى المحاوله مرة آخرى لاحقاً ',{theme:'colored'})
+            toast.error( ' خطأ أثناء إنشاء طلبك يرجى المحاوله مرة آخرى لاحقاً ', { theme: 'colored' } )
         }
-    },[success])
+    }, [success] );
 
-    const handlePaymentChange = (event) => {
+    const handlePaymentChange = ( event ) => {
         if (event.target.checked) {
             setPayment({ payment: event.target.value });
         }
@@ -139,13 +180,20 @@ function ShopPageCheckout ( props ) {
 
     //HANDLERS
     const AddNewAddressHandler = (e) => {
-    e.preventDefault();
+        e.preventDefault();
+         let governateName = governates.find( gov => {
+            if ( gov.id === governate ) return gov;
+        } ).governorate_name_ar
+        
+        let cityName = cities.find( cit => {
+            if ( cit.id === city ) return cit;
+        } ).city_name_ar;
     dispatch(
       addNewUserAddress({
         firstName,
         lastName,
-        governate,
-        city,
+        governate:governateName,
+        city:cityName,
         area,
         address,
         type,
@@ -172,13 +220,16 @@ function ShopPageCheckout ( props ) {
         e.preventDefault();
         if ( !selectedAddress || !addressDetail || !addressDetail.firstName ) {
             toast.error( 'قم بتحديد عنوان او أضف عنوان جديد', { theme: 'colored' } )
+        } else if (!payment||!payment.payment) {
+            toast.error( 'يجب تحديد وسيلة الدفع', { theme: 'colored' } )
         } else {
+            
             dispatch(
                 createOrder( {
                     orderItems: cartItems,
                     shippingAddress: cart.shippingAddress,
                     phone: cart.shippingAddress.phoneNumber,
-                    // paymentMethod: cart.paymentMethod.method,
+                    paymentMethod: payment.payment,
                     itemsPrice: cart.itemPrices,
                     shippingPrice: cart.shippingPrice,
                     totalPrice: cart.totalPrice,
@@ -234,12 +285,12 @@ function ShopPageCheckout ( props ) {
         );
     }
 
-    let paymentsMethods;
+    // let paymentsMethods;
     const renderPaymentsList=()=> {
         const { payment: currentPayment } = payment
 
-        paymentsMethods =payments&& payments.map((payment) => {
-            const renderPayment = ({ setItemRef, setContentRef }) => (
+        const paymentsMethods =payments&& payments.map((payment) => {
+            const renderPayment = ( { setItemRef, setContentRef } ) => (
                 <li className="payment-methods__item" ref={setItemRef}>
                     <label className="payment-methods__item-header">
                         <span className="payment-methods__item-radio input-radio">
@@ -255,10 +306,10 @@ function ShopPageCheckout ( props ) {
                                 <span className="input-radio__circle" />
                             </span>
                         </span>
-                        <span className="payment-methods__item-title">{payment.title}</span>
+                        <span className="payment-methods__item-title">{locale==='ar'? payment.title_ar:payment.title}</span>
                     </label>
-                    <div className="payment-methods__item-container" ref={setContentRef}>
-                        <div className="payment-methods__item-description text-muted">{payment.description}</div>
+                    <div className="payment-methods__item-container" style={{ height: 'auto' }} ref={setContentRef}>
+                        <div className="payment-methods__item-description text-muted">{locale==='ar'? payment.description_ar:payment.description}</div>
                     </div>
                 </li>
             );
@@ -276,7 +327,9 @@ function ShopPageCheckout ( props ) {
         return (
             <div className="payment-methods">
                 <ul className="payment-methods__list">
-                    {/* {paymentsMethods} */}
+                    {paymentsMethods}
+                    {!payment&&<span className="text-danger"> يجب تحديد وسيلة الدفع قبل إكمال الطلب*</span>}
+                    
                 </ul>
             </div>
         );
@@ -288,7 +341,7 @@ function ShopPageCheckout ( props ) {
         ( user.address && user.address.length > 0 ) && (
             addressMenu = user.address.map( ( item,idx ) => {
                 return (
-                    <div className="col-sm-12 col-md-6 col-lg-6 col-12 px-2 mb-3">
+                    <div className="col-sm-12 col-md-12 col-lg-12 col-12 px-2 mb-3">
                                         
                         <input id={`address_${ item._id }`}
                             type="radio" name="shippingAddress"
@@ -305,27 +358,27 @@ function ShopPageCheckout ( props ) {
                                     </div>
                                     )}
                                     
-                                    <div className="address-card__name">
+                                    <div className="address-card__name m-0">
                                         {`${ item.firstName } ${ item.lastName }`}
                                     </div>
-                                    <div className="address-card__row">
-                                        {item.governate}
-                        <br />
-                        {item.city}
-                        <br />
+                                    <div className="address-card__row mt-2">
+                                        {item.governate} &nbsp;,&nbsp;
+                        {/* <br /> */}
+                        {item.city} &nbsp;,&nbsp;
+                        {/* <br /> */}
                         {item.area}
                         ,
                         {item.address}
                                     </div>
-                                    <div className="address-card__row">
+                                    <div className="address-card__row mt-1">
                                         <div className="address-card__row-title">{ messages.addressType}</div>
                                         <div className="address-card__row-content">{item.type}</div>
                                     </div>
-                                    <div className="address-card__row">
+                                    <div className="address-card__row mt-1">
                                         <div className="address-card__row-title">{ messages.phoneNumber}</div>
                                         <div className="address-card__row-content">{item.phoneNumber}</div>
                                     </div>
-                                    <div className="address-card__row">
+                                    <div className="address-card__row mt-1">
                                         <div className="address-card__row-title">{ messages.emailAddress}</div>
                                         <div className="address-card__row-content">{user.email}</div>
                                     </div>
@@ -349,11 +402,147 @@ function ShopPageCheckout ( props ) {
         </div>
     );
 
+    const addNewAddressForm = ( <div className="card mb-lg-0">
+        <div className="card-body">
+            <h3 className="card-title">{messages.addNewAddress}</h3>
+            <div className="form-row">
+                <div className="form-group col-md-6">
+                    <label htmlFor="checkout-first-name">{messages.firstName}</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="checkout-first-name"
+                        placeholder={messages.firstName}
+                        value={firstName}
+                        onChange={( e ) => setFirstName( e.target.value )}
+                    />
+                </div>
+                <div className="form-group col-md-6">
+                    <label htmlFor="checkout-last-name">{messages.lastName}</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="checkout-last-name"
+                        placeholder={messages.lastName}
+                        value={lastName}
+                        onChange={( e ) => setLastName( e.target.value )}
+                    />
+                </div>
+            </div>
+
+            <div className="form-group">
+                <label htmlFor="checkout-governate_name"> {messages.governate}</label>
+                <select id="checkout-governate_name" className="form-control"
+                    value={governate}
+                    onChange={( e ) => setGovernate( e.target.value )}
+                >
+                    {!governate && <option  >--</option>}
+                    {governates && governates.map( gov => (
+                        <option value={gov.id}>{locale === 'ar' ? gov.governorate_name_ar : gov.governorate_name_en}</option>
+                    ) )}
+                </select>
+            </div>
+
+
+            {governate && <div className="form-group">
+                <label htmlFor="checkout-city"> {messages.city}</label>
+                <select id="checkout-city" className="form-control"
+                    value={city}
+                    onChange={( e ) => setCity( e.target.value )}
+                >
+                    {!city && <option  >--</option>}
+                    {cities && cities.map( city => {
+                        return ( city.governorate_id === governate ) ? <option value={city.id}> {locale === 'ar' ? city.city_name_ar : city.city_name_en}</option> : ''
+                    } )}
+                </select>
+            </div>}
+
+                    
+            <div className="form-group">
+                <label htmlFor="checkout-area">{messages.area}</label>
+                <input type="text"
+                    className="form-control"
+                    id="checkout-area"
+                    placeholder={messages.area}
+                    value={area}
+                    onChange={( e ) => setArea( e.target.value )}
+                />
+            </div>
+            <div className="form-group">
+                <label htmlFor="checkout-street-address">{messages.streetAddress}</label>
+                <input
+                    type="text"
+                    className="form-control"
+                    id="checkout-street-address"
+                    placeholder={messages.streetAddress}
+                    value={address}
+                    onChange={( e ) => setAddress( e.target.value )}
+                />
+            </div>
+            <div className="form-group">
+                <label htmlFor="checkout-addressType">{messages.addressType}</label>
+                <select id="checkout-addressType" className="form-control"
+                    value={type}
+                    onChange={( e ) => setAddressType( e.target.value )}
+                >
+                    <option>{messages.addressType} ...</option>
+                    <option value="home">{messages.homeAddress}</option>
+                    <option value="work">{messages.workAddress}</option>
+                </select>
+            </div>
+                    
+                   
+
+            <div className="form-row">
+                <div className='col-md-6 col-sm-12'>
+                    <label htmlFor="checkout-phone">{messages.phoneNumber}</label>
+                    <input type="text" className="form-control" id="checkout-phone" placeholder={messages.phoneNumber}
+                        value={phone}
+                        onChange={( e ) => setPhone( e.target.value )}
+                    />
+
+                                            
+                </div>
+                <div className='col-md-6 col-sm-12'>
+                    <label htmlFor="checkout-email">{messages.emailAddress}</label>
+                    <input type="text" className="form-control" id="checkout-email" placeholder={messages.emailAddress}
+                        value={email}
+                        onChange={( e ) => setEmail( e.target.value )}
+                    />
+                </div>
+            </div>
+            <div className="form-group">
+                <label htmlFor="checkout-comment">
+                    {messages.orderNotes}
+                    {' '}
+                    <span className="text-muted">(إختيارى)</span>
+                </label>
+                <textarea id="checkout-comment" className="form-control" rows="4"
+                    placeholder={messages.orderNotesPlaceholder}
+                    value={orderNotes}
+                    onChange={( e ) => setOrderNotes( e.target.value )}
+                />
+            </div>
+
+                                    
+            <div className="form-group mt-3 mb-0">
+                <button className="btn btn-primary" type="button" onClick={e => AddNewAddressHandler( e )}>
+                    {messages.save}
+                </button>
+                <button className="btn btn-defaul mr-3" type="button" onClick={e=>setAddNewAddress(false)}>
+                    {messages.cancel}
+                </button>
+            </div>
+        </div>
+                                
+    </div>
+    );
+
     const addAddressForm = (
         <div className="col-12 col-lg-6 col-xl-7">
             <div className="row mb-3 p-2 mt-0">
                 <div className="cart__actions mt-0">
-                    <button type="button" className="btn btn-primary cart__update-button" >
+                    <button type="button" className="btn btn-primary cart__update-button"  onClick={e=>setAddNewAddress(true)}>
                         {messages.addNewAddress}
                     </button>
                 </div>
@@ -364,135 +553,7 @@ function ShopPageCheckout ( props ) {
                 { addressList()}
                 {/* Exist Address End */}
             </div>
-            <div className="card mb-lg-0">
-                <div className="card-body">
-                    <h3 className="card-title">{ messages.addNewAddress}</h3>
-                    <div className="form-row">
-                        <div className="form-group col-md-6">
-                            <label htmlFor="checkout-first-name">{ messages.firstName}</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="checkout-first-name"
-                                placeholder={messages.firstName}
-                                value={firstName}
-                                onChange={( e ) => setFirstName( e.target.value )}
-                            />
-                        </div>
-                        <div className="form-group col-md-6">
-                            <label htmlFor="checkout-last-name">{ messages.lastName}</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="checkout-last-name"
-                                placeholder={messages.lastName}
-                                value={lastName}
-                                onChange={( e ) => setLastName( e.target.value )}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="checkout-company-name">
-                            {messages.governate}
-                                           
-                        </label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="checkout-company-name"
-                            placeholder={messages.governate}
-                            value={governate}
-                            onChange={( e ) => setGovernate( e.target.value )}
-                        />
-                    </div>
-
-                                    
-
-                    <div className="form-group">
-                        <label htmlFor="checkout-city">{ messages.city}</label>
-                        <input type="text" className="form-control" id="checkout-city"
-                            placeholder={messages.city}
-                            value={city}
-                            onChange={( e ) => setCity( e.target.value )}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="checkout-area">{ messages.area}</label>
-                        <input type="text"
-                            className="form-control"
-                            id="checkout-area"
-                            placeholder={messages.area}
-                            value={area}
-                            onChange={( e ) => setArea( e.target.value )}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="checkout-street-address">{ messages.streetAddress}</label>
-                        <input
-                            type="text"
-                            className="form-control"
-                            id="checkout-street-address"
-                            placeholder={messages.streetAddress}
-                            value={address}
-                            onChange={( e ) => setAddress( e.target.value )}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="checkout-addressType">{ messages.addressType}</label>
-                        <select id="checkout-addressType" className="form-control"
-                            value={type}
-                            onChange={( e ) => setAddressType( e.target.value )}
-                        >
-                            <option>{messages.addressType} ...</option>
-                            <option value="home">{ messages.homeAddress}</option>
-                            <option value="work">{ messages.workAddress}</option>
-                        </select>
-                    </div>
-
-                    <div className="form-row">
-                        <div className='col-md-6 col-sm-12'>
-                            <label htmlFor="checkout-phone">{ messages.phoneNumber}</label>
-                            <input type="text" className="form-control" id="checkout-phone" placeholder={messages.phoneNumber}
-                                value={phone}
-                                onChange={( e ) => setPhone( e.target.value )}
-                            />
-
-                                            
-                        </div>
-                        <div className='col-md-6 col-sm-12'>
-                            <label htmlFor="checkout-email">{ messages.emailAddress}</label>
-                            <input type="text" className="form-control" id="checkout-email" placeholder={messages.emailAddress}
-                                value={email}
-                                onChange={( e ) => setEmail( e.target.value )}
-                            />
-                        </div>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="checkout-comment">
-                            {messages.orderNotes}
-                            {' '}
-                            <span className="text-muted">(إختيارى)</span>
-                        </label>
-                        <textarea id="checkout-comment" className="form-control" rows="4"
-                            placeholder={messages.orderNotesPlaceholder}
-                            value={orderNotes}
-                            onChange={( e ) => setOrderNotes( e.target.value )}
-                        />
-                    </div>
-
-                                    
-                    <div className="form-group mt-3 mb-0">
-                        <button className="btn btn-primary" type="button" onClick={e => AddNewAddressHandler( e )}>
-                            {messages.save}
-                        </button>
-                        <button className="btn btn-defaul mr-3" type="button">
-                            {messages.cancel}
-                        </button>
-                    </div>
-                </div>
-                                
-            </div>
+            {addNewAddress&& addNewAddressForm}
         </div>
     );
 
@@ -500,7 +561,8 @@ function ShopPageCheckout ( props ) {
     return (
         <React.Fragment>
             <Helmet>
-                <title>{` ${ messages.proceedToCheckout}`}</title>
+                <title>{` ${ messages.proceedToCheckout }`}</title>
+                
             </Helmet>
 
             <PageHeader header={messages.proceedToCheckout} breadcrumb={breadcrumb} />
@@ -530,7 +592,7 @@ function ShopPageCheckout ( props ) {
                                             <label className="form-check-label" htmlFor="checkout-terms">
                                                 {messages.termsRead}
                                                 {" "}
-                                                <Link to="site/terms">{ messages.termsAndCondition}</Link>
+                                                <Link to="/site/terms" target="_blank">{ messages.termsAndCondition}</Link>
                                                 *
                                             </label>
                                         </div>
@@ -541,6 +603,7 @@ function ShopPageCheckout ( props ) {
                                         className="btn btn-primary btn-xl btn-block "
                                         disabled={checkTerms?false:true}
                                         onClick={e=>createOrderHandler(e)}
+                                        // onClick={e=>{dispatch(handleOnlinePayment())}}
                                     >{ messages.placeOrder}</button>
                                 </div>
                             </div>

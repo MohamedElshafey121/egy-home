@@ -8,7 +8,7 @@ export const url = {
     subcategoryDashboard: (category) => `/dashboard/subcategories/${category._id}`,
     brandDashboard: (brand) => `/dashboard/brands/${brand._id}`,
 
-    product: (product) => `/shop/products/${product._id}`,
+    product: (product) => `/dashboard/products/${product._id}`,
 
     order: (order) => `/dashboard/${order._id}`,
     orderDashboard: (order) => `/dashboard/orders/${order._id}`,

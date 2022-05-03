@@ -84,6 +84,13 @@ const userSchema = new mongoose.Schema(
     passwordChangedAt: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
+    socialAuthToken: String,
+    registerationType: {
+      type: String,
+      default: "email",
+      enum: ["email", "google"],
+      required: true,
+    },
     address: [addressSchema],
     categories: {
       type: mongoose.Types.ObjectId,
@@ -172,6 +179,20 @@ userSchema.methods.createPasswordResetToken = async function () {
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
   // console.log( { resetToken }, this.passwordResetToken );
+
+  return resetToken;
+};
+
+//Create social auth Token
+userSchema.methods.createSocialAuthToken = async function () {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  this.socialAuthToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  // this.socialAuthTokenExpires = Date.now() + 10 * 60 * 1000;
 
   return resetToken;
 };

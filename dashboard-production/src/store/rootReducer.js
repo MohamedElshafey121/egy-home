@@ -48,6 +48,7 @@ import {
     topProductsReducer,
     relatedProductsReducer,
     recentProductsReducer,
+    deleteProductReducer,
 } from "./product";
 
 import { createProductReviewReducer } from "./reviews";
@@ -151,6 +152,7 @@ export default combineReducers({
     productDeatils: getOneProductReducer,
     topProducts: topProductsReducer,
     recentProducts: recentProductsReducer,
+    deleteProduct: deleteProductReducer,
     createProductReview: createProductReviewReducer,
     relatedProducts: relatedProductsReducer,
     oneProductSpecification: getOneProductSpecificationReducer,

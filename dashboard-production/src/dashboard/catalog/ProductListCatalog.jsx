@@ -22,7 +22,7 @@ import { url } from '../../services/utils';
 import effectLayutSidebar from './../utils/layoutSidebar'
 
 //application
-import { handleGetAllProducts,addProductReset,updateProductReset } from './../../store/product'
+import { handleGetAllProducts,addProductReset,updateProductReset,handleDeleteProductReset } from './../../store/product'
 import { handleGetAllCategories } from "../../store/category"
 import { getAllBrands } from "../../store/brand";
 import { ArrowRoundedUp13x8Svg,ArrowRoundedDown12x7Svg } from '../../svg';
@@ -91,6 +91,8 @@ function ProductListCatalog ( { history } ) {
     const updateProduct = useSelector( ( state ) => state.updateProduct );
     const { success: updateSuccess } = updateProduct;
 
+    const deleteProduct = useSelector( state => state.deleteProduct )
+    const { success:deleteProductSuccess } = deleteProduct;
 
     
     
@@ -129,7 +131,17 @@ function ProductListCatalog ( { history } ) {
         if ( updateSuccess ) {
             dispatch(updateProductReset())
         }
-    },[dispatch,updateSuccess])
+    }, [dispatch, updateSuccess] )
+    
+     //reset delete product
+    useEffect( () => {
+        if ( deleteProductSuccess ) {
+            dispatch(handleDeleteProductReset())
+            dispatch( handleGetAllProducts( filterObj, limit, sort, page ) );
+        }
+    }, [dispatch, deleteProductSuccess] )
+    
+
     
     // useEffect( () => {
 
@@ -520,7 +532,7 @@ function ProductListCatalog ( { history } ) {
                                 <Price value={product.price?product.price:100} />
                             </td>
                             <td>
-                                <MoreButton id={`product-context-menu-${ productIdx }`} />
+                                <MoreButton id={`product-context-menu-${ productIdx }`} productId={product._id} />
                             </td>
                         </tr>
                     ) )}

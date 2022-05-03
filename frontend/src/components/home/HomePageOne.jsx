@@ -83,7 +83,8 @@ function HomePageOne () {
     return (
         <React.Fragment>
             <Helmet>
-                <title>{ theme.name }</title>
+                <title>{theme.name}</title>
+                <meta name="description" content={theme.fullName} />
             </Helmet>
 
             {useMemo( () => <BlockSlideShow mainImages={sliders} withDepartments />, [sliders] )}

@@ -32,7 +32,9 @@ function SitePageTypography () {
     return (
         <React.Fragment>
             <Helmet>
-                <title>{`Typography — ${theme.name}`}</title>
+                <title>{messages.privacyPolicy}</title>
+                <meta name="description" content={theme.privacyPolicy}/>
+
             </Helmet>
 
             <PageHeader breadcrumb={breadcrumb} />

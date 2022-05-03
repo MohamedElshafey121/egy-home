@@ -227,11 +227,13 @@ function deleteUserAddress(addressId) {
             };
 
             const { data } = await axios.delete(`/users/address/${addressId}`, config);
-            console.log("data.data.user: ", data.data.user);
+
             dispatch({
                 type: DELETE_USER_ADDRESS_SUCCESS,
                 payload: data.data.user,
             });
+
+            toast.success(`تم حذف العنوان بنجاح`, { theme: "colored" });
 
             dispatch({
                 type: USER_DETAILS_SUCCESS,
@@ -244,6 +246,7 @@ function deleteUserAddress(addressId) {
                 type: DELETE_USER_ADDRESS_FAIL,
                 payload: message,
             });
+            toast.error("خطأ اثناء حذف العنوان برجاء المحاولة لاحقاً", { theme: "colored" });
         }
     };
 }

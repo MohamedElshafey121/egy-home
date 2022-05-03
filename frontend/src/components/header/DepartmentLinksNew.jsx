@@ -58,7 +58,7 @@ function DepartmentsLinksNew () {
     const allCategories = useSelector( state => state.allCategories )
     const { categories } = allCategories;
 
-     const allSubCategories = useSelector( state => state.allSubCategories )
+    const allSubCategories = useSelector( state => state.allSubCategories )
     const {  SubCategories } = allSubCategories;
 
     const dispatch=useDispatch()
@@ -68,7 +68,9 @@ function DepartmentsLinksNew () {
 
     //load subcategories
     useEffect( () => {
-        dispatch(handleGetAllSubCategories({},1000))
+        if ( !SubCategories ) {
+            dispatch(handleGetAllSubCategories({},1000))
+        }
     },[])
     
 

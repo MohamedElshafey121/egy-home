@@ -194,7 +194,7 @@ function AuthSignUp (props) {
                         </form>
                     </div>
                     <div className="text-center" style={{marginBottom:'20px'}}>
-                        Already have an account? <Link to="/auth/login">Sign in</Link>
+                        Already have an account? <Link to="/authdashboard/login">Sign in</Link>
                     </div>
                     
                 </div>

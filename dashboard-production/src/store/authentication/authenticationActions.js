@@ -123,7 +123,7 @@ export const handleLogin =
 export const logout = () => (dispatch) => {
     localStorage.removeItem("userInfo");
     dispatch({ type: USER_LOGOUT });
-    // document.location.href = "/auth/login";
+    // document.location.href = "/authdashboard/login";
 };
 
 export function forgetPassword(email) {
@@ -132,7 +132,6 @@ export function forgetPassword(email) {
             dispatch({ type: FORGET_PASSWORD_REQUEST });
 
             await axios.post(`/users/forgotPassword`, { email });
-            // console.log( 'data',data.data.data );
 
             dispatch({
                 type: FORGET_PASSWORD_SUCCESS,

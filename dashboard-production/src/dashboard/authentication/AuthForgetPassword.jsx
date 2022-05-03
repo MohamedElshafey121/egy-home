@@ -30,7 +30,7 @@ function AuthForgetPassword (props) {
             const msg = `A confirmation email was sent to the `
             const shortMSg="Check the mailbox! After receiving the email, click on the link provided to reset your password."
             dispatch(setConfirmationEmail(email,msg,shortMSg))
-            history.push('/auth/confirm')
+            history.push('/authdashboard/confirm')
             dispatch(forgetPasswordReset())
         }
     }, [dispatch,userInfo, history,success] )
@@ -62,7 +62,7 @@ function AuthForgetPassword (props) {
                         </form>
                         <div className="form-group mb-0 mt-4 pt-2 text-center text-muted">
                             {/* Remember your password? <a href={url( 'auth/sign-in' )}>Sign in</a> */}
-                            Remember your password? <Link to="/auth/login">Sign in</Link>
+                            Remember your password? <Link to="/authdashboard/login">Sign in</Link>
                         </div>
                     </div>
                 </div>

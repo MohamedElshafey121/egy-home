@@ -13,9 +13,13 @@ import BlockMap from '../blocks/BlockMap';
 
 // data stubs
 import theme from '../../data/theme';
+import { Link } from 'react-router-dom';
 
 function SitePageContactUs () {
     const locale = useSelector( state => state.locale )
+
+    const [emailSubject, setEmailSubject] = useState( '' )
+    const[emailBody,setEmailBody]=useState('')
 
     const message_en={
         OurAddress: "Our Address",
@@ -59,11 +63,12 @@ function SitePageContactUs () {
     return (
         <React.Fragment>
             <Helmet>
-                <title>{`Contact Us — ${theme.name}`}</title>
+                <title>تواصل معنا </title>
+                <meta name="description" content={theme.aboutUs}/>
             </Helmet>
 
 
-            <PageHeader header="Contact Us" breadcrumb={breadcrumb} />
+            <PageHeader header="تواصل معنا" breadcrumb={breadcrumb} />
 
             <div className="block">
                 <div className="container">
@@ -76,7 +81,7 @@ function SitePageContactUs () {
 
                                         <div className="contact-us__address">
                                             <p>
-                                                {messages.email}: egyHome@gmail.com
+                                                {messages.email}: egy.home.sup@gmail.com
                                                 <br />
                                                 
                                             </p>
@@ -95,14 +100,11 @@ function SitePageContactUs () {
 
                                         <form>
                                             <div className="form-row">
-                                                <div className="form-group col-md-6">
-                                                    <label htmlFor="form-name">{ messages.YourName}</label>
-                                                    <input type="text" id="form-name" className="form-control" placeholder={ messages.YourName} />
-                                                </div>
-                                                <div className="form-group col-md-6">
+                                                <div className="form-group col-md-12">
                                                     <label htmlFor="form-email">{messages.email}</label>
                                                     <input
-                                                        type={ messages.email}
+                                                        type={messages.email}
+                                                        disabled='true'
                                                         id="form-email"
                                                         className="form-control"
                                                         placeholder="Email Address"
@@ -111,13 +113,33 @@ function SitePageContactUs () {
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="form-subject">{ messages.Subject}</label>
-                                                <input type="text" id="form-subject" className="form-control" placeholder={messages.Subject} />
+                                                <input
+                                                    type="text"
+                                                    id="form-subject"
+                                                    className="form-control"
+                                                    placeholder='موضوع الرسالة'
+                                                    onChange={(e)=>setEmailSubject(e.target.value)}
+                                                />
                                             </div>
                                             <div className="form-group">
                                                 <label htmlFor="form-message">{ messages.Message}</label>
-                                                <textarea id="form-message" className="form-control" rows="4" />
+                                                <textarea
+                                                    id="form-message"
+                                                    className="form-control"
+                                                    rows="4"
+                                                    placeholder='محتوى الرسالة'
+                                                    onChange={e=>setEmailBody(e.target.value)}
+                                                />
                                             </div>
-                                            <button type="submit" className="btn btn-primary">{messages.SendMessage}</button>
+                                            {/* <button type="submit" className="btn btn-primary">{messages.SendMessage}</button> */}
+                                            <Link to='#' className="btn btn-primary"
+                                                onClick={e => {
+                                                    e.preventDefault();
+                                                    window.location.href=`mailto: egy.home.sup@gmail.com?subject=${emailSubject}&body=${emailBody}`;
+                                                }}
+                                            >
+                                                {messages.SendMessage}
+                                            </Link>
                                         </form>
 
                                     </div>

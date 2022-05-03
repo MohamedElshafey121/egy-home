@@ -31,6 +31,7 @@ import {
 import { handleGetAllCategorySubCategories } from '../../store/subCategory'
 import {getAllBrands} from '../../store/brand'
 
+import {handleSocialLogin,socialLoginReset} from '../../store/authentication'
 
 
 
@@ -55,6 +56,7 @@ function ShopPageCategory ( props ) {
     } = props;
     //////////////////////////////
     const query = useQuery();
+    const socialLogin = query.get( 'google' );
   const name = query.get("name") || "";
     const category = query.get( "c" ) || "";
     const brand = query.get( 'brand' ) || '';
@@ -67,6 +69,9 @@ function ShopPageCategory ( props ) {
     const [sort, setSort] = useState( '-createdAt' );
     const [limit, setLimit] = useState( 18 );
     
+    const userLogin = useSelector( state => state.userLogin )
+    const { socialLoginSuccess } = userLogin;
+
 
   const allProducts = useSelector((state) => state.allProducts);
   const {
@@ -91,7 +96,23 @@ function ShopPageCategory ( props ) {
     const dispatch = useDispatch();
     useEffect( () => {
         dispatch( handleGetAllProducts( filterObj, limit, sort, page ) );
-    }, [dispatch, name, category, rating, subCategory, page,sort,limit,brand] );
+    }, [dispatch, name, category, rating, subCategory, page, sort, limit, brand] );
+    
+    //handle social login
+    useEffect( () => {
+       
+        if ( socialLogin && socialLogin.trim() && !socialLoginSuccess ) {
+            // alert('google')
+            dispatch( handleSocialLogin( socialLogin ) );
+        }
+
+        if ( socialLoginSuccess ) {
+            dispatch( socialLoginReset() )
+            query.delete('google')
+            history.push(`/shop/catalog?${query}` )
+            
+        }
+    }, [dispatch, socialLogin, socialLoginSuccess] );
 
     const sortHanler = ( e ) => {
     e.preventDefault();
@@ -347,6 +368,7 @@ function ShopPageCategory ( props ) {
         <React.Fragment>
             <Helmet>
                 <title>{`المتجر`}</title>
+                <meta name="description" content={theme.mainShopPage} />
             </Helmet>
 
             <PageHeader header={pageTitle} breadcrumb={breadcrumb} />

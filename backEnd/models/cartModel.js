@@ -22,9 +22,9 @@ const cartItems = new mongoose.Schema({
     type: Number,
     required: [true, "product quantity is required"],
   },
-  shape: {
-    type: String,
-  },
+  // shape: {
+  //   type: String,
+  // },
   color: {
     type: String,
   },

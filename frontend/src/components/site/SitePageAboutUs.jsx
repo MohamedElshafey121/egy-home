@@ -40,7 +40,9 @@ function SitePageAboutUs() {
     return (
         <div className="block about-us">
             <Helmet>
-                <title>{`About Us — ${theme.name}`}</title>
+                <title>{`About Us — ${ theme.name }`}</title>
+                <meta name="description" content={ theme.fullName} />
+                
             </Helmet>
 
             <div className="about-us__image" style={{ backgroundImage: 'url("images/aboutus.jpg")' }} />

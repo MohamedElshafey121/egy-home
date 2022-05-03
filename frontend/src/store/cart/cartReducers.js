@@ -115,7 +115,7 @@ export function cartReducer(state = { cartItems: [], shippingAddress: {} }, acti
         case CART_ADD_ITEM:
             const item = action.payload;
 
-            const existItem = state.cartItems.find((el) => el.product === item.product);
+            const existItem = state.cartItems.find((el) => el.product === item.product && el.color === item.color);
 
             if (existItem) {
                 //just iterate through items without remove or add any item

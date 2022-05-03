@@ -5,6 +5,10 @@ import {
     LOGIN_REQUEST,
     LOGIN_SUCCESS,
     LOGIN_FAILED,
+    SOCIAL_LOGIN_REQUEST,
+    SOCIAL_LOGIN_SUCCESS,
+    SOCIAL_LOGIN_FAILED,
+    SOCIAL_LOGIN_RESET,
     FORGET_PASSWORD_REQUEST,
     FORGET_PASSWORD_SUCCESS,
     FORGET_PASSWORD_FAIL,
@@ -47,6 +51,18 @@ export function userLoginReducer(state = {}, action) {
 
         case LOGIN_FAILED:
             return { loading: false, error: action.payload };
+
+        case SOCIAL_LOGIN_REQUEST:
+            return { loading: true };
+
+        case SOCIAL_LOGIN_SUCCESS:
+            return { loading: false, socialLoginSuccess: true, userInfo: action.payload };
+
+        case SOCIAL_LOGIN_FAILED:
+            return { loading: false, error: action.payload };
+
+        case SOCIAL_LOGIN_RESET:
+            return { ...state, socialLoginSuccess: false };
 
         case USER_LOGOUT:
             return {};

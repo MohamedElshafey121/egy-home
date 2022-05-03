@@ -124,9 +124,9 @@ function ProductsView ( props ) {
                                         ? `${(( Number( currentPage ) - 1 ) * limit)+1} — `
                                         :'' 
                             }
-                            {( !isNaN( Number( currentPage ) * limit ) && count > limit ) ?Number( currentPage ) * limit:count
+                            {( !isNaN( Number( currentPage ) * limit ) && count > limit * currentPage ) ?Number( currentPage ) * limit:count
                             }
-                                                                {allProducts.count &&(<> {messages.of} <span>{allProducts.count}</span></>)}
+                            {allProducts.count &&(<> {messages.of} <span>{allProducts.count}</span></>)}
 
 
                             {/* {`Showing ${productsList.from}—${productsList.to} of ${count} products`} */}
@@ -191,7 +191,7 @@ function ProductsView ( props ) {
 
                 {count < limit && (
                     <div className="products-view__pagination text-center">
-                        No more products
+                         {messages.noMoreProducts}
                     </div>
                 )}
             </div>

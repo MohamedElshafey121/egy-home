@@ -143,7 +143,13 @@ class BlockSlideShow extends Component {
                             dangerouslySetInnerHTML={{ __html: slide.description }}
                         />
                         <div className="block-slideshow__slide-button ">
-                            <Link to={slide.redirect?slide.redirect:'/shop/catalog'} className="btn btn-primary btn-lg">تسوق الآن</Link>
+                            {/* <Link to={slide.redirect?slide.redirect:'/shop/catalog'} className="btn btn-primary btn-lg">تسوق الآن</Link> */}
+                            <Link onClick={e => {
+                                e.preventDefault();
+                                slide.redirect
+                                    ? window.location.href=slide.redirect
+                                    :window.location.href='/shop/catalog'
+                            }} className="btn btn-primary btn-lg">تسوق الآن</Link>
                         </div>
                     </div>
                 </div>
