@@ -203,7 +203,7 @@ export default class BlockProductsCarousel extends Component {
         const columns = this.productsColumns().map((column, index) => {
             const products = column.map((product) => (
                 <div key={product.id} className="block-products-carousel__cell">
-                    <ProductCard product={product} />
+                    <ProductCard product={product} shapesShow={false} />
                 </div>
             ));
 

@@ -238,7 +238,7 @@ export default function AccountPageLogin ( props ) {
                                             }}
                                             onClick={async e => {
                                                 e.preventDefault();
-                                                await window.open('http://localhost:5000/auth/google','_self')
+                                                await window.open('http://egy-home.com/auth/google','_self')//localhost:5000
                                             }}
                                         >
                                             Google

@@ -139,8 +139,8 @@ function ShopPageCheckout ( props ) {
                     currency: "EGP",
                     total: order.totalPrice * 100,
                 },
-                callbackUrl: "http://localhost:5000/payment/redirectPayment",
-                cancelUrl: "http://127.0.0.1:3000/your-cacel-url",
+                callbackUrl: "http://egy-home.com/payment/redirectPayment",//localhost:5000
+                cancelUrl: "http://egy-home.com/your-cacel-url",//127.0.0.1:3000
                 country: "EG",
                 expireAt: 300,
                 payMethod: "BankCard",
@@ -155,7 +155,7 @@ function ShopPageCheckout ( props ) {
                     }
                 ],
                 reference: order._id,
-                returnUrl: `http://localhost:3000/shop/checkout/success/${ order._id }`,
+                returnUrl: `http://egy-home.com/shop/checkout/success/${ order._id }`,//localhost:3000
                 userInfo: {
                     userEmail: user.email,
                     userId: user._id,

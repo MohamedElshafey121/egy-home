@@ -35,7 +35,8 @@ function ProductCard ( props ) {
         quickviewOpen,
         wishlistAddItem,
         compareAddItem,
-        userInfo
+        userInfo,
+        shapesShow
     } = props;
     const calcSale = (oldPrice,newPrice) => {
         const difference = oldPrice - newPrice;
@@ -118,6 +119,7 @@ function ProductCard ( props ) {
     let images = (
         <div style={{
             height: '50px',
+            width:"100%",
             overflow: 'hidden',
             textAlign: 'center',
             lineHeight: '50px',
@@ -132,6 +134,7 @@ function ProductCard ( props ) {
                     height: '35px',
                     width: '35px',
                     borderRadius: '50%',
+                    // display:"block",
                     border:selectedImage===img? '2px solid #000': '2px solid #ddd',
                     marginRight: '5px',
                     cursor:'pointer'
@@ -183,7 +186,7 @@ function ProductCard ( props ) {
                     <img className="product-image__img" src={`/uploads/imgs/products/${ selectedImage }`} alt="" />
                 </Link>
             </div>
-            {images}
+            {shapesShow&& images}
             <div className="product-card__info">
                 <div className="product-card__name">
                     <Link to={url.product( product )}>{product.name}</Link>
@@ -287,8 +290,13 @@ ProductCard.propTypes = {
      * product card layout
      * one of ['grid-sm', 'grid-nl', 'grid-lg', 'list', 'horizontal']
      */
-    layout: PropTypes.oneOf( ['grid-sm', 'grid-nl', 'grid-lg', 'list', 'horizontal','grid-with-features'] ),
+    layout: PropTypes.oneOf( ['grid-sm', 'grid-nl', 'grid-lg', 'list', 'horizontal', 'grid-with-features'] ),
+    shapesShow:PropTypes.bool
 };
+
+ProductCard.defaultProps = {
+    shapesShow:true
+}
 
 const mapStateToProps = ( state ) => {
     const userLogin = state.userLogin;

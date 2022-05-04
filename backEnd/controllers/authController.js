@@ -58,7 +58,7 @@ exports.login = catchAsync(async (req, res, next) => {
     "+password name email registerationType"
   );
 
-  if (user.registerationType === "google") {
+  if (user.registerationType && user.registerationType === "google") {
     return next(new AppError("user name or password is incorrect", 400));
   }
 
