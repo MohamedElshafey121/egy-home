@@ -19,6 +19,7 @@ const socialRoutes = require("./routers/auth");
 const paymentRoutes = require("./routers/paymentRoutes");
 require("./passport");
 const passport = require("passport");
+const Email = require("./utils/prodEmail");
 // require("./payment");
 
 //Models
@@ -31,7 +32,7 @@ app.use(morgan("dev"));
 
 //Express Middleware to user req.body in post,update,delete requests
 app.use(express.json());
-app.use(express.urlencoded());
+// app.use(express.urlencoded());
 app.disable("etag");
 app.use(passport.initialize());
 
@@ -58,11 +59,6 @@ app.use("/api/brands", brandRouters);
 app.use("/api/sliders", sliderRouter);
 app.use("/auth", socialRoutes);
 app.use("/payment", paymentRoutes);
-
-// app.get(
-//   "/auth/google",
-//   passport.authenticate("google", { scope: ["profile"] })
-// );
 
 app.use("/api/config/paypal/clientid", (req, res) =>
   res.send(process.env.PAYPAL_CLIENT_ID)

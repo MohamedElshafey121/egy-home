@@ -79,21 +79,21 @@ function Home () {
     const indicatorsData = [
         {
             title: 'Total sells',
-            value: '$3799.00',
+            value: '$00.00',
             // delta: '34.7%',
             // deltaDirection: 'rise',
             // caption: 'Compared to April 2021',
         },
         {
             title: 'Average order value',
-            value: '$272.98',
+            value: '$00.00',
             // delta: '12.0%',
             // deltaDirection: 'fall',
             // caption: 'Compared to April 2021',
         },
         {
             title: 'Total orders',
-            value: '578',
+            value: '$00.00',
             // delta: '27.9%',
             // deltaDirection: 'rise',
             // caption: 'Compared to April 2021',
@@ -199,15 +199,17 @@ function Home () {
                         <tbody>
                             {orders.map( ( order, orderIdx ) => (
                                 <tr key={orderIdx}>
-                                    <td><Link onClick={e=>e.preventDefault()} className="text-reset">{order._id}</Link></td>
+                                    <td>#<Link to={`/dashboard/orders/${order._id}`} className="text-reset"> {order._id}</Link></td>
                                     <td>
-                                        {order.user.name}                                       
+                                        <Link to={`/dashboard/customers/${order.user._id}`} className="text-reset">
+                                        {order.user.name}              
+                                        </Link>                         
                                     </td>
                                     <td>
                                       <div className="sa-symbol__text">{order.orderItems.length}</div>
                                     </td>
                                     <td>
-                                        <Link onClick={e=>e.preventDefault()} className="text-reset">{new Date( order.createdAt ).toDateString()}</Link>
+                                        {new Date( order.createdAt ).toDateString()}
                                     </td>
                                     <td>{order.totalPrice}</td>
                                 </tr>

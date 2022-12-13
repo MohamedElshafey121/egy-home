@@ -1,69 +1,77 @@
-// -------------------------
-// --- You can add your custom CSS here and it will overwrite template styles.
-// -------------------------
+// // -------------------------
+// // --- You can add your custom CSS here and it will overwrite template styles.
+// // -------------------------
 
-.block-brands__item img:hover {
-    transform: scale(1.5);
-}
+// .block-brands__item img:hover {
+//     transform: scale(1.5);
+// }
 
-.product-image__img:hover {
-    /* transform: scale(1.25); */
-}
+// .product-image__img:hover {
+//     /* transform: scale(1.25); */
+// }
 
-.mobile-links--level--0>li>.mobile-links__item>.mobile-links__item-title .mobile-links__item-link{
-    font-size: 18px;
-    font-weight: bold;
-}
+// .mobile-links--level--0>li>.mobile-links__item>.mobile-links__item-title .mobile-links__item-link{
+//     font-size: 18px;
+//     font-weight: bold;
+// }
 
-.mobile-links--level--1 .mobile-links__item .mobile-links__item-link{
-    font-size: 18px;
-    // font-weight: 600;
-}
+// .mobile-links--level--1 .mobile-links__item .mobile-links__item-link{
+//     font-size: 18px;
+//     // font-weight: 600;
+// }
 
-.nav-links__item>a>span{
-    font-weight: bold;
-}
+// .nav-links__item>a>span{
+//     font-weight: bold;
+// }
 
-.departments__links>li>a{
-    font-size: 16px;
-}
+// .departments__links>li>a{
+//     font-size: 16px;
+// }
 
-.block-slideshow__slide-image{
-    background-size: cover;
-}
+// .block-slideshow__slide-image{
+//     background-size: cover;
+// }
 
-.block-slideshow__slide-title{
-    font-weight: normal;
-    // font-size: 15px;
-    line-height: 1.8;
-    color: #fff;
-}
+// .block-slideshow__slide-title{
+//     font-weight: normal;
+//     // font-size: 15px;
+//     line-height: 1.8;
+//     color: #fff;
+// }
 
-.block-slideshow__slide-text {
-    color: #fff;
-}
+// .block-slideshow__slide-text {
+//     color: #fff;
+// }
 
-.shape-images-outline{
-    height: '35px';
-    width: '35px';
-    border-radius: '50%';
-    border: '2px solid #000';
-    margin-right: '5px';
-    cursor:pointer;
-}
+// .shape-images-outline{
+//     height: '35px';
+//     width: '35px';
+//     border-radius: '50%';
+//     border: '2px solid #000';
+//     margin-right: '5px';
+//     cursor:pointer;
+// }
 
-@media (max-width: 479px){
-    .products-list[data-layout=grid-3-sidebar] .products-list__item {
-        width: 48%;
-        margin: 10px 2px;
-    }
+// .mobile-links__item--open>.mobile-links__item-sub-links{
+//     height: auto !important;
+// }
 
-    .products-list[data-layout=grid-3-sidebar] .product-card .product-card__buttons .btn {
-        // font-size: 15px;
-        height: calc(2rem + 2px);
-        line-height: 1.25;
-        padding: 0.375rem 1rem;
-        font-weight: bold;
-        width: 100%;
-    }
-}
+// *{
+//     font-family: 'cairo arial';
+// }
+
+// @media (max-width: 479px){
+//     .products-list[data-layout=grid-3-sidebar] .products-list__item {
+//         width: 48%;
+//         margin: 10px 2px;
+//     }
+
+//     .products-list[data-layout=grid-3-sidebar] .product-card .product-card__buttons .btn {
+//         // font-size: 15px;
+//         height: calc(2rem + 2px);
+//         line-height: 1.25;
+//         padding: 0.375rem 1rem;
+//         font-weight: bold;
+//         width: 100%;
+//     }
+// }

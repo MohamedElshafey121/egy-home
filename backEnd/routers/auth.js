@@ -25,8 +25,7 @@ router.get(
   "/google/callback",
   passport.authenticate("google", {
     session: false,
-    // successRedirect: "http://localhost:3000/shop/catalog",
-    failureRedirect: "http://localhost:3000/account/login",
+    failureRedirect: "https://egy-home.com/account/login",
   }),
   (req, res) => {
     res.redirect(req.user); //req.user has the redirection_url
@@ -39,8 +38,6 @@ const loginUserWithAuthToken = catchAsync(async (req, res, next) => {
     .createHash("sha256")
     .update(req.params.token)
     .digest("hex");
-
-  console.log("req.params.token => ", req.params.token);
 
   const user = await User.findOne({
     socialAuthToken: hashToken,

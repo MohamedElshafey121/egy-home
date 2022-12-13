@@ -19,11 +19,11 @@ export default function BlockProducts(props) {
     let large;
     let smalls;
 
-    if (featuredProduct) {
+    if ( featuredProduct ) {
         large = (
             <div className="block-products__featured">
                 <div className="block-products__featured-item">
-                    <ProductCard product={featuredProduct} />
+                    <ProductCard product={featuredProduct} feat={true} />
                 </div>
             </div>
         );

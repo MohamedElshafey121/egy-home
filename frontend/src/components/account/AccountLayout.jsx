@@ -1,6 +1,7 @@
 // react
 import React,{useEffect,useState} from 'react';
 
+
 // third-party
 import classNames from 'classnames';
 import {
@@ -11,7 +12,7 @@ import {
     Route,
 } from 'react-router-dom';
 
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 
 //data stubs
 import message_ar from '../../data/messages_ar'
@@ -20,6 +21,9 @@ import message_en from '../../data/messages_en'
 
 // application
 import PageHeader from '../shared/PageHeader';
+import {
+    logout
+} from '../../store/authentication'
 
 // pages
 import AccountPageAddresses from './AccountPageAddresses';
@@ -45,9 +49,15 @@ export default function AccountLayout ( props ) {
 
     useEffect( () => {
         if ( !userInfo ) {
-            history.push( '/login' );
+            history.push( '/account/login' );
         } 
-    },[userInfo])
+    }, [userInfo] )
+    
+    const dispatch=useDispatch()
+    const handleLogout = ( e ) => {
+        e.preventDefault();
+        dispatch( logout() )
+    }
 
     const breadcrumb = [
         { title: `${messages.home}`, url: '' },
@@ -58,8 +68,8 @@ export default function AccountLayout ( props ) {
         { title: `${messages.dashboard}`, url: 'dashboard' },
         { title: `${messages.orderHistory}`, url: 'orders' },
         { title: `${messages.addresses}`, url: 'addresses' },
-        { title: `${messages.password}`, url: 'password' },
-        { title: `${messages.logout}`, url: 'login' },
+        // { title: `${messages.password}`, url: 'password' },
+        // { title: `${messages.logout}`, url: 'login' },
     ].map((link) => {
         const url = `${match.url}/${link.url}`;
         const isActive = matchPath(location.pathname, { path: url, exact: true });
@@ -72,7 +82,30 @@ export default function AccountLayout ( props ) {
                 <Link to={url}>{link.title}</Link>
             </li>
         );
-    });
+    } );
+    
+
+   
+
+    if ( userInfo && userInfo.registerationType === 'email' ) {
+        const url = `${match.url}/password`;
+        const isActive = matchPath(location.pathname, { path: url, exact: true });
+        links.push( <li key='password' className={classNames('account-nav__item', {
+            'account-nav__item--active': isActive,
+        })}>
+            <Link to={url}>{messages.password}</Link>
+        </li> );
+    }
+
+     if ( userInfo ) {
+        links.push( <li key='password' className='account-nav__item'>
+            <button
+                className='btn btn-default'
+                style={{ color: '#777' }}
+                onClick={e => handleLogout( e )}
+            >{messages.logout}</button>
+        </li> );
+    }
 
     return (
         <React.Fragment>

@@ -42,7 +42,6 @@ import { url, getCategoryParents } from '../../services/utils';
 
 
 function useQuery() {
-  // return new URLSearchParams(location.search)
   return new URLSearchParams(useLocation().search);
 }
 

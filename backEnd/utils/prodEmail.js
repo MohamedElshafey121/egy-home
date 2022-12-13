@@ -46,10 +46,7 @@ module.exports = class Email {
   }
 
   async sendWelcome() {
-    await this.send(
-      "Welcome to the EgyHome Family!",
-      "We are happy to join us, let's start our journey together towards new healthy home"
-    );
+    await this.send("مرحباً بك فى إيجى هوم!", "نحن سعداء بانضمامك إلينا");
   }
 
   async sendPasswordReset() {

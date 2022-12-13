@@ -47,7 +47,7 @@ function getSubcategoriesSmallMenu ( categoryId, subCategories ) {
         if ( subCat.category ) {
             if ( categoryId === subCat.category._id ) return subCat;
         }
-    } );
+    } ).slice(0,10);
 
     return subs;
 }
@@ -69,12 +69,14 @@ function DepartmentsLinksNew () {
     //load subcategories
     useEffect( () => {
         if ( !SubCategories ) {
-            dispatch(handleGetAllSubCategories({},1000))
+            dispatch(handleGetAllSubCategories({},10))
         }
     },[])
     
 
-    const linksList = categories &&categories.map((category, index) => {
+    const linksList = categories && categories.map( ( category, index ) => {
+        if ( index < 13 ) {
+            
         let arrow = null;
         let submenu = null;
         let itemClass = '';
@@ -118,6 +120,8 @@ function DepartmentsLinksNew () {
                 {category.subCategories.length>0 && submenu}
             </li>
         );
+    
+        }
     });
 
     return (

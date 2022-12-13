@@ -98,10 +98,14 @@ export default function AccountPageOrderDetails ( { match } ) {
             <div className="card">
                 <div className="order-header">
                     <div className="order-header__actions">
-                        {( userOrder && userOrder.status === 'ordered' ) && <button
+                        {( userOrder && userOrder.status === 'ordered' &&userOrder.isPaid===false ) && <button
                             className="btn btn-xs btn-danger ml-2"
                             onClick={(e)=>cancelHandler(e)}
                         >{messages.cancelOrder}</button>}
+                        {( userOrder &&userOrder.isPaid===true ) && <button
+                            className="btn btn-xs btn-success ml-2"
+                            onClick={(e)=>e.preventDefault()}
+                        >تم الدفع</button>}
                         <Link to="/account/orders" className="btn btn-xs btn-secondary">{messages.backToOrderList}</Link>
                     </div>
                     <h5 className="order-header__title">{messages.orderNumber}: { userOrder&& userOrder._id}</h5>
@@ -111,7 +115,9 @@ export default function AccountPageOrderDetails ( { match } ) {
                         <mark className="order-header__date">{userOrder&&(new Date(userOrder.createdAt).toDateString())}</mark>
                         <br />
                         
-                        <mark className="order-header__status">{userOrder && orderStatusMsg(userOrder.status.trim())}</mark>
+                        {(userOrder &&!userOrder.isPaid)&& <mark className="order-header__status">{userOrder && orderStatusMsg(userOrder.status.trim())}</mark>}
+                        {(userOrder&& userOrder.isPaid&&userOrder.status==='ordered' )&& <mark className="order-header__status">لقد استلمنا طلبك وسنقوم ب إعلامك عند بدء عملية الشحن</mark>}
+                        {(userOrder&& userOrder.isPaid&&!userOrder.status==='ordered' )&& <mark className="order-header__status">{userOrder && orderStatusMsg(userOrder.status.trim())}</mark>}
                         .
                     </div>
                     <div className="order-header__subtitle ">
@@ -161,7 +167,7 @@ export default function AccountPageOrderDetails ( { match } ) {
             <div className="row mt-3 no-gutters mx-n2">
                 {
                     userOrder&&userOrder.shippingAddress && (
-                        <div className="col-sm-6 col-12 px-2">
+                        <div className="col-sm-12 col-12 px-2">
                             <div className="card address-card address-card--featured">
                                 <div className="address-card__body">
                                     <div className="address-card__badge address-card__badge--muted">{messages.shippingAddress}</div>

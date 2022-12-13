@@ -20,7 +20,7 @@ export default function FooterContacts() {
                 </li> */}
                 <li>
                     <i className="footer-contacts__icon far fa-envelope" />
-                    Egy-Home@gmail.com
+                    mgmohamed11@gmail.com
                 </li>
                 {/* <li>
                     <i className="footer-contacts__icon fas fa-mobile-alt" />

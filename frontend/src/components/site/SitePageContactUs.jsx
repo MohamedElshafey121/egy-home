@@ -81,13 +81,10 @@ function SitePageContactUs () {
 
                                         <div className="contact-us__address">
                                             <p>
-                                                {messages.email}: egy.home.sup@gmail.com
+                                                {messages.email}: mgmohamed11@gmail.com
                                                 <br />
-                                                
                                             </p>
-
                                             <p>
-
                                                 <strong>{ messages.reply}</strong>
                                                 <br />
                                                 فى حالة ارسال بريد الكترونى عادة ما يتم الرد خلال يوم على الأكثر
@@ -135,7 +132,7 @@ function SitePageContactUs () {
                                             <Link to='#' className="btn btn-primary"
                                                 onClick={e => {
                                                     e.preventDefault();
-                                                    window.location.href=`mailto: egy.home.sup@gmail.com?subject=${emailSubject}&body=${emailBody}`;
+                                                    window.location.href=`mailto: mgmohamed11@gmail.com?subject=${emailSubject}&body=${emailBody}`;
                                                 }}
                                             >
                                                 {messages.SendMessage}

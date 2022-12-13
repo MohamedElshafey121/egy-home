@@ -126,7 +126,7 @@ class Departments extends Component {
                 <div className="departments__body">
                     <div className="departments__links-wrapper" onTransitionEnd={this.handleTransitionEnd}>
                         {/* <DepartmentsLinks /> */}
-                        <DepartmentsLinksNew/>
+                        <DepartmentsLinksNew home={ true}/>
                     </div>
                 </div>
 

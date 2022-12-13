@@ -45,7 +45,8 @@ function IndicatorCart ( props ) {
     if ( cart && cartItems ) {
         //calculate prices
         cart.itemPrices = cartItems.reduce( ( acc, item ) => acc + item.price * item.qty, 0 );
-        cart.shippingPrice = cart.itemPrices > 100 ? ( 21 * cartItems.length ) : 0;
+        // cart.shippingPrice = cart.itemPrices > 100 ? ( 21 * cartItems.length ) : 0;
+        cart.shippingPrice =  cartItems ? ( cartItems.reduce( ( acc, item ) => acc + 35 * item.qty, 0 ) ) : 0;
         cart.totalPrice = Number( cart.itemPrices ) + Number( cart.shippingPrice );
     }
 

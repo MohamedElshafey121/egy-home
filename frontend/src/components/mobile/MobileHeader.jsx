@@ -52,10 +52,12 @@ class MobileHeader extends Component {
         });
 
         return (
-            <div className="mobile-header">
-                {/* <div className="container text-center">
-                    <img src='/uploads/imgs/screenLogo.png' style={{width:'150px',maxHeight:'50px'}} />
-                </div> */}
+            <div className="mobile-header" style={{
+                position: 'fixed',
+                right: 0,
+                left: 0,
+                zIndex: 100,
+            }}>
                 <div className="mobile-header__panel">
                     <div className="container">
                         <div className="mobile-header__body">
@@ -63,9 +65,7 @@ class MobileHeader extends Component {
                                 <Menu18x14Svg />
                             </button>
                             <Link to="/" className="mobile-header__logo">
-                                {/* <LogoSmallSvg /> */}
-                                <h3 style={{fontFamily:'cursive'}}> <span style={{color:'red',fontWeight:'bold',textTransform:'uppercase'}}>Egy</span>Home</h3>
-                                 {/* <img src='/uploads/imgs/site/icon.jpeg' style={{width:'150px',maxHeight:'50px'}} /> */}
+                                <img src='/uploads/imgs/eg-home-w1.png' alt="" style={{ maxHeight: '130px' }} />
                             </Link>
                             <Search
                                 context="mobile-header"
@@ -88,7 +88,7 @@ class MobileHeader extends Component {
                                 <Indicator
                                     className="indicator--mobile"
                                     url="/shop/cart"
-                                    value={(cart && cart.cartItems)?cart.cartItems.length:0}
+                                    value={( cart && cart.cartItems ) ? cart.cartItems.length : 0}
                                     icon={<Cart20Svg />}
                                 />
                             </div>

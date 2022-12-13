@@ -2,6 +2,8 @@ require("dotenv").config({ path: "./config.env" });
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const AppError = require("./utils/appError");
+const Cart = require("./models/cartModel");
+const Email = require("./utils/prodEmail");
 
 //Models
 const User = require("./models/userModel");
@@ -9,10 +11,10 @@ const User = require("./models/userModel");
 passport.use(
   new GoogleStrategy(
     {
-      callbackURL: `/auth/google/callback`, //same URI as registered in Google console portal
+      callbackURL: `https://egy-home.com/auth/google/callback`,
       clientID:
-        "86361996733-cec3aijk2t1tf9svbi27rm3kfvd465d4.apps.googleusercontent.com", //replace with copied value from Google console
-      clientSecret: "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",
+        "515021357384-q9l7lufdnji38k99rr8ugncagcg996sm.apps.googleusercontent.com",
+      clientSecret: "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",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -26,14 +28,14 @@ passport.use(
         if (user) {
           //check registeration method
           if (user.registerationType !== "google") {
-            redirect_url = "http://localhost:3000/account/login?google=error";
+            redirect_url = "http://egy-home.com/account/login?google=error";
             return done(null, redirect_url);
           }
 
           const socialAuthToken = await user.createSocialAuthToken();
           await user.save({ validateBeforeSave: false });
 
-          redirect_url = `http://localhost:3000/shop/catalog?google=${socialAuthToken}`; //registered on FE for auto-login
+          redirect_url = `http://egy-home.com/shop/catalog?google=${socialAuthToken}`; //registered on FE for auto-login
           return done(null, redirect_url);
         } else {
           const user = new User({
@@ -43,10 +45,31 @@ passport.use(
           });
 
           const socialAuthToken = await user.createSocialAuthToken();
+          if (!user) {
+            return next(new AppError("Error Creating User", 400));
+          }
+
+          const cart = await Cart.create({
+            cartItems: [],
+            user: user._id,
+          });
+
+          if (!cart) {
+            redirect_url = "http://egy-home.com/account/login?google=error";
+            return done(null, redirect_url);
+          }
+
+          let emailSent = false;
+          try {
+            await new Email(user).sendWelcome();
+          } catch (err) {
+            emailSent = false;
+          }
+
           await user.save({ validateBeforeSave: false });
 
           // fallback page
-          redirect_url = `http://localhost:3000/shop/catalog?google=${socialAuthToken}`; //registered on FE for auto-login
+          redirect_url = `http://egy-home.com/shop/catalog?google=${socialAuthToken}`; //registered on FE for auto-login
           return done(null, redirect_url);
         }
         // done(null, profile);

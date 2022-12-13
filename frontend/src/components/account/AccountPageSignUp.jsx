@@ -212,7 +212,7 @@ export default function AccountPageLogin ( props ) {
                                             {messages.register}
                                         </button>
 
-                                        <span
+                                        {/* <span
                                             style={{
                                                 display: 'block',
                                                 margin: 'auto',
@@ -238,7 +238,7 @@ export default function AccountPageLogin ( props ) {
                                             }}
                                             onClick={async e => {
                                                 e.preventDefault();
-                                                await window.open('http://egy-home.com/auth/google','_self')//localhost:5000
+                                                await window.open(`${theme.test_backend_url}/auth/google`,'_self')//localhost:5000
                                             }}
                                         >
                                             Google
@@ -249,7 +249,7 @@ export default function AccountPageLogin ( props ) {
                                                     marginBottom:'10px'
                                                 }}
                                             />
-                                        </button>
+                                        </button> */}
                                         
                                     </form>
                                 </div>

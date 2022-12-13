@@ -23,44 +23,218 @@ const slickSettings = {
     slidesToScroll: 1,
 };
 
+// class BlockSlideShow extends Component {
+//     departmentsAreaRef = null;
+//     media = window.matchMedia('(min-width: 992px)');
+    
+//     slides=[]
+//     getAllImages = () => {
+//         this.slides=[]
+//         const { mainImages } = this.props;
+//         mainImages &&  mainImages.forEach( ( image ) => {
+//             this.slides.push(
+//                 {
+//                     description: image.description,
+//                     redirect: image.redirect,
+//                     title:image.title,
+//                     image_classic: {
+//                         ltr: `uploads/imgs/slider/${image.photo}`,
+//                         rtl: `uploads/imgs/slider/${image.photo}`,
+//                     },
+//                     image_full: {
+//                         ltr: `uploads/imgs/slider/${image.photo}`,
+//                         rtl: `uploads/imgs/slider/${image.photo}`,
+//                     },
+//                     image_mobile: {
+//                         ltr: `uploads/imgs/slider/${image.phonePhoto}`,
+//                         rtl: `uploads/imgs/slider/${image.phonePhoto}`,
+//                     },
+//                 }
+//             )
+//         } );
+
+//         // console.log('slides',this.slides)
+//         // this.setState({mainImages:imageArray})
+
+//     }
+
+//     componentDidMount () {
+//         //get All Images
+        
+//         if (this.media.addEventListener) {
+//             this.media.addEventListener('change', this.onChangeMedia);
+//         } else {
+//             // noinspection JSDeprecatedSymbols
+//             this.media.addListener(this.onChangeMedia);
+//         }
+//     }
+
+//     componentWillUnmount() {
+//         departmentsAria.area = null;
+
+//         if (this.media.removeEventListener) {
+//             this.media.removeEventListener('change', this.onChangeMedia);
+//         } else {
+//             // noinspection JSDeprecatedSymbols
+//             this.media.removeListener(this.onChangeMedia);
+//         }
+//     }
+
+//     onChangeMedia = () => {
+//         if (this.media.matches) {
+//             departmentsAria.area = this.departmentsAreaRef;
+//         }
+//     };
+
+//     setDepartmentsAreaRef = (ref) => {
+//         this.departmentsAreaRef = ref;
+
+//         if (this.media.matches) {
+//             departmentsAria.area = this.departmentsAreaRef;
+//         }
+//     };
+
+//     render () {
+//         this.getAllImages();
+//         const { locale, withDepartments } = this.props;
+//         const { direction } = languages[locale];
+
+//         const blockClasses = classNames(
+//             'block-slideshow block',
+//             {
+//                 'block-slideshow--layout--full': !withDepartments,
+//                 'block-slideshow--layout--with-departments': withDepartments,
+//             },
+//         );
+
+//         const layoutClasses = classNames(
+//             'col-12',
+//             {
+//                 'col-lg-12': !withDepartments,
+//                 'col-lg-9': withDepartments,
+//             },
+//         );
+
+//         const slides = this.slides.map((slide, index) => {
+//             const image = (withDepartments ? slide.image_classic : slide.image_full)[direction];
+
+//             return (
+//                 <div key={index} className="block-slideshow__slide">
+//                     <div
+//                         className="block-slideshow__slide-image block-slideshow__slide-image--desktop"
+//                         style={{
+//                             backgroundImage: `url(${ image })`,
+//                             // maxHeight:'395px'
+//                         }}
+//                     />
+//                     <div
+//                         className="block-slideshow__slide-image block-slideshow__slide-image--mobile"
+//                         style={{
+//                             backgroundImage: `url(${slide.image_mobile[direction]})`,
+//                         }}
+//                     />
+//                     <div className="block-slideshow__slide-content">
+//                         <div
+//                             className="block-slideshow__slide-title"
+//                             dangerouslySetInnerHTML={{ __html: slide.title }}
+//                         />
+//                         <div
+//                             className="block-slideshow__slide-text"
+//                             dangerouslySetInnerHTML={{ __html: slide.description }}
+//                         />
+//                         <div className="block-slideshow__slide-button ">
+//                             {/* <Link to={slide.redirect?slide.redirect:'/shop/catalog'} className="btn btn-primary btn-lg">تسوق الآن</Link> */}
+//                             <Link onClick={e => {
+//                                 e.preventDefault();
+//                                 slide.redirect
+//                                     ? window.location.href=slide.redirect
+//                                     :window.location.href='/shop/catalog'
+//                             }} className="btn btn-primary btn-lg">تسوق الآن</Link>
+//                         </div>
+//                     </div>
+//                 </div>
+//             );
+//         });
+
+//         return (
+//             <div className={blockClasses}>
+//                 <div className="container">
+//                     <div className="row">
+//                         {withDepartments && (
+//                             <div className="col-3 d-lg-block d-none" ref={this.setDepartmentsAreaRef} />
+//                         )}
+
+//                         <div className={layoutClasses}>
+//                             <div className="block-slideshow__body">
+//                                 <StroykaSlick {...slickSettings}>
+//                                     {slides}
+//                                 </StroykaSlick>
+//                             </div>
+//                         </div>
+//                     </div>
+//                 </div>
+//             </div>
+//         );
+//     }
+// }
+
 class BlockSlideShow extends Component {
     departmentsAreaRef = null;
+
     media = window.matchMedia('(min-width: 992px)');
-    
-    slides=[]
-    getAllImages = () => {
-        this.slides=[]
-        const { mainImages } = this.props;
-        mainImages &&  mainImages.forEach( ( image ) => {
-            this.slides.push(
-                {
-                    description: image.description,
-                    redirect: image.redirect,
-                    title:image.title,
-                    image_classic: {
-                        ltr: `uploads/imgs/slider/${image.photo}`,
-                        rtl: `uploads/imgs/slider/${image.photo}`,
-                    },
-                    image_full: {
-                        ltr: `uploads/imgs/slider/${image.photo}`,
-                        rtl: `uploads/imgs/slider/${image.photo}`,
-                    },
-                    image_mobile: {
-                        ltr: `uploads/imgs/slider/${image.phonePhoto}`,
-                        rtl: `uploads/imgs/slider/${image.phonePhoto}`,
-                    },
-                }
-            )
-        } );
 
-        // console.log('slides',this.slides)
-        // this.setState({mainImages:imageArray})
+    slides = [
+        {
+            title: 'Big choice of<br>Plumbing products',
+            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Etiam pharetra laoreet dui quis molestie.',
+            image_classic: {
+                ltr: '/uploads/slide-1-ltr.jpg',
+                rtl: '/uploads/slide-1-rtl.jpg',
+            },
+            image_full: {
+                ltr: '/uploads/slide-1-full-ltr.jpg',
+                rtl: '/uploads/slide-1-full-rtl.jpg',
+            },
+            image_mobile: {
+                ltr: '/uploads/slide-1-mobile.jpg',
+                rtl: '/uploads/slide-1-mobile.jpg',
+            },
+        },
+        {
+            title: 'Screwdrivers<br>Professional Tools',
+            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Etiam pharetra laoreet dui quis molestie.',
+            image_classic: {
+                ltr: '/uploads/slide-2-ltr.jpg',
+                rtl: '/uploads/slide-2-rtl.jpg',
+            },
+            image_full: {
+                ltr: '/uploads/slide-2-full-ltr.jpg',
+                rtl: '/uploads/slide-2-full-rtl.jpg',
+            },
+            image_mobile: {
+                ltr: '/uploads/slide-2-mobile.jpg',
+                rtl: '/uploads/slide-2-mobile.jpg',
+            },
+        },
+        {
+            title: 'One more<br>Unique header',
+            text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>Etiam pharetra laoreet dui quis molestie.',
+            image_classic: {
+                ltr: '/uploads/slide-3-ltr.jpg',
+                rtl: '/uploads/slide-3-rtl.jpg',
+            },
+            image_full: {
+                ltr: '/uploads/slide-3-full-ltr.jpg',
+                rtl: '/uploads/slide-3-full-rtl.jpg',
+            },
+            image_mobile: {
+                ltr: '/uploads/slide-3-mobile.jpg',
+                rtl: '/uploads/slide-3-mobile.jpg',
+            },
+        },
+    ];
 
-    }
-
-    componentDidMount () {
-        //get All Images
-        
+    componentDidMount() {
         if (this.media.addEventListener) {
             this.media.addEventListener('change', this.onChangeMedia);
         } else {
@@ -94,8 +268,7 @@ class BlockSlideShow extends Component {
         }
     };
 
-    render () {
-        this.getAllImages();
+    render() {
         const { locale, withDepartments } = this.props;
         const { direction } = languages[locale];
 
@@ -123,8 +296,7 @@ class BlockSlideShow extends Component {
                     <div
                         className="block-slideshow__slide-image block-slideshow__slide-image--desktop"
                         style={{
-                            backgroundImage: `url(${ image })`,
-                            // maxHeight:'395px'
+                            backgroundImage: `url(${image})`,
                         }}
                     />
                     <div
@@ -140,16 +312,10 @@ class BlockSlideShow extends Component {
                         />
                         <div
                             className="block-slideshow__slide-text"
-                            dangerouslySetInnerHTML={{ __html: slide.description }}
+                            dangerouslySetInnerHTML={{ __html: slide.text }}
                         />
-                        <div className="block-slideshow__slide-button ">
-                            {/* <Link to={slide.redirect?slide.redirect:'/shop/catalog'} className="btn btn-primary btn-lg">تسوق الآن</Link> */}
-                            <Link onClick={e => {
-                                e.preventDefault();
-                                slide.redirect
-                                    ? window.location.href=slide.redirect
-                                    :window.location.href='/shop/catalog'
-                            }} className="btn btn-primary btn-lg">تسوق الآن</Link>
+                        <div className="block-slideshow__slide-button">
+                            <Link to="/" className="btn btn-primary btn-lg">Shop Now</Link>
                         </div>
                     </div>
                 </div>

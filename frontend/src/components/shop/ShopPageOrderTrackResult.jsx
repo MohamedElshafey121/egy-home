@@ -41,7 +41,7 @@ export default function ShopPageOrderTrackResult ( { history, match } ) {
     const { userInfo } = userLogin;
 
     const userCart = useSelector((state) => state.userCart);
-  const { paymentMethod } = userCart;
+    const { paymentMethod } = userCart;
     
   const dispatch = useDispatch();
  useEffect(() => {
@@ -119,13 +119,22 @@ export default function ShopPageOrderTrackResult ( { history, match } ) {
                     <span className="order-success__meta-title">{messages.createdAt_order} :</span>
                     <span className="order-success__meta-value">{new Date(userOrder.createdAt).toDateString()}</span>
                 </li>
+                
+                 <li className="order-success__meta-item">
+                    <span className="order-success__meta-title">{messages.paymentMethod} :</span>
+                    <span className="order-success__meta-value">{
+                        userOrder.paymentMethod === 'bank'
+                            ? "البطاقة البنكية"
+                            :'كاش عند التوصيل'
+                    }</span>
+                </li>
+                <li className="order-success__meta-item">
+                    <span className="order-success__meta-title">حالة الدفع :</span>
+                    <span className="order-success__meta-value">{userOrder.isPaid?"تم الدفع":"لم يتم الدفع"}</span>
+                </li>
                 <li className="order-success__meta-item">
                     <span className="order-success__meta-title">{messages.total} :</span>
                     <span className="order-success__meta-value"><Currency value={userOrder.totalPrice} /></span>
-                </li>
-                <li className="order-success__meta-item">
-                    <span className="order-success__meta-title">{ messages.paymentMethod} :</span>
-                    <span className="order-success__meta-value">{userOrder.paymentMethod}</span>
                 </li>
             </ul>
         </div> )
@@ -168,7 +177,11 @@ export default function ShopPageOrderTrackResult ( { history, match } ) {
                     <div className="order-success__header">
                         <Check100Svg className="order-success__icon" />
                         <h1 className="order-success__title">{userOrder&& orderStatus(userOrder.status.trim())} </h1>
-                        <div className="order-success__subtitle">{userOrder && orderStatusMsg(userOrder.status.trim())} </div>
+                        {/* <div className="order-success__subtitle">{userOrder && orderStatusMsg( userOrder.status.trim() )} </div> */}
+                         {(userOrder &&!userOrder.isPaid)&& <div className="order-success__subtitle">{userOrder && orderStatusMsg(userOrder.status.trim())}</div>}
+                        {(userOrder&& userOrder.isPaid&&userOrder.status==='ordered' )&& <div className="order-success__subtitle">لقد استلمنا طلبك وسنقوم ب إعلامك عند بدء عملية الشحن</div>}
+                        {(userOrder&& userOrder.isPaid&&!userOrder.status==='ordered' )&& <div className="order-success__subtitle">{userOrder && orderStatusMsg(userOrder.status.trim())}</div>}
+                       
                         <div className="order-success__actions">
                             <Link to="/" className="btn btn-xs btn-secondary">{ messages.goToHome}</Link>
                         </div>

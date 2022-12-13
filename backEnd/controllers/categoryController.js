@@ -71,9 +71,9 @@ exports.getAllCategory = catchAsync(async (req, res, next) => {
     .limit()
     .paginate();
 
-  const countdocs = new APIFeatures().countDocuments(Category, req.query);
-  const count = await countdocs;
-  const categories = await features.query;
+  // const countdocs = new APIFeatures().countDocuments(Category, req.query);
+  // const count = await countdocs;
+  const categories = await Category.find();
   const page = req.query.page;
 
   res.status(200).json({
@@ -81,8 +81,8 @@ exports.getAllCategory = catchAsync(async (req, res, next) => {
     data: {
       categories,
       page,
-      count,
-      pages: Math.ceil(count / limit),
+      // count,
+      // pages: Math.ceil(count / limit),
     },
   });
 });

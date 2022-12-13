@@ -15,7 +15,7 @@ import { mobileMenuClose } from '../../store/mobile-menu';
 
 // data stubs
 import currencies from '../../data/shopCurrencies';
-// import mobileMenuLinks from '../../data/mobileMenu';
+import mobileMenuLinks from '../../data/mobileMenu';
 
 import {
     getSearchCategories,
@@ -34,10 +34,10 @@ import message_en from '../../data/messages_en'
 
 function getSubcategoriesSmallMenu ( categoryId, subCategories=[] ) {
     const subs = [];
-    subCategories&&subCategories.forEach( ( subCat ) => {
+    subCategories && subCategories.forEach( ( subCat ) => {
         if ( subCat.category ) {
             if ( categoryId === subCat.category._id ) {
-                subs.push({ type: "link", label: subCat.name, url: `/shop/catalog?c=${categoryId}&s=${ subCat._id }` })
+                subs.push( { type: "link", label: subCat.name, url: `/shop/catalog?c=${ categoryId }&s=${ subCat._id }` } )
             }
         }
     } );
@@ -57,7 +57,7 @@ function prepareCategories ( categories,subCategories=null ) {
     }
 
     return listcategory;
-}
+};
 
 function MobileMenu ( props ) {
     const locale = useSelector( state => state.locale )

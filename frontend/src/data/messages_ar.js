@@ -40,7 +40,7 @@ const messages_ar = {
     createdAt_order: "تاريخ الطلب",
     paymentMethod: "طريقة الدفع",
     orderSuccess: "تم الطلب بنجاح",
-    thankYou: "شكرا لشرائك من إيجى هوم",
+    thankYou: "شكرا لشرائك من  سترويكا",
     orderReceivedMessage: "لقد تلقينا طلبك وسيتم إرسال رساله التأكيد اليك فى بعد مراجعة البيانات",
     goToHome: "عودة إلى الصفحة الرئيسية",
     shippingAddress: "عنوان الشحن",

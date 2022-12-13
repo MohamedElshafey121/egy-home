@@ -11,8 +11,8 @@ const orderSchema = mongoose.Schema(
       {
         name: { type: String, required: true },
         qty: { type: Number, required: true },
-        photo: { type: String, required: true },
-        color: { type: String, required: true },
+        photo: { type: String },
+        color: { type: String },
         price: { type: Number, required: true },
         product: {
           type: mongoose.Schema.Types.ObjectId,
@@ -44,6 +44,7 @@ const orderSchema = mongoose.Schema(
     paymentResult: {
       id: { type: String },
       status: { type: String },
+      fail_reason: { type: String },
       update_time: { type: String },
       email_address: { type: String },
     },

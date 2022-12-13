@@ -1,22 +1,18 @@
 export default {
-    name: "egy-home",
+    name: "stroyka",
     fullName:
-        " مرحباً بك فى إيجى هوم أكبر موقع متخصص فى الاجهزة المنزليه وبأرخص الاسعار فى مصر . يمكنك الاختيار من بين اكثر من 20 علامة تجارية . يمكننا التوصيل إلى أى مكان فى مصر وفى أسرع وقت.",
-    url: "https://themeforest.net/item/stroyka-tools-store-react-ecommerce-template/23909258",
+        " مرحباً بك فى  أكبر موقع متخصص فى الاجهزة المنزليه وبأرخص الاسعار فى مصر . يمكنك الاختيار من بين اكثر من 20 علامة تجارية . يمكننا التوصيل إلى أى مكان فى مصر وفى أسرع وقت.",
+    url: "https://stroyka.com",
+    test_frontend_url: "http://localhost:3000",
+    test_backend_url: "http://localhost:5000",
     author: {
-        name: "Kos",
-        profile_url: "https://themeforest.net/user/kos9",
-    },
-    contacts: {
-        address: "715 Fake Street, New York 10021 USA",
-        email: "stroyka@example.com",
-        phone: "(800) 060-0730",
+        name: "Mohamed Elshafey",
     },
     shopPageCart: "",
     mainShopPage: "",
     orderSuccess: "قم بمتابعة حالة طلبك لمعرفة مراحل التطور حتى التسليم",
     aboutUs: "",
-    contactUs: "",
-    privacyPolicy: "",
-    termsAndCondition: "",
+    contactUs: "يمكنك التواصل مع فريق الدعم طوال ايام الاسبوع",
+    privacyPolicy: "نحن نحترم خصوصيه المستخدمين ونحافظ على البيانات",
+    termsAndCondition: "يجب الاطلاع على الشروط والاحكام لمعرفة طريقه عمل الموقع",
 };

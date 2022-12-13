@@ -3,7 +3,7 @@ import React,{useEffect,useState} from 'react';
 
 // third-party
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
+import { Link,useLocation } from 'react-router-dom';
 import {useSelector,useDispatch} from 'react-redux'
 
 // application
@@ -18,6 +18,11 @@ import theme from '../../data/theme';
 import { url } from '../../services/utils';
 import message_ar from '../../data/messages_ar'
 import message_en from '../../data/messages_en'
+import { toast } from 'react-toastify';
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 export default function ShopPageOrderSuccess ( { history, match } ) {
     const locale = useSelector( state => state.locale )
@@ -26,6 +31,10 @@ export default function ShopPageOrderSuccess ( { history, match } ) {
     useEffect( () => {
         setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
     }, [locale] )
+
+    const query = useQuery();
+    const paymentCancel = query.get( 'payment' );
+
     const orderId = match.params.id;
     const order = useSelector((state) => state.order);
     const { order: userOrder, loading } = order;
@@ -37,37 +46,51 @@ export default function ShopPageOrderSuccess ( { history, match } ) {
   const { paymentMethod } = userCart;
     
   const dispatch = useDispatch();
- useEffect(() => {
-    if (!userInfo) {
-      history.push("/login");
-    }
-
-    if (userOrder && userOrder._id) {
-      if (userOrder._id !== orderId) {
-        dispatch(getOrder(orderId));
-      } else {
-        const shippingAddressFromLocalStorage = JSON.parse(
-          localStorage.getItem("shippingAddress")
-        );
-        const paymentMethodFromLocalStorage = JSON.parse(
-          localStorage.getItem("paymentMethod")
-        );
-        if (shippingAddressFromLocalStorage) {
-          localStorage.removeItem("shippingAddress");
+    useEffect( () => {
+        if ( !userInfo ) {
+            history.push( "/login" );
         }
-        if (paymentMethodFromLocalStorage) {
-          localStorage.removeItem("paymentMethod");
-        }
-      }
-    } else {
-      dispatch(getOrder(orderId));
-    }
 
-    if (paymentMethod) {
-      //reset cart
-    //   dispatch({ type: RESET_CART });
-    }
-  }, [dispatch, history, userInfo, userOrder, paymentMethod]);
+        if ( userOrder && userOrder._id ) {
+            if ( userOrder._id !== orderId ) {
+                dispatch( getOrder( orderId ) );
+            } else {
+                const shippingAddressFromLocalStorage = JSON.parse(
+                    localStorage.getItem( "shippingAddress" )
+                );
+                const paymentMethodFromLocalStorage = JSON.parse(
+                    localStorage.getItem( "paymentMethod" )
+                );
+                if ( shippingAddressFromLocalStorage ) {
+                    localStorage.removeItem( "shippingAddress" );
+                }
+                if ( paymentMethodFromLocalStorage ) {
+                    localStorage.removeItem( "paymentMethod" );
+                }
+
+                if ( userOrder.paymentResult && userOrder.paymentResult.fail_reason ) {
+                    const message = userOrder.paymentResult.fail_reason === "Authentication unsuccessful, please contact the issuing bank"
+                        ? "خطأ أثناء المصادقة ربما لا تحتوى البطاقة على المبلغ المطلوب. أو يمكنك الرجوع إلى البنك الخاص بك"
+                        : "لقد قمت بإلغاء عملية الدفع . سيتطلب هذا منك الدفع نقدا أو إلغاء الطلب والمحاولة مرة أخرى.";
+                    toast.error( message, { theme: 'colored' } );
+                };
+            }
+        } else {
+            dispatch( getOrder( orderId ) );
+        }
+
+        if ( paymentMethod ) {
+            //reset cart
+            //   dispatch({ type: RESET_CART });
+        }
+    }, [dispatch, history, userInfo, userOrder, paymentMethod] );
+    
+    useEffect( () => {
+        if ( paymentCancel && paymentCancel.trim() === 'error' ) {
+            toast.error( 'تم إلغاء عملية الدفع', { theme: 'colored' } )
+        }
+    }, [] );
+    
     const items = (userOrder && userOrder.orderItems.map((item) => {
         // const options = (item.options || []).map((option) => (
         //     <li className="order-list__options-item">
@@ -89,7 +112,7 @@ export default function ShopPageOrderSuccess ( { history, match } ) {
                     </div>
                 </td>
                 <td className="order-list__column-product">
-                    <Link to={url.product(item)}>{item.name}</Link>
+                    <Link to={`/shop/products/${item.product}`}>{item.name}</Link>
                     {/* {options.length > 0 && (
                         <div className="order-list__options">
                             <ul className="order-list__options-list">
@@ -116,13 +139,22 @@ export default function ShopPageOrderSuccess ( { history, match } ) {
                     <span className="order-success__meta-title">{messages.createdAt_order} :</span>
                     <span className="order-success__meta-value">{new Date( userOrder.createdAt ).toDateString()}</span>
                 </li>
+
+                <li className="order-success__meta-item">
+                    <span className="order-success__meta-title">{messages.paymentMethod} :</span>
+                    <span className="order-success__meta-value">{
+                        userOrder.paymentMethod === 'bank'
+                            ? "البطاقة البنكية"
+                            : 'كاش عند التوصيل'
+                    }</span>
+                </li>
+                <li className="order-success__meta-item">
+                    <span className="order-success__meta-title">حالة الدفع :</span>
+                    <span className="order-success__meta-value">{userOrder.isPaid ? "تم الدفع" : "لم يتم الدفع"}</span>
+                </li>
                 <li className="order-success__meta-item">
                     <span className="order-success__meta-title">{messages.total} :</span>
                     <span className="order-success__meta-value"><Currency value={userOrder.totalPrice} /></span>
-                </li>
-                <li className="order-success__meta-item">
-                    <span className="order-success__meta-title">{messages.paymentMethod} :</span>
-                    <span className="order-success__meta-value">{userOrder.paymentMethod}</span>
                 </li>
             </ul>
         </div> )

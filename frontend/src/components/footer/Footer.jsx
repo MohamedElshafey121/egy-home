@@ -3,6 +3,7 @@ import React from 'react';
 
 //third-party
 import {connect} from 'react-redux'
+import { Link } from 'react-router-dom';
 
 
 // application
@@ -83,6 +84,20 @@ function Footer ( props ) {
                     </div>
                 </div>
 
+                <div className="site-footer__bottom">
+                    <div className="site-footer__copyright">
+                        stroyka 2022
+                        {' '}
+                        
+                        &copy;
+                        جميع الحقوق محفوظة
+                    </div>
+                    <div className="site-footer__payments">
+                         <img src="/uploads/imgs/visa.png" alt="visa" style={{width:'40px',margin:"0 10px"}}/>
+                            <img src="/uploads/imgs/master.png" alt="visa" style={{width:'40px',margin:"0 10px"}}/>
+                            <img src="/uploads/imgs/meza.png" alt="visa" style={{width:'40px',margin:"0 10px"}}/>
+                    </div>
+                </div>
                 
             </div>
             <ToTop />

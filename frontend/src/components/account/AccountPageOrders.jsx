@@ -10,7 +10,6 @@ import {useSelector,useDispatch} from 'react-redux'
 import Pagination from '../shared/Pagination';
 
 // data stubs
-import dataOrders from '../../data/accountOrders';
 import theme from '../../data/theme';
 import message_ar from '../../data/messages_ar'
 import message_en from '../../data/messages_en'
@@ -46,14 +45,36 @@ export default function AccountPageOrders (){
         setPage(page);
     };
 
+
+    const orderStatusMsg = ( status ) => {
+        return {
+            ordered:'تم الطلب',
+            onhold: messages.orderOnWayMsg,
+            canceled: messages.orderCanceledMsg,
+            refused: messages.orderRefusedMsg,
+            completed:messages.orderCompeleteMsg
+        }[status]
+    }
+
+     const orderpaymentMessage = ( status ) => {
+        return {
+            bank:'البطاقة البنكية',
+            cash: 'الدفع عند الاستلام',
+
+        }[status]
+    }
         // const { page, orders } = this.state;
 
     const ordersList =  orders&&orders.slice((page-1)*limit, page*limit).map( ( order ) => (
         <tr key={order._id}>
             <td><Link to={`/account/orders/${order._id}`}>{`#${ order._id }`}</Link></td>
             <td>{new Date(order.createdAt).toDateString()}</td>
-            {/* <td>{order.status}</td> */}
-            <td>{order.isPaid ? 'Paid' : 'On hold'}</td>
+            <td>{order && orderStatusMsg(order.status.trim())}</td>
+            <td>{order && orderpaymentMessage(order.paymentMethod)}</td>
+            <td>{order.isPaid
+                ? 'تم الدفع'
+                : 'لم يتم الدفع'
+            }</td>
             <td>{order.totalPrice}</td>
         </tr>
     ) );
@@ -75,7 +96,17 @@ export default function AccountPageOrders (){
                             <tr>
                                 <th>{ messages.orderNumber}</th>
                                 <th>{ messages.createdAt_order}</th>
-                                <th>{ messages.orderStatus}</th>
+                                <th>{messages.orderStatus}</th>
+                                <th>
+                                    طريقة الدفع                                    
+                                </th>
+                                <th>
+                                    {
+                                        locale === 'ar'
+                                            ? 'حالة الدفع'
+                                            :'is paid'
+                                    }
+                                </th>
                                 <th>{ messages.total}</th>
                             </tr>
                         </thead>

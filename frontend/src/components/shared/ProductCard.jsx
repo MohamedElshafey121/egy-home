@@ -50,7 +50,7 @@ function ProductCard ( props ) {
             imagesList.push(spec.photo)
         })
     }
-    
+
 
     const locale = useSelector( state => state.locale )
     const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
@@ -183,7 +183,7 @@ function ProductCard ( props ) {
             
             <div className="product-card__image product-image">
                 <Link to={url.product( product )} className="product-image__body" >
-                    <img className="product-image__img" src={`/uploads/imgs/products/${ selectedImage }`} alt="" />
+                    <img className="product-image__img" src={`/uploads/imgs/products/${ selectedImage?selectedImage:product.photo }`} alt="" />
                 </Link>
             </div>
             {shapesShow&& images}

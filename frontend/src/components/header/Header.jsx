@@ -20,22 +20,16 @@ function Header ( props ) {
     const bannerSection = (
         <div className="site-header__middle container">
             <div className="site-header__logo" >
-                {/* <Link to="/"><LogoSvg /></Link> */}
                 <Link to="/">
-                    <img src='/uploads/imgs/site/icon.jpeg' style={{maxWidth:'150px'}} />
+                    <Link to="/"><LogoSvg /></Link>
+                    {/* <img src='/uploads/imgs/site/icon.jpeg' style={{maxWidth:'150px'}} alt="" /> */}
+                    {/* <img src='/uploads/imgs/eg-home-b1.png' style={{maxWidth:'195px'}} alt="" /> */}
                 </Link>
             </div>
             <div className="site-header__search">
                 <Search context="header" />
             </div>
             <div className="site-header__phone">
-                {/* <div className="site-header__phone-title">
-                    <FormattedMessage id="header.phoneLabel_ar" defaultMessage="خدمة العملاء" />
-                </div>
-                <div className="site-header__phone-number"> */}
-                    {/* <FormattedMessage id="header.phone_ar" defaultMessage=" 0101-098-1072" /> */}
-                    {/* <Fi24Hours48Svg/>
-                </div> */}
                     <Link to='/site/contact-us'>
                 <div className="block-features__item">
                         <div className="block-features__icon" style={{marginLeft:'8px'}}>

@@ -19,6 +19,7 @@ import {addToUserCart} from '../../store/cart'
 import message_ar from '../../data/messages_ar'
 import message_en from '../../data/messages_en'
 import { toast } from 'react-toastify';
+import theme from '../../data/theme'
 
 
 function useQuery() {
@@ -156,7 +157,7 @@ export default function AccountPageLogin(props) {
                                         >
                                             {messages.login}
                                         </button>
-                                        <span
+                                        {/* <span
                                             style={{
                                                 display: 'block',
                                                 margin: 'auto',
@@ -170,9 +171,9 @@ export default function AccountPageLogin(props) {
                                                 textTransform: 'uppercase',
                                                 border:'1px solid #333'
                                             }}
-                                        >or</span>
+                                        >or</span> */}
 
-                                        <button
+                                        {/* <button
                                             type='button'
                                             className="btn btn-primary mt-2 mt-md-3 mt-lg-4 d-block m-auto btn-lg"
                                             style={{
@@ -182,7 +183,7 @@ export default function AccountPageLogin(props) {
                                             }}
                                             onClick={async e => {
                                                 e.preventDefault();
-                                                await window.open('http://egy-home.com/auth/google','_self')//localhost:5000
+                                                await window.open(`${theme.test_backend_url}/auth/google`,'_self')
                                             }}
                                         >
                                             Google
@@ -193,7 +194,7 @@ export default function AccountPageLogin(props) {
                                                     marginBottom:'10px'
                                                 }}
                                             />
-                                        </button>
+                                        </button> */}
                                     </form>
                                 </div>
                             </div>

@@ -21,6 +21,8 @@ import message_ar from '../../data/messages_ar'
 import message_en from '../../data/messages_en'
 import governates from '../../data/governates'
 import cities from '../../data/cities'
+import theme from '../../data/theme'
+
 
 
 import {
@@ -90,8 +92,14 @@ function ShopPageCheckout ( props ) {
 
     //calculate prices
     cart.itemPrices = cartItems ? ( cartItems.reduce( ( acc, item ) => acc + item.price * item.qty, 0 ) ):0;
-    cart.shippingPrice = cart.itemPrices > 100 ? ( 50 * cartItems.length ) : 0;
+    // cart.shippingPrice = cart.itemPrices > 100 ? ( 50 * cartItems.length ) : 0;
+    cart.shippingPrice = cartItems ? ( cartItems.reduce( ( acc, item ) => acc + 35 * item.qty, 0 ) ) : 0;
+ //add 10 pund in cash
+    if ( payment && payment.payment === "cash" ) {
+        cart.shippingPrice = +cart.shippingPrice + 10;
+    };
     cart.totalPrice = Number( cart.itemPrices ) + Number( cart.shippingPrice );
+
 
     const dispatch = useDispatch();
     useEffect( () => {
@@ -133,29 +141,29 @@ function ShopPageCheckout ( props ) {
         }
 
         if ( success && order.paymentMethod === "bank" ) {
-            console.log( "...order.orderItems ", order.orderItems )
+            const productList = [];
+            order.orderItems.forEach( item => {
+                productList.push({
+                        description: "Not available", //required
+                        name: item.name,
+                        price: item.price,
+                        productId: item.product,
+                        quantity: item.qty,
+                    })
+            })
             const formdata = {
                 amount: {
                     currency: "EGP",
                     total: order.totalPrice * 100,
                 },
-                callbackUrl: "http://egy-home.com/payment/redirectPayment",//localhost:5000
-                cancelUrl: "http://egy-home.com/your-cacel-url",//127.0.0.1:3000
+                callbackUrl: `${theme.test_backend_url}/payment/redirectPayment`,//
+                cancelUrl: `${theme.test_frontend_url}/shop/checkout/success/${ order._id }?payment=error`,
                 country: "EG",
                 expireAt: 300,
                 payMethod: "BankCard",
-                productList: [
-                    {
-                        description: "productList description",
-                        imageUrl: "https://imageUrl.com",
-                        name: "name",
-                        price: 100,
-                        productId: "610168b22639f50adc658c00",
-                        quantity: 2,
-                    }
-                ],
+                productList,
                 reference: order._id,
-                returnUrl: `http://egy-home.com/shop/checkout/success/${ order._id }`,//localhost:3000
+                returnUrl: `${theme.test_frontend_url}/shop/checkout/success/${ order._id }`,
                 userInfo: {
                     userEmail: user.email,
                     userId: user._id,
@@ -306,10 +314,22 @@ function ShopPageCheckout ( props ) {
                                 <span className="input-radio__circle" />
                             </span>
                         </span>
-                        <span className="payment-methods__item-title">{locale==='ar'? payment.title_ar:payment.title}</span>
+                        <span className="payment-methods__item-title">
+                            {locale === 'ar' ? payment.title_ar : payment.title} 
+                            {payment.key === "bank" &&(    < >
+                                <img src="/uploads/imgs/visa.png" alt="visa" style={{width:'40px',margin:"0 10px"}}/>
+                            <img src="/uploads/imgs/master.png" alt="visa" style={{width:'40px',margin:"0 10px"}}/>
+                            <img src="/uploads/imgs/meza.png" alt="visa" style={{width:'40px',margin:"0 10px"}}/>
+                                </> )
+                            }
+
+                        </span>
                     </label>
                     <div className="payment-methods__item-container" style={{ height: 'auto' }} ref={setContentRef}>
-                        <div className="payment-methods__item-description text-muted">{locale==='ar'? payment.description_ar:payment.description}</div>
+                        <div className="payment-methods__item-description text-muted">
+                            {locale === 'ar' ? payment.description_ar : payment.description}
+                        </div>
+                        
                     </div>
                 </li>
             );

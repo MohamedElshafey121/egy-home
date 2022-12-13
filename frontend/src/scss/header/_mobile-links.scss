@@ -14,14 +14,17 @@ $local-expand-transition-duration: .3s;
     padding: 0;
     margin: 0;
 }
+
 .mobile-links__item {
     border-bottom: 1px solid $mobilemenu-divider-color;
 }
+
 .mobile-links__item-title {
     display: flex;
     align-items: stretch;
     cursor: pointer;
 }
+
 .mobile-links__item-link {
     flex-grow: 1;
     color: $mobilemenu-font-color;
@@ -38,10 +41,12 @@ $local-expand-transition-duration: .3s;
         outline: none;
     }
 
-    &, &:hover {
+    &,
+    &:hover {
         color: inherit;
     }
 }
+
 .mobile-links__item-toggle {
     border: none;
     background: transparent;
@@ -68,38 +73,40 @@ $local-expand-transition-duration: .3s;
         cursor: inherit;
     }
 }
+
 .mobile-links__item-arrow {
     transition: transform $local-expand-transition-duration;
 }
+
 .mobile-links__item-sub-links {
     visibility: hidden;
     overflow: hidden;
     height: 0;
     opacity: 0;
     transition: height $local-expand-transition-duration,
-                opacity $local-expand-transition-duration,
-                visibility 0s $local-expand-transition-duration;
+        opacity $local-expand-transition-duration,
+        visibility 0s $local-expand-transition-duration;
 }
 
 .mobile-links__item--open {
-    & > .mobile-links__item-sub-links {
+    &>.mobile-links__item-sub-links {
         visibility: visible;
         height: auto;
         opacity: 1;
         transition-delay: 0s, 0s, 0s;
     }
 
-    & > .mobile-links__item-title .mobile-links__item-arrow {
+    &>.mobile-links__item-title .mobile-links__item-arrow {
         transform: rotateZ(180deg) translateY(1px);
     }
 }
 
 
 .mobile-links--level--0 {
-    & > li > .mobile-links__item {
+    &>li>.mobile-links__item {
         border-bottom: 1px solid $mobilemenu-divider-color;
 
-        & > .mobile-links__item-title {
+        &>.mobile-links__item-title {
             height: $local-item-height;
 
             .mobile-links__item-link {
@@ -108,9 +115,11 @@ $local-expand-transition-duration: .3s;
         }
     }
 }
+
 .mobile-links:not(.mobile-links--level--0) {
     border-top: 1px solid $mobilemenu-divider-color;
 }
+
 .mobile-links--level--1 {
     background: $mobilemenu-deep-links-bg;
     font-size: 14px;
@@ -127,7 +136,7 @@ $local-expand-transition-duration: .3s;
             #{$padding-inline-start}: 20px;
         }
 
-        & > li {
+        &>li {
             background: $mobilemenu-deep-links-bg;
 
             @include direction {
@@ -136,7 +145,7 @@ $local-expand-transition-duration: .3s;
         }
     }
 
-    li:last-child > .mobile-links__item {
+    li:last-child>.mobile-links__item {
         border-bottom: none;
     }
 }

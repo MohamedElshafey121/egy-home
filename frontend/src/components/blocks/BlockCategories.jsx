@@ -9,8 +9,10 @@ import { Link } from 'react-router-dom';
 import BlockHeader from '../shared/BlockHeader';
 
 export default function BlockCategories(props) {
-    const { title, layout, categories } = props;
-
+    const { title, layout } = props;
+    let categories = props.categories;
+    const categoriesLength = parseInt( categories.length / 3 );
+    categories = categories.slice( 0, categoriesLength );
     const categoriesList = categories.map((category, index) => {
         const classes = `block-categories__item category-card category-card--layout--${layout}`;
 

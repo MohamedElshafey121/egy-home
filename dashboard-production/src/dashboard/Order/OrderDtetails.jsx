@@ -167,6 +167,8 @@ export default function OrderDetails ({match}) {
         </tr>
     ) );
 
+
+
     //subtotal, shipping and total price
     const prices = ( userOrder && userOrder.itemsPrice ) && (
         <React.Fragment>
@@ -193,39 +195,66 @@ export default function OrderDetails ({match}) {
         </React.Fragment>
     );
 
-    const transactions = ( <div className="card mt-5">
+    const transactions = ( userOrder && <div className="card mt-5">
         <div className="card-body px-5 py-4 d-flex align-items-center justify-content-between">
-            <h2 className="mb-0 fs-exact-18 me-4">Transactions</h2>
-            <div className="text-muted fs-exact-14">
+            <h2 className="mb-0 fs-exact-18 me-4">الدفع</h2>
+            {/* <div className="text-muted fs-exact-14">
                 <a href="#">Add transaction</a>
-            </div>
+            </div> */}
         </div>
         <div className="table-responsive">
             <table className="sa-table text-nowrap">
+                <thead>
+                    <tr>
+                        <th>وسيلة الدفع</th>
+                        <th>الحالة </th>
+                        <th>ملاحظات</th>
+                        {( userOrder.paymentMethod==='bank'&& userOrder.paymentResult && userOrder.paymentResult.status === 'SUCCESS' ) && (
+                            <th>رقم عملية الدفع:</th>
+                        )}
+                    </tr>
+                </thead>
                 <tbody>
                     <tr>
                         <td>
-                            Payment
-                            <div className="text-muted fs-exact-13">via PayPal</div>
+                            {userOrder.paymentMethod === 'bank'
+                                ? "الدفع المسبق" :
+                                "الدفع عند الاستلام"
+                            }
+                            {userOrder.paymentMethod === 'bank' && <div className="text-muted fs-exact-13">بواسطة بطاقة الأئتمان</div>}
                         </td>
-                        <td>October 7, 2020</td>
-                        <td className="text-end"><Price value={2000} /></td>
-                    </tr>
-                    <tr>
                         <td>
-                            Payment
-                            <div className="text-muted fs-exact-13">from account balance</div>
+                            {userOrder.paymentMethod === 'cash' && <span>
+                                {userOrder.isPaid
+                                    ? "تم الدفع" :
+                                    "لم يتم الدفع"
+                                }
+                            </span>
+                            }
+                            {( userOrder.paymentResult && userOrder.paymentResult.fail_reason ) && (
+                                <span>{userOrder.isPaid ? "تم الدفع" : "فشلت عملية الدفع"}</span>
+                            )}
                         </td>
-                        <td>November 2, 2020</td>
-                        <td className="text-end"><Price value={50} /></td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Refund
-                            <div className="text-muted fs-exact-13">to PayPal</div>
+                        <td className="text-end">
+                            {( userOrder.paymentResult && userOrder.paymentResult.fail_reason ) && (
+                                <span>
+                                    {userOrder.paymentResult.fail_reason === "Authentication unsuccessful, please contact the issuing bank"
+                                        ? "خطأ أثناء المصادقة ربما لا تحتوى البطاقة على المبلغ المطلوب. "
+                                        : "لقد قام العميل بإلغاء عملية الدفع"}
+                                </span>
+                            )}
+
+                            {( userOrder.paymentResult && userOrder.paymentResult.status === 'SUCCESS' ) && (
+                                <>
+                                <span>
+                                   تم الدفع بنجاح فى { new Date(userOrder.paymentMethod.update_time ).toDateString()} 
+                                    </span>
+                                </>
+                            )}
                         </td>
-                        <td>December 10, 2020</td>
-                        <td className="text-end text-danger"><Price value={-325} /></td>
+                        {( userOrder.paymentMethod === 'bank' && userOrder.paymentResult && userOrder.paymentResult.status === 'SUCCESS' ) && (
+                            <span>{ userOrder.paymentResult.id}</span>
+                        )}
                     </tr>
                 </tbody>
             </table>
@@ -311,7 +340,7 @@ export default function OrderDetails ({match}) {
                 </div>
             </div>
 
-            {/* {transactions} */}
+                      {transactions}
 
             {userOrder&& (
                 userOrder.status === 'ordered' ||
