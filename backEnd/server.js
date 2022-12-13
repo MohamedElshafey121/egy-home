@@ -16,6 +16,7 @@ const DB = process.env.DATABASE_PRODUCTION.replace(
   process.env.DATA_BASE_PASSWORD_PRODUCTION
 );
 const DB_LOCAL = process.env.LOCAL_DATABASE;
+
 // mongoose
 //   .connect("mongodb://localhost:27017/egyHome")
 //   .then(() => {
