@@ -70,9 +70,9 @@ typings/
 
 # dotenv environment variables file
 # config.env
-/backend/config.env
-.env
-.env.test
+# /backend/config.env
+# .env
+# .env.test
 /uploads
 
 # production
