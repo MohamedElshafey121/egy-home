@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: "egy-home",
-      script: "./backend/server.js",
+      script: "./backEnd/server.js",
       instances: "max",
       env: {
         NODE_ENV: "development",
