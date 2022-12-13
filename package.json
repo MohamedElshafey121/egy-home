@@ -4,10 +4,10 @@
   "version": "1.0.0",
   "description": "\"APIs for graduation project\"",
   "main": "server.js",
-  "engines": {
-    "node": "12.16.1",
-    "npm":">6.0"
-    },
+   "engines": {
+    "node": "17.2.0",
+    "npm": "8.16.0"
+  },
   "scripts": {
     "start": "node backEnd/server.js",
     "start:prod": "set NODE_ENV=production && nodemon backEnd/server.js",
