@@ -1,6 +1,5 @@
 // react
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
 
 // third-party
 import { Helmet } from 'react-helmet-async';
@@ -11,30 +10,17 @@ import PageHeader from '../shared/PageHeader';
 
 // data stubs
 import theme from '../../data/theme';
-import message_ar from '../../data/messages_ar'
-import message_en from '../../data/messages_en'
-import privacyInfo from '../../data/privacyInfo';
 
-function SitePageTypography () {
-     const locale = useSelector( state => state.locale )
-    const [messages, setMessages] = useState( locale === 'ar' ? message_ar : message_en || message_ar )
-    
-    useEffect( () => {
-        setMessages( locale === 'ar' ? message_ar : message_en || message_ar )
-    }, [locale] )
-
-
+function SitePageTypography() {
     const breadcrumb = [
-        { title: messages.home, url: '' },
-        { title: messages.privacyPolicy, url: '/site/privacy' },
+        { title: 'Home', url: '' },
+        { title: 'Typography', url: '' },
     ];
 
     return (
         <React.Fragment>
             <Helmet>
-                <title>{messages.privacyPolicy}</title>
-                <meta name="description" content={theme.privacyPolicy}/>
-
+                <title>{`Typography — ${theme.name}`}</title>
             </Helmet>
 
             <PageHeader breadcrumb={breadcrumb} />
@@ -42,80 +28,157 @@ function SitePageTypography () {
             <div className="block">
                 <div className="container">
                     <div className="document">
-                        {/* INTRODUCTION */}
                         <div className="document__header">
-                            <h1 className="document__title">{ privacyInfo.intro_title}</h1>
+                            <h1 className="document__title">Typography</h1>
                         </div>
                         <div className="document__content typography">
                             <p>
-                              {privacyInfo.intro}.
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                                facilisis neque ut purus fermentum, ac pretium nibh facilisis.
+                                Vivamus venenatis viverra iaculis. Suspendisse tempor orci non
+                                sapien ullamcorper dapibus. Suspendisse at velit diam. Donec
+                                pharetra nec enim blandit vulputate.
                             </p>
 
-                            {/* PERSONAL INFO */}
+                            <h2>H2 Header Example</h2>
 
-                            <h2>{privacyInfo.personalinfoTitle}</h2>
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                                facilisis neque ut purus fermentum, ac pretium nibh facilisis.
+                                Vivamus venenatis viverra iaculis. Suspendisse tempor orci non
+                                sapien ullamcorper dapibus. Suspendisse at velit diam. Donec
+                                pharetra nec enim blandit vulputate.
+                            </p>
 
+                            <h3>H3 Header Example</h3>
+
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                                facilisis neque ut purus fermentum, ac pretium nibh facilisis.
+                                Vivamus venenatis viverra iaculis. Suspendisse tempor orci non
+                                sapien ullamcorper dapibus. Suspendisse at velit diam. Donec
+                                pharetra nec enim blandit vulputate.
+                            </p>
+
+                            <h4>H4 Header Example</h4>
+
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                                facilisis neque ut purus fermentum, ac pretium nibh facilisis.
+                                Vivamus venenatis viverra iaculis. Suspendisse tempor orci non
+                                sapien ullamcorper dapibus. Suspendisse at velit diam. Donec
+                                pharetra nec enim blandit vulputate.
+                            </p>
+
+                            <h5>H5 Header Example</h5>
+
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                                facilisis neque ut purus fermentum, ac pretium nibh facilisis.
+                                Vivamus venenatis viverra iaculis. Suspendisse tempor orci non
+                                sapien ullamcorper dapibus. Suspendisse at velit diam. Donec
+                                pharetra nec enim blandit vulputate.
+                            </p>
+
+                            <h6>H6 Header Example</h6>
+
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                                facilisis neque ut purus fermentum, ac pretium nibh facilisis.
+                                Vivamus venenatis viverra iaculis. Suspendisse tempor orci non
+                                sapien ullamcorper dapibus. Suspendisse at velit diam. Donec
+                                pharetra nec enim blandit vulputate.
+                            </p>
+
+                            <hr />
+
+                            <h3>Blockquote</h3>
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                                facilisis neque ut purus fermentum, ac pretium nibh facilisis.
+                                Vivamus venenatis viverra iaculis.
+                            </p>
+                            <blockquote>
+                                <p>
+                                    Suspendisse tempor orci non sapien ullamcorper dapibus. At
+                                    velit diam. Donec pharetra nec enim blandit vulputate.
+                                </p>
+                                <p><cite>Adam Taylor</cite></p>
+                            </blockquote>
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                                facilisis neque ut purus fermentum, ac pretium nibh facilisis.
+                                Vivamus venenatis viverra iaculis.
+                            </p>
+
+                            <hr />
+
+                            <h3>Standard List</h3>
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                                facilisis neque ut purus fermentum, ac pretium nibh facilisis.
+                                Vivamus venenatis viverra iaculis.
+                            </p>
+                            <ul>
+                                <li>
+                                    Morbi dignissim hendrerit ligula, quis rutrum risus ultrices eu
+                                </li>
+                                <li>
+                                    Nullam dapibus id mauris dignissim dignissim.
+                                    Sed ut metus mauris.
+                                </li>
+                                <li>
+                                    Nulla mollis justo faucibus, laoreet tortor ac, ornare arcu.
+                                </li>
+                                <li>
+                                    Libero quis mattis sollicitudin, ipsum sem mattis ligula,
+                                    pharetra consectetur nisl mi sit amet turpis.
+                                </li>
+                                <li>
+                                    Vivamus malesuada, mauris in pulvinar ultricies, eros ligula
+                                    scelerisque mi, a porttitor nulla ligula sed erat.
+                                </li>
+                            </ul>
+
+                            <h3>Numbered List</h3>
+                            <p>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+                                facilisis neque ut purus fermentum, ac pretium nibh facilisis.
+                                Vivamus venenatis viverra iaculis.
+                            </p>
                             <ol>
-                                {privacyInfo.personalInfoList.map( ( inf ) => (
-                                    <li>{ inf}</li>
-                                ))}
+                                <li>
+                                    Morbi dignissim hendrerit ligula, quis rutrum risus ultrices eu
+                                </li>
+                                <li>
+                                    Nullam dapibus id mauris dignissim dignissim.
+                                    Sed ut metus mauris.
+                                </li>
+                                <li>
+                                    Nulla mollis justo faucibus, laoreet tortor ac, ornare arcu.
+                                </li>
+                                <li>
+                                    Libero quis mattis sollicitudin, ipsum sem mattis ligula,
+                                    pharetra consectetur nisl mi sit amet turpis.
+                                </li>
+                                <li>
+                                    Vivamus malesuada, mauris in pulvinar ultricies, eros ligula
+                                    scelerisque mi, a porttitor nulla ligula sed erat.
+                                </li>
                             </ol>
 
-                            {/* BUY POLITICS */}
-                            <h2>{privacyInfo.buy_politics_title}</h2>
-                            <ul>
-                                {privacyInfo.buy_politics_list.map( ( poli ) => (
-                                    <li>{ poli}</li>
-                                ))}
-                            </ul>
-
-                            {/* PAYMENT WAYS */}
-                            <h2>{privacyInfo.paymentWay }</h2>
+                            <h3>Text Styles</h3>
                             <p>
-                                <strong>{privacyInfo.paymentInfo.slice( 0, 18 )} :</strong>
-                                {privacyInfo.paymentInfo.slice(19)}
+                                Lorem ipsum
+                                <strong>bold text</strong>
+                                , consectetur
+                                <em>italic text</em>
+                                . Donec facilisis
+                                <del>line through</del>
+                                neque ut purus fermentum, ac
+                                <Link to="/">link</Link>
+                                . Vivamus venenatis viverra iaculis.
                             </p>
-
-                            {/* COUPON  */}
-
-                            <h2>{privacyInfo.coupon}</h2>
-                            <p>
-                              {privacyInfo.coupon_intro}
-                            </p>
-                            <ul>
-                                {privacyInfo.coupon_list.map( ( el ) => (
-                                    <li>{ el}</li>
-                                ))}
-                            </ul>
-
-                            {/* USAGE INFO */}
-                            <h2>{privacyInfo.usageInfo}</h2>
-                            <ul>
-                                {privacyInfo.usageInfo_list.map( ( info ) => (
-                                    <li>{ info}</li>
-                                ))}
-                            </ul>
-
-                            {/* PRODUCT RETURN */}
-                            <h2>{privacyInfo.productReturnPrivacy_title}</h2>
-                            <ul>
-                                {privacyInfo.productReturnPrivacy_list.map( ( ret ) => (
-                                    <li>{ ret}</li>
-                                ))}
-                            </ul>
-
-                            {/* REPLACEMENT */}
-                            <h4>{privacyInfo.replacement_start}</h4>
-                            <p>{privacyInfo.replacement_intro}</p>
-                            <ul>
-                                {privacyInfo.replacement_list.map( ( el ) => (
-                                    <li>{ el}</li>
-                                ))}
-                            </ul>
-
-                            <h4>{privacyInfo.termsConditionsAggree}</h4>
-                            <p>{ privacyInfo.termsConditionsAggree_intro}</p>
-
                         </div>
                     </div>
                 </div>
