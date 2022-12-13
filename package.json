@@ -5,9 +5,8 @@
   "description": "\"APIs for graduation project\"",
   "main": "server.js",
   "engines": {
-    "node": "12.16.1",
-    "npm": "6.13.4"
-  },
+    "node": "12.16.1"
+    },
   "scripts": {
     "start": "node backEnd/server.js",
     "start:prod": "set NODE_ENV=production && nodemon backEnd/server.js",
