@@ -1,5 +1,5 @@
 export default {
-    name: "egy-home",
+    name: "stroyka",
     fullName: "Stroyka - Tools Store React eCommerce Template",
     url: "https://themeforest.net/item/stroyka-tools-store-react-ecommerce-template/23909258",
     author: {

@@ -16,6 +16,16 @@ export default [
         description_ar:
             "عند اختيارك الدفع بواسطة بطاقة الائتمان سوف يتم تحويلك بعد إنشاء الطلب إلى صفحة الدفع تلقائياً.",
     },
+    {
+        key: "masterCard",
+        title: "Direct bank transfer",
+        title_ar: "بطاقة بنكية",
+        description:
+            "Make your payment directly into our bank account. Please use your Order ID as the payment reference. " +
+            "Your order will not be shipped until the funds have cleared in our account.",
+        description_ar:
+            "عند اختيارك الدفع بواسطة بطاقة الائتمان سوف يتم تحويلك بعد إنشاء الطلب إلى صفحة الدفع تلقائياً.",
+    },
     // {
     //     key: "check",
     //     title: "Check payments",

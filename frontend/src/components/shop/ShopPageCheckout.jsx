@@ -316,7 +316,13 @@ function ShopPageCheckout ( props ) {
                         </span>
                         <span className="payment-methods__item-title">
                             {locale === 'ar' ? payment.title_ar : payment.title} 
-                            {payment.key === "bank" &&(    < >
+                            {/* {payment.key === "bank" &&(    < >
+                                <img src="/uploads/imgs/visa.png" alt="visa" style={{width:'40px',margin:"0 10px"}}/>
+                            <img src="/uploads/imgs/master.png" alt="visa" style={{width:'40px',margin:"0 10px"}}/>
+                            <img src="/uploads/imgs/meza.png" alt="visa" style={{width:'40px',margin:"0 10px"}}/>
+                                </> )
+                            } */}
+                                                        {payment.key === "masterCard" &&(    < >
                                 <img src="/uploads/imgs/visa.png" alt="visa" style={{width:'40px',margin:"0 10px"}}/>
                             <img src="/uploads/imgs/master.png" alt="visa" style={{width:'40px',margin:"0 10px"}}/>
                             <img src="/uploads/imgs/meza.png" alt="visa" style={{width:'40px',margin:"0 10px"}}/>

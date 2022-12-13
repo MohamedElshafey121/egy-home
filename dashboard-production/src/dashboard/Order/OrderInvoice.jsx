@@ -97,7 +97,7 @@ export default function OrderInvoice ( { match } ) {
                             </div>
                             <div className="sa-invoice__logo">
                                 {/* <InvoiceLogo /> */}
-                                <h1>Egy-Home</h1>
+                                <h1>stroyka</h1>
                             </div>
                         </div>
                         <div className="sa-invoice__sides">
@@ -118,7 +118,7 @@ export default function OrderInvoice ( { match } ) {
 
                             <div className="sa-invoice__side">
                                 <div className="sa-invoice__side-title">{messages.invoiceFrom}</div>
-                                <div className="sa-invoice__side-name">Egy-Home.</div>
+                                <div className="sa-invoice__side-name">stroyka.</div>
                                 {/* <div className="sa-invoice__side-meta">
                                     715 Fake Street, New York 10021 USA<br />
                                     +0 800 306-8265, stroyka@example.com

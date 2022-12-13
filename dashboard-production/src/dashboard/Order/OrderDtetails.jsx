@@ -180,7 +180,7 @@ export default function OrderDetails ({match}) {
                 <tr>
                     <td colSpan={3}>
                         {messages.shipping}
-                        <div className="text-muted fs-exact-13">{messages.via} Egy-Home</div>
+                        <div className="text-muted fs-exact-13">{messages.via} stroyka</div>
                     </td>
                     <td className="text-end"><Price value={userOrder.shippingPrice} /></td>
                 </tr>
