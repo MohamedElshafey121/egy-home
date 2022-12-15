@@ -183,7 +183,9 @@ function ProductCard ( props ) {
             
             <div className="product-card__image product-image">
                 <Link to={url.product( product )} className="product-image__body" >
-                    <img className="product-image__img" src={`/uploads/imgs/products/${ selectedImage?selectedImage:product.photo }`} alt="" />
+                    {/* <img className="product-image__img" src={`/uploads/imgs/products/${ selectedImage ? selectedImage : product.photo }`} alt="" /> */}
+                    <img className="product-image__img" src={`/uploads/imgs/products/${ product.photo }`? ` /uploads/imgs/products/${ product.photo }` :` /uploads/product-16.jpg`} alt="" />
+                    
                 </Link>
             </div>
             {shapesShow&& images}
