@@ -127,7 +127,8 @@ function ProductCard ( props ) {
         }}>
             { imagesList.map( img => (
                 <img
-                    src={`/uploads/imgs/products/${ img }`}
+                    // src={`/uploads/imgs/products/${ img }`}
+                    src={`/uploads/product-16.jpg`}
                     alt=""
                     onClick={()=>shapeClickHandler(img)}
                 style={{
